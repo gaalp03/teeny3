@@ -170,6 +170,7 @@
     go: () => { tone(1320, 0.3, { vol: 0.12 }); tone(660, 0.3, { vol: 0.08, type: 'triangle' }); },
     crowd: () => noise(1.1, { vol: 0.08, filter: 'bandpass', freq: 1100, q: 0.6 }),
     found: () => arp(['G5', 'B5', 'D6', 'G6'], 0.08, { type: 'triangle', vol: 0.12 }),
+    honk: () => { tone(392, 0.16, { type: 'square', vol: 0.05 }); tone(466, 0.16, { type: 'square', vol: 0.05 }); tone(392, 0.2, { type: 'square', vol: 0.05, delay: 0.22 }); tone(466, 0.2, { type: 'square', vol: 0.05, delay: 0.22 }); },
   };
 
   A.sfx = function (name) {

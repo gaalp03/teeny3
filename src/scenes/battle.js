@@ -444,6 +444,9 @@
         TT.ui.say(en.intro, () => this.startVs());
       } else this.startVs();
       if (p.tutorial) this.c.aiPaused = true;
+      this.speed = TT.settings.battleSpeed || 1;
+      this.auto = false;
+      if (TT.settings.autoBattle && !p.tutorial) this.setAuto(true);
     },
     startVs() {
       this.state = 'vs';
@@ -655,6 +658,8 @@
         block: { x: 818, y, w: 128, h },
         bench: [0, 1].map((k) => ({ x: 14 + k * 128, y: this.benchY(0), w: 122, h: 44, k })),
         pause: { x: TT.W / 2 - 26, y: 8, w: 52, h: 40 },
+        speed: { x: TT.W / 2 - 112, y: 8, w: 76, h: 40 },
+        auto: { x: TT.W / 2 + 36, y: 8, w: 76, h: 40 },
       };
     },
 
@@ -670,6 +675,13 @@
       if (I.hit('menu') || I.tapIn(L.pause.x, L.pause.y, L.pause.w, L.pause.h)) {
         this.pause();
         return;
+      }
+      if (!this.p.tutorial && (I.pressed('KeyT') || I.tapIn(L.auto.x, L.auto.y, L.auto.w, L.auto.h))) this.setAuto(!this.auto);
+      if (I.pressed('KeyG') || I.tapIn(L.speed.x, L.speed.y, L.speed.w, L.speed.h)) {
+        this.speed = this.speed > 1 ? 1 : 1.6;
+        TT.settings.battleSpeed = this.speed;
+        TT.store.writeSettings();
+        TT.audio.sfx('select');
       }
       const used = (slot) => {
         if (c.useMove(0, slot)) {
@@ -694,11 +706,24 @@
       for (const b of L.bench) if (I.tapIn(b.x, b.y, b.w, b.h)) doSwap(b.k);
       // blokk (tartás)
       const hold = I.act('block') || I.holdIn(L.block.x, L.block.y, L.block.w, L.block.h);
+      if (this.auto && !hold) {
+        this.blockHeld = false;
+        return;
+      }
       if (hold && !this.blockHeld) c.setBlock(0, true);
       if (hold && !c.act(0).blocking) c.setBlock(0, true);
       if (!hold && this.blockHeld) c.setBlock(0, false);
       if (!hold && c.act(0).blocking) c.setBlock(0, false);
       this.blockHeld = hold;
+    },
+
+    setAuto(on) {
+      this.auto = on;
+      this.c.ai[0] = on ? new AI(0.85) : null;
+      if (!on) this.c.setBlock(0, false);
+      TT.settings.autoBattle = on;
+      TT.store.writeSettings();
+      TT.audio.sfx('select');
     },
 
     pause() {
@@ -717,6 +742,7 @@
 
     // ---------- Frissítés ----------
     update(dt) {
+      if (this.state === 'fight' || this.state === 'finish') dt *= this.speed;
       this.t += dt;
       const c = this.c;
       const paused = TT.ui.overlayActive();
@@ -1483,8 +1509,11 @@
           }
         });
       }
-      // edző neve középen
       const L = this.controlsLayout();
+      if (this.state === 'fight') {
+        D.button(ctx, L.speed.x, L.speed.y, L.speed.w, L.speed.h, this.speed > 1 ? '×1.6' : '×1', { color: this.speed > 1 ? '#ffb000' : '#4a3a8c', size: 17, r: 10 });
+        if (!this.p.tutorial) D.button(ctx, L.auto.x, L.auto.y, L.auto.w, L.auto.h, 'AUTO', { color: this.auto ? '#2ecc71' : '#4a3a8c', size: 17, r: 10, glow: this.auto });
+      }
       D.panel(ctx, L.pause.x, L.pause.y, L.pause.w, L.pause.h, { fill: '#2b1e5c', r: 10, lw: 2.5 });
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(L.pause.x + 18, L.pause.y + 11, 5, 18);

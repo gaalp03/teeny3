@@ -80,6 +80,7 @@
       s.pos = { x: this.pl.x / TS, y: this.pl.y / TS };
       this.okCooldown = 0.45;
       this.initPatrols();
+      this.initCars();
       if (p.event) this.runEvent(p.event);
       TT.dailyReward();
       TT.checkAch();
@@ -90,6 +91,133 @@
         TT.save.pos = { x: this.pl.x / W.TS, y: this.pl.y / W.TS };
         TT.store.write();
       }
+    },
+
+    // ---------- Forgalom ----------
+    initCars() {
+      const TS = W.TS;
+      const lanes = [];
+      const H = (row, x0, x1, dir) => lanes.push({ axis: 'x', c: (row + 0.5) * TS, min: x0 * TS, max: x1 * TS, dir });
+      const V = (col, y0, y1, dir) => lanes.push({ axis: 'y', c: (col + 0.5) * TS, min: y0 * TS, max: y1 * TS, dir });
+      H(29, 5, 96, -1); H(30, 5, 96, 1); H(45, 5, 96, -1); H(46, 5, 96, 1);
+      V(29, 20, 56, 1); V(30, 20, 56, -1); V(56, 20, 56, 1); V(57, 20, 56, -1); V(83, 21, 56, 1); V(84, 21, 56, -1);
+      const cols = ['#e84545', '#3fa7ff', '#ffd23f', '#7bd65b', '#ff8c42', '#c06bff', '#f4f4f8', '#2a2a36'];
+      const rnd = U.rng(Math.floor(TT.rtime || 1) + 7);
+      this.cars = [];
+      lanes.forEach((ln, li) => {
+        const n = ln.axis === 'x' ? 3 : 2;
+        for (let i = 0; i < n; i++) {
+          this.cars.push({
+            lane: ln, pos: ln.min + ((i + rnd()) / n) * (ln.max - ln.min), base: 95 + rnd() * 60, speed: 0,
+            color: cols[(li * 3 + i) % cols.length], kind: rnd() < 0.18 ? 'van' : 'car', honk: 0,
+          });
+        }
+      });
+    },
+
+    carXY(car) {
+      const ln = car.lane;
+      return ln.axis === 'x' ? { x: car.pos, y: ln.c } : { x: ln.c, y: car.pos };
+    },
+
+    updateCars(dt) {
+      const pl = this.pl;
+      for (const car of this.cars) {
+        const ln = car.lane;
+        let target = car.base;
+        // gyalogos (a játékos) előtte
+        const along = ln.axis === 'x' ? pl.x - car.pos : pl.y - car.pos;
+        const perp = ln.axis === 'x' ? pl.y - 6 - ln.c : pl.x - ln.c;
+        if (Math.abs(perp) < 26 && along * ln.dir > 0 && Math.abs(along) < 74) {
+          target = 0;
+          car.honk -= dt;
+          if (car.honk <= 0 && Math.abs(along) < 60) {
+            car.honk = 4;
+            TT.audio.sfx('honk');
+          }
+        }
+        // másik autó előtte
+        for (const o of this.cars) {
+          if (o === car || o.lane !== ln) continue;
+          const d = (o.pos - car.pos) * ln.dir;
+          if (d > 0 && d < 64) target = Math.min(target, o.speed * 0.9);
+        }
+        car.speed = U.approach(car.speed, target, dt * 220);
+        car.pos += car.speed * ln.dir * dt;
+        if (car.pos > ln.max + 40) car.pos = ln.min - 40;
+        if (car.pos < ln.min - 40) car.pos = ln.max + 40;
+      }
+    },
+
+    drawCar(ctx, car, x, y) {
+      const horiz = car.lane.axis === 'x';
+      const L = car.kind === 'van' ? 60 : 50, Wd = 26;
+      ctx.save();
+      ctx.translate(x, y);
+      if (!horiz) ctx.rotate(Math.PI / 2);
+      if (car.lane.dir < 0) ctx.scale(-1, 1);
+      ctx.fillStyle = 'rgba(0,0,0,0.25)';
+      TT.D.rr(ctx, -L / 2 + 2, -Wd / 2 + 5, L, Wd, 8);
+      ctx.fill();
+      ctx.fillStyle = '#1d1433';
+      for (const wx of [-L / 2 + 10, L / 2 - 12]) for (const wy of [-Wd / 2 - 2, Wd / 2 - 3]) ctx.fillRect(wx, wy, 9, 5);
+      TT.D.rr(ctx, -L / 2, -Wd / 2, L, Wd, 8);
+      ctx.fillStyle = car.color;
+      ctx.fill();
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = '#1d1433';
+      ctx.stroke();
+      const rl = car.kind === 'van' ? L * 0.62 : L * 0.5;
+      TT.D.rr(ctx, -rl / 2 - 3, -Wd / 2 + 4, rl, Wd - 8, 5);
+      ctx.fillStyle = TT.U.shade(car.color, 0.2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#9be7ff';
+      ctx.fillRect(rl / 2 - 6, -Wd / 2 + 6, 5, Wd - 12);
+      ctx.fillStyle = '#ffe9a0';
+      ctx.fillRect(L / 2 - 3, -Wd / 2 + 3, 3, 5);
+      ctx.fillRect(L / 2 - 3, Wd / 2 - 8, 3, 5);
+      ctx.restore();
+    },
+
+    // Napszak: 0 = nappal, 1 = éjszaka (valós idő szerint)
+    darkness() {
+      if (TT.settings.dayNight === 'day') return 0;
+      const d = new Date();
+      const h = d.getHours() + d.getMinutes() / 60;
+      if (h >= 8 && h < 18) return 0;
+      if (h >= 21 || h < 5.5) return 1;
+      if (h < 8) return U.clamp((8 - h) / 2.5, 0, 1);
+      return U.clamp((h - 18) / 3, 0, 1);
+    },
+
+    drawNight(ctx, cx, cy) {
+      const d = this.darkness();
+      if (d <= 0.01) return;
+      ctx.save();
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.fillStyle = U.mix('#ffffff', '#40449a', d * 0.8);
+      ctx.fillRect(0, 0, TT.W, TT.H);
+      ctx.globalCompositeOperation = 'lighter';
+      const glow = (x, y, r, c) => {
+        if (x < -r || x > TT.W + r || y < -r || y > TT.H + r) return;
+        const g = ctx.createRadialGradient(x, y, 2, x, y, r);
+        g.addColorStop(0, `rgba(${c},${0.45 * d})`);
+        g.addColorStop(1, `rgba(${c},0)`);
+        ctx.fillStyle = g;
+        ctx.fillRect(x - r, y - r, r * 2, r * 2);
+      };
+      const TS = W.TS;
+      for (const p of W.props) if (p.kind === 'lamp') glow(p.x * TS - cx + 16, p.y * TS - cy - 40, 110, '255,220,140');
+      for (const b of W.buildings) if (b.door) glow(b.door[0] * TS - cx, b.door[1] * TS - cy - 20, 90, '255,200,120');
+      for (const car of this.cars) {
+        const p = this.carXY(car);
+        const ln = car.lane;
+        const fx = ln.axis === 'x' ? ln.dir * 46 : 0, fy = ln.axis === 'y' ? ln.dir * 46 : 0;
+        glow(p.x - cx + fx, p.y - cy + fy, 50, '255,240,180');
+      }
+      glow(this.pl.x - cx, this.pl.y - cy - 30, 70, '120,120,190');
+      ctx.restore();
     },
 
     // ---------- Menta-járőrök ----------
@@ -714,6 +842,7 @@
       }
       this.gateMsgT -= dt;
       this.updatePatrols(dt);
+      this.updateCars(dt);
       if (TT.isFading()) return;
 
       // interakció
@@ -793,10 +922,18 @@
         if (nx < -60 || nx > TT.W + 60 || ny < -100 || ny > TT.H + 60) continue;
         items.push({ y: n.y * TS, draw: () => this.drawNpc(ctx, n, nx, ny) });
       }
+      for (const car of this.cars) {
+        const p = this.carXY(car);
+        const x = p.x - cx, y = p.y - cy;
+        if (x < -70 || x > TT.W + 70 || y < -70 || y > TT.H + 70) continue;
+        items.push({ y: p.y + 10, draw: () => this.drawCar(ctx, car, x, y) });
+      }
       const pl = this.pl;
       items.push({ y: pl.y, draw: () => this.drawPlayer(ctx, pl.x - cx, pl.y - cy) });
       items.sort((a, b) => a.y - b.y);
       for (const it of items) it.draw();
+
+      this.drawNight(ctx, cx, cy);
 
       // ajtó feliratok
       for (const b of W.buildings) {
@@ -1069,6 +1206,7 @@
         { label: 'Zene: ' + pct(st.music), value: 'music' },
         { label: 'Hangeffektek: ' + pct(st.sfx), value: 'sfx' },
         { label: 'Képernyőrázás: ' + (st.shake ? 'Be' : 'Ki'), value: 'shake' },
+        { label: 'Napszak: ' + (st.dayNight === 'day' ? 'mindig nappal' : 'valós idő'), value: 'daynight' },
         { label: 'Teljes képernyő', value: 'fs' },
         { label: 'Mentés exportálása', value: 'export' },
         { label: 'Kész', value: null, color: '#6c5ce7' },
@@ -1078,6 +1216,7 @@
       if (v === 'music') st.music = cycle(st.music);
       if (v === 'sfx') st.sfx = cycle(st.sfx);
       if (v === 'shake') st.shake = !st.shake;
+      if (v === 'daynight') st.dayNight = st.dayNight === 'day' ? 'real' : 'day';
       if (v === 'fs') {
         try {
           if (!document.fullscreenElement) document.documentElement.requestFullscreen();
