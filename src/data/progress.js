@@ -84,6 +84,26 @@
         outro: [{ who: 'mrmint', text: 'Nem… a gyűjteményem… KIBONTOTTÁK!' }] },
       reward: { coins: 2000, fig: 'mrmint', text: 'Legyőzted Mr. Mintet! A figurák szabadok! Megkaptad Mr. Mint figuráját.' },
     },
+    {
+      id: 'brotherhood', name: 'Testvériség Kupa', color: '#c1121f', venue: 'dome', minLvl: 21, req: 'mint',
+      desc: 'Utójáték: a Gonosz Testvériség kihívja a bajnokokat.',
+      matches: [
+        { name: 'Kyd Wykkyd', who: 'wykkyd', team: [T('wykkyd', 21), T('kitten', 20), T('billy', 21)], ai: 0.7, coins: 500,
+          intro: [{ who: 'wykkyd', text: '…' }, { who: 'raven', text: 'Ő sosem beszél. Ez még nálam is ijesztőbb.' }],
+          outro: [{ who: 'wykkyd', text: '…!' }] },
+        { name: 'Monsieur Mallah', who: 'mallah', team: [T('mallah', 22), T('cinderblock', 21), T('plasmus', 22)], ai: 0.72, coins: 550,
+          intro: [{ who: 'mallah', text: 'Bonjour, Titánok! A Mester üdvözletét küldi — egy jó nagy pofonnal.' }],
+          outro: [{ who: 'mallah', text: 'Sacrebleu! A Mester nem lesz boldog.' }] },
+        { name: 'Madame Rouge', who: 'rouge', team: [T('rouge', 23), T('blackfire', 22), T('maeye', 23)], ai: 0.74, coins: 600,
+          intro: [{ who: 'rouge', text: 'Ó, kis Robin. Bármilyen alakot felveszek… akár a te legrosszabb rémálmodét is.' }],
+          outro: [{ who: 'rouge', text: 'Hmm. Rugalmasabb vagy, mint gondoltam.' }] },
+      ],
+      boss: { name: 'Brain', who: 'brain', team: [T('mallah', 24), T('rouge', 24), T('brain', 26)], ai: 0.78, coins: 2500, music: 'boss',
+        intro: [{ who: 'brain', text: 'Titánok. Mr. Mint amatőr volt. A Gonosz Testvériség minden figurát irányítani fog — és minden játékost is.' },
+          { who: 'robin', text: 'Ezt már hallottuk. Titánok… HARCRA FEL!' }],
+        outro: [{ who: 'brain', text: 'Lehetetlen… a számításaim… Mallah! Visszavonulás!' }] },
+      reward: { coins: 3000, fig: 'brain', text: 'Legyőzted a Gonosz Testvériséget! Megkaptad Brain figuráját.' },
+    },
   ];
   TT.CUP = {};
   TT.CUPS.forEach((c, i) => { c.index = i; TT.CUP[c.id] = c; });
@@ -115,6 +135,10 @@
     hive2: { name: 'H.I.V.E. prefektus', who: 'kid_hive2', team: [T('billy', 9), T('kitten', 8), T('seemore', 9)], ai: 0.45, coins: 220, bg: 'hive',
       intro: [{ who: 'kid_hive2', text: 'Ezen a folyosón nem jutsz át! …Mármint ezen a járdán.' }],
       outro: [{ who: 'kid_hive2', text: 'Az igazgató úr nem lesz boldog.' }] },
+    redx: { name: 'Red X', who: 'red_x', team: [T('thunder', 26), T('slade', 26), T('red_x', 28)], ai: 0.82, coins: 2000, bg: 'street', music: 'boss', night: true,
+      reward: { figs: ['red_x'] },
+      intro: [{ who: 'red_x', text: 'Szép kis figuragyűjtemény. Kár lenne, ha… eltűnne.' }],
+      outro: [{ who: 'red_x', text: 'Nem rossz, Madárfiú. Tartsd meg a figurámat. Úgyis van még egy.' }] },
     blood: { name: 'Brother Blood', who: 'bloodbrother', team: [T('bloodbrother', 11), T('jinx', 10), T('mammoth', 11)], ai: 0.52, coins: 400, bg: 'hive', music: 'boss',
       reward: { figs: ['bloodbrother'] },
       intro: [{ who: 'bloodbrother', text: 'Üdvözöllek az Akadémiámon, Robin. Itt minden figura nekem engedelmeskedik.' }],
@@ -188,6 +212,8 @@
     if (!TT.cupDone('east')) return 'Nyerd meg a Kelet Kupát! (Tipp: nézz be a H.I.V.E. negyedbe is.)';
     if (!TT.cupDone('villain')) return 'Nyerd meg a Gonosz Kupát a Csatakupolában!';
     if (!TT.cupDone('mint')) return 'Irány Mr. Mint trezorja északnyugaton! Nyerd meg a Menta Kupát!';
+    if (!TT.cupDone('brotherhood')) return 'Utójáték: nyerd meg a Testvériség Kupát a Csatakupolában!';
+    if (!s.beaten.redx) return 'Pletykák szerint éjjelente Red X ólálkodik a kikötőben…';
     return 'Győztél! Próbáld ki a Végtelen Arénát, és gyűjtsd össze mind a ' + TT.FIG_LIST.length + ' figurát!';
   };
 })(window.TT);

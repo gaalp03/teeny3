@@ -244,6 +244,47 @@
   M('golden_cocoon', 'Arany gubó', 'self', 0, 9, 'shield', '#ffd23f', { shield: 0.16, eff: [E('regen', 1, 5, { self: true })] });
   M('golden_giant', 'Arany óriás', 'slam', 90, 0, 'rock', '#ffd23f', { super: true, eff: [E('stun', 1, 1.3)] });
 
+  // ---------- Testvériség és új változatok ----------
+  M('x_shuriken', 'X-shuriken', 'multi', 13, 2.2, 'shuriken', '#d62828', { hits: 3 });
+  M('teleport_strike', 'Teleport-csapás', 'melee', 26, 4.5, 'slash', '#d62828', { crit: 0.3 });
+  M('x_trap', 'X-csapda', 'shot', 36, 8, 'orb', '#d62828', { eff: [E('stun', 0.4, 1.1)] });
+  M('red_x_plosion', 'Red X-plózió', 'multi', 88, 0, 'slash', '#d62828', { super: true, hits: 6, melee: true });
+
+  M('brain_wave', 'Agyhullám', 'beam', 12, 2.4, 'hex', '#ff9ecd', { eff: [E('weak', 0.3, 3)] });
+  M('mind_blast', 'Elmeroham', 'shot', 22, 4.8, 'magic', '#ff9ecd', { eff: [E('stun', 0.3, 1)] });
+  M('robot_slam', 'Robotcsapás', 'slam', 40, 8.5, 'rock', '#9aa5b1');
+  M('genius_plan', 'Zseniális terv', 'beam', 88, 0, 'hex', '#ff9ecd', { super: true, eff: [E('stun', 1, 1.3)] });
+
+  M('gorilla_punch', 'Gorilla-ütés', 'melee', 12, 2.5, 'punch', '#5a4a3a');
+  M('beret_toss', 'Svájcisapka-dobás', 'shot', 20, 4.5, 'card', '#d62828', { eff: [E('weak', 0.3, 3)] });
+  M('jungle_rage', 'Dzsungeldüh', 'slam', 40, 8.5, 'rock', '#5a4a3a');
+  M('french_fury', 'Francia düh', 'multi', 82, 0, 'punch', '#d62828', { super: true, hits: 4, melee: true });
+
+  M('stretch_whip', 'Nyúló ostor', 'melee', 12, 2.2, 'wave', '#c1121f');
+  M('shape_shift', 'Alakváltás', 'self', 0, 7, 'buff', '#c1121f', { eff: [E('atkUp', 1, 5, { self: true }), E('defUp', 1, 5, { self: true })] });
+  M('elastic_slam', 'Gumicsapás', 'slam', 40, 8, 'wave', '#c1121f');
+  M('rubber_chaos', 'Gumi-káosz', 'multi', 84, 0, 'wave', '#c1121f', { super: true, hits: 5, melee: true });
+
+  M('shadow_hop', 'Árnyékugrás', 'melee', 11, 2.2, 'slash', '#5a3a8a');
+  M('dark_cape', 'Sötét köpeny', 'shot', 20, 4.6, 'smoke', '#3a2a5a', { eff: [E('slow', 0.5, 3)] });
+  M('nightmare', 'Lidércnyomás', 'beam', 36, 8, 'hex', '#8e5cff', { eff: [E('stun', 0.3, 1)] });
+  M('shadow_trap', 'Árnyékcsapda', 'beam', 76, 0, 'hex', '#8e5cff', { super: true, eff: [E('stun', 1, 1.3)] });
+
+  M('lightning_bolt', 'Villámcsapás', 'beam', 12, 2.2, 'lightning', '#ffd23f');
+  M('thunder_clap', 'Mennydörgés', 'slam', 24, 4.5, 'sonic', '#3f6fd8', { eff: [E('stun', 0.3, 0.9)] });
+  M('storm_front', 'Viharfront', 'multi', 36, 8, 'lightning', '#ffd23f', { hits: 4 });
+  M('sky_rumble', 'Égzengés', 'beam', 86, 0, 'lightning', '#ffd23f', { super: true, eff: [E('stun', 1, 1.1)] });
+
+  M('hot_pudding', 'Forró puding', 'shot', 12, 2.3, 'blob', '#c06bff', { eff: [E('burn', 0.3, 3)] });
+  M('taste_test', 'Kóstoló', 'self', 0, 9.5, 'heal', '#ffd23f', { heal: 0.2 });
+  M('pudding_wave', 'Pudingcunami', 'beam', 34, 8, 'blob', '#c06bff', { eff: [E('slow', 0.5, 3)] });
+  M('tamaran_feast', 'Tamarani lakoma', 'beam', 74, 0, 'heart', '#ff9ecd', { super: true, eff: [E('weak', 1, 5)] });
+
+  M('cutlass', 'Kardvágás', 'melee', 11, 2.2, 'slash', '#c0c0c0');
+  M('cannonball', 'Ágyúgolyó', 'shot', 24, 5, 'bomb', '#2a2a36', { eff: [E('burn', 0.3, 3)] });
+  M('plank_kick', 'Pallórúgás', 'melee', 38, 8, 'kick', '#8b5a2b');
+  M('boarding', 'Fedélzeti roham', 'multi', 78, 0, 'slash', '#c0c0c0', { super: true, hits: 4, melee: true });
+
   // Leírás generálása
   for (const m of Object.values(MOVES)) {
     const parts = [];

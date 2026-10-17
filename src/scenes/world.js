@@ -353,9 +353,12 @@
     },
 
     npcVisible(n) {
-      const s = TT.save;
-      if (n.id === 'cyborg_t' && s.flags.tutorial && false) return false;
+      if (n.id === 'redx') return TT.cupDone('brotherhood');
       return true;
+    },
+
+    isNight() {
+      return TT.settings.dayNight === 'day' || this.darkness() > 0.5;
     },
 
     // ---------- Interakciók ----------
@@ -421,6 +424,10 @@
               TT.ui.confirm('Gyakorló meccs Cyborggal?', (ok) => ok && this.startTrainer(n, Object.assign({}, tr, { tutorial: false, team: tr.team.map((t) => ({ id: t.id, lvl: Math.max(t.lvl, this.teamLvl()) })) }), false));
             });
           }
+          return;
+        }
+        if (tr.night && !this.isNight()) {
+          TT.ui.say([{ who: tr.who, text: 'Nappal nem harcolok, Madárfiú. Gyere vissza, ha besötétedik.' }]);
           return;
         }
         if (!beaten) {
@@ -661,6 +668,12 @@
           { who: 'mrmint', text: '…Játszani? Hmm. Talán… egyszer kipróbálom.' },
           { who: 'robin', text: 'Megcsináltuk, Titánok! A Teeny Titans 3 Világliga bajnokai!' },
         ], () => TT.go('credits'));
+      } else if (ev === 'cup_brotherhood') {
+        TT.ui.say([
+          { who: 'cyborg', text: 'A Gonosz Testvériség is kiütve! Brain figurája a miénk. BOOYAH!' },
+          { who: 'raven', text: 'Hallottam valamit. Éjjelente egy Red X nevű alak ólálkodik a kikötőben, és figurákat lop.' },
+          { who: 'robin', text: 'Red X… Ezt el kell intéznem. Személyesen.' },
+        ]);
       } else if (ev === 'after_blood') {
         TT.ui.say([{ who: 'raven', text: 'Brother Blood figurája. Nem akarom tudni, mit csinált vele eddig.' }]);
       }

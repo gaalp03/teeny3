@@ -149,6 +149,7 @@
     { id: 'granny', who: 'kid_granny', x: 25, y: 26, talk: 'granny' },
     { id: 'pizzaguy', who: 'kid_pizza', x: 42.5, y: 38.5, talk: 'pizzaguy' },
     { id: 'tourist', who: 'kid_tourist', x: 64, y: 57, talk: 'tourist' },
+    { id: 'redx', who: 'red_x', x: 38, y: 66.6, trainer: 'redx', dir: 'right' },
   ];
 
   // Rejtett figurák és érmék

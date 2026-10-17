@@ -34,6 +34,8 @@
     A('cup2', 'Keleti hős', 'Nyerd meg a Kelet Kupát.', 150, () => TT.cupDone('east')),
     A('cup3', 'Gonoszverő', 'Nyerd meg a Gonosz Kupát.', 200, () => TT.cupDone('villain')),
     A('cup4', 'Kibontva!', 'Győzd le Mr. Mintet.', 500, () => TT.cupDone('mint')),
+    A('cup5', 'Testvériség-törő', 'Nyerd meg a Testvériség Kupát.', 800, () => TT.cupDone('brotherhood')),
+    A('redx', 'X jelöli a helyet', 'Győzd le Red X-et éjjel a kikötőben.', 1000, (s) => !!s.beaten.redx),
     A('endless5', 'Kitartó', 'Juss el az 5. hullámig a Végtelen Arénában.', 500, (s) => (s.endless || 0) >= 5),
     A('endless15', 'Végtelen bajnok', 'Juss el a 15. hullámig a Végtelen Arénában.', 1500, (s) => (s.endless || 0) >= 15),
     A('hidden', 'Kincsvadász', 'Találd meg az összes rejtett figurát és érmét.', 500, (s) => TT.WORLD.hidden.every((h) => s.found[h.id])),

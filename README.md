@@ -8,13 +8,17 @@ Gyűjts Teeny figurákat, harcolj 3v3 csapatcsatákban a Csatakupolában, és á
 
 ## Mi van benne
 
-- **43 gyűjthető figura** (Titánok, változatok, Titánok Kelet, H.I.V.E., gonoszok és az új Menta-banda),
-  mind kódból rajzolva, 4 ritkasággal és 4 típussal (Erő › Tech › Misztikus › Gyorsaság › Erő)
+- **52 gyűjthető figura** (Titánok, változatok, Titánok Kelet, H.I.V.E., gonoszok, Gonosz Testvériség és az új
+  Menta-banda), mind kódból rajzolva, 4 ritkasággal és 4 típussal (Erő › Tech › Misztikus › Gyorsaság › Erő)
+- **Csillagszint** a dupla figurákból, **csapatbónusz** azonos csapatú figurákkal
 - **Valós idejű harcrendszer**: töltődő támadások, blokk és *tökéletes blokk* (a zöld körnél),
   csere a pihenő figurákra, szuper támadás, állapotok (égés, méreg, kábulat, pajzs, erősítés…)
 - **Bejárható Jump City**: Titánok Tornya, Teeny Játékbolt, Csatakupola, Pizzéria, Képregénybolt,
   park, strand, kikötő, H.I.V.E. negyed és Mr. Mint trezorja — edzőkkel, rejtett figurákkal, érmékkel
-- **4 kupa + Végtelen Aréna**, történet, stáblista
+- **4 kupa + utójáték (Testvériség Kupa, Végtelen Aréna, éjszakai Red X)**, történet, stáblista
+- **Bejárható Titánok Tornya** figuravitrinnel, **Pizzafogó minijáték**, **Silkie-mellékküldetés**
+- **Menta-járőrök** és autók a városban, **valós napszak** (este besötétedik)
+- **34 teljesítmény**, napi jutalom, automatikus harc és gyorsítás (×1.6) gyakorláshoz
 - **Vakdobozok** a boltban (Alap / Prémium / Legendás), duplikátumokból tapasztalat
 - Szintlépés (max. 30), edzés, pizzaparti, gyűjtői jutalmak
 - Szintetizált zene és hangok, magyar felület, mentés automatikusan
@@ -34,8 +38,12 @@ A Pages bekapcsolása: Settings → Pages → Source: *GitHub Actions*, majd Act
 
 ## Android APK
 
-Minden pushnál a GitHub Actions lefordít egy APK-t: **Actions → Android APK → a futás alján
-„teeny-titans-3-apk”** letöltés. Telefonon engedélyezd az ismeretlen forrásból telepítést.
+Minden pushnál a GitHub Actions lefordít egy APK-t, és feltölti a **Releases → „legujabb”** kiadásba
+(`TeenyTitans3.apk`). Telefonon: nyisd meg a repót a böngészőben, Releases, töltsd le és telepítsd
+(engedélyezd az ismeretlen forrásból való telepítést). Az új verzió frissítésként települ, a mentés megmarad.
+
+Saját textúrákkal: tölts fel a saját APK-dat az `apk-forras` ágra az `apk/` mappába egy `apk/map.json`-nal
+(lásd lent), és a build automatikusan beépíti a képeket.
 
 Saját gépen (Android SDK + JDK 17 kell):
 
@@ -56,6 +64,7 @@ cd android && ./gradlew assembleDebug
 | Szuper | R / 4 | SZUPER gomb |
 | Blokk | Szóköz (tartsd) | BLOKK gomb (tartsd) |
 | Csere | Q / E | bal felső kis portrék |
+| Auto harc / gyorsítás | T / G | AUTO és ×1 gombok fent |
 
 Tipp: a bejövő támadásnál zsugorodó kör jelenik meg a figurád körül. Ha akkor kezded a blokkot,
 amikor **zöld**, tökéletes blokk lesz: nulla sebzés, a közelharcos támadó pedig megszédül.

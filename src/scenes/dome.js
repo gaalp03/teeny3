@@ -58,8 +58,9 @@
 
     build() {
       const cups = this.cups();
+      const tight = cups.length > 4;
       const items = cups.map((c, i) => ({
-        id: 'cup' + i, x: 20, y: 76 + i * 92, w: 300, h: 82, cup: c, i,
+        id: 'cup' + i, x: 20, y: 72 + i * (tight ? 76 : 92), w: 300, h: tight ? 70 : 82, cup: c, i,
         onClick: () => {
           this.sel = i;
           this.build();
@@ -164,7 +165,7 @@
       const x = b.x + (sel ? 8 : 0);
       // kupa ikon
       ctx.save();
-      ctx.translate(x + 40, b.y + 42);
+      ctx.translate(x + 40, b.y + b.h / 2 + 1);
       ctx.beginPath();
       ctx.moveTo(-16, -20);
       ctx.lineTo(16, -20);
@@ -180,13 +181,14 @@
       ctx.fillRect(-11, 15, 22, 6);
       ctx.strokeRect(-11, 15, 22, 6);
       ctx.restore();
-      D.text(ctx, c.name, x + 72, b.y + 28, { size: 22 });
-      if (!unl) D.text(ctx, 'Zárva', x + 72, b.y + 56, { size: 16, color: '#a89cd8' });
-      else if (c.id === 'endless') D.text(ctx, `Legjobb: ${TT.save.endless || 0}. hullám`, x + 72, b.y + 56, { size: 16, color: '#ffe9a0' });
+      const ly = b.h < 80 ? 50 : 56;
+      D.text(ctx, c.name, x + 72, b.y + (b.h < 80 ? 24 : 28), { size: 22 });
+      if (!unl) D.text(ctx, 'Zárva', x + 72, b.y + ly, { size: 16, color: '#a89cd8' });
+      else if (c.id === 'endless') D.text(ctx, `Legjobb: ${TT.save.endless || 0}. hullám`, x + 72, b.y + ly, { size: 16, color: '#ffe9a0' });
       else {
         const step = TT.save.cupStep[c.id] || 0;
         for (let i = 0; i < 4; i++) {
-          const dx = x + 80 + i * 30, dy = b.y + 56;
+          const dx = x + 80 + i * 30, dy = b.y + ly;
           ctx.beginPath();
           if (i === 3) D.star(ctx, dx, dy, 10, 4.5, 5);
           else ctx.arc(dx, dy, 8, 0, Math.PI * 2);
@@ -196,7 +198,7 @@
           ctx.strokeStyle = '#1d1433';
           ctx.stroke();
         }
-        if (done) D.text(ctx, 'KÉSZ', x + b.w - 20, b.y + 56, { size: 16, align: 'right', color: '#7bff6b' });
+        if (done) D.text(ctx, 'KÉSZ', x + b.w - 20, b.y + ly, { size: 16, align: 'right', color: '#7bff6b' });
       }
     },
 

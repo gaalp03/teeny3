@@ -295,6 +295,61 @@
     { body: 'worm', skin: '#ffd23f', spots: '#ff9f1a', eyes: 'big', eyeColor: '#1d1d2b', mouth: 'smile', gold: true },
     { team: 'titans', short: 'A. Silkie', bio: 'Silkie hálája jeléül. Csillog, puha, és meglepően erős.', noBox: true });
 
+  // ---------- Gonosz Testvériség és új változatok ----------
+  F('red_x', 'Red X', 'speed', 'legendary', [105, 14, 11, 14],
+    ['x_shuriken', 'teleport_strike', 'x_trap'], 'red_x_plosion',
+    {
+      skin: '#1d1d2b', top: '#1d1d2b', sleeves: '#1d1d2b', bottom: '#1d1d2b', boots: '#2a2a36', gloves: '#2a2a36', belt: '#2a2a36',
+      cape: '#1d1d2b', capeIn: '#d62828', hair: 'bald', eyes: 'none', mouth: 'none', gear: ['redx_mask'],
+      chest: { sym: 'X', color: '#d62828', ink: '#1d1d2b' },
+    }, { team: 'villain', bio: 'Rejtélyes tolvaj. Senki sem tudja, ki van a maszk alatt. (Robin tudja.)', noBox: true });
+
+  F('brain', 'Brain', 'tech', 'epic', [110, 13, 13, 8],
+    ['brain_wave', 'mind_blast', 'robot_slam'], 'genius_plan',
+    { body: 'jar', skin: '#6c757d', eyes: 'none', mouth: 'none' },
+    { team: 'brotherhood', bio: 'A Gonosz Testvériség vezére. Zseni. Üvegben.', noBox: true });
+
+  F('mallah', 'Monsieur Mallah', 'brawn', 'rare', [125, 12, 12, 8],
+    ['gorilla_punch', 'beret_toss', 'jungle_rage'], 'french_fury',
+    {
+      body: 'big', skin: '#5a4a3a', top: '#3a2e24', bottom: '#3a2e24', boots: '#2a2018', gloves: '#5a4a3a', fur: true,
+      hair: 'short', hairColor: '#2a2018', eyes: 'angry', mouth: 'frown', gear: ['beret'], hatColor: '#d62828', scale: 1.12,
+      chest: { sym: 'M', color: '#d62828', ink: '#ffffff' },
+    }, { team: 'brotherhood', short: 'Mallah', bio: 'Francia gorilla, Brain hűséges társa. Oui, oui!' });
+
+  F('rouge', 'Madame Rouge', 'mystic', 'epic', [100, 14, 10, 12],
+    ['stretch_whip', 'shape_shift', 'elastic_slam'], 'rubber_chaos',
+    {
+      skin: '#f2e6e6', top: '#8a1020', bottom: '#5a0a14', boots: '#1d1d2b', gloves: '#8a1020', skirt: true,
+      hair: 'bob', hairColor: '#1d1d2b', hairStreak: '#f4f4f8', eyes: 'cat', eyeColor: '#3a2a5a', mouth: 'lips',
+    }, { team: 'brotherhood', short: 'M. Rouge', bio: 'Bármilyen alakot felvesz. Kivéve a vesztesét.' });
+
+  F('wykkyd', 'Kyd Wykkyd', 'mystic', 'rare', [95, 12, 9, 13],
+    ['shadow_hop', 'dark_cape', 'nightmare'], 'shadow_trap',
+    {
+      skin: '#f4f4f8', top: '#1d1d2b', bottom: '#1d1d2b', boots: '#1d1d2b', gloves: '#1d1d2b', cape: '#1d1d2b', capeIn: '#5a3a8a',
+      hair: 'bald', eyes: 'glow', eyeColor: '#ff4f4f', mouth: 'none', gear: ['cowl', 'ears_bat'], cowlColor: '#1d1d2b',
+    }, { team: 'hive', short: 'Wykkyd', bio: 'Soha egy szót sem szólt. Hátborzongató.' });
+
+  F('thunder', 'Thunder & Lightning', 'speed', 'epic', [100, 13, 10, 14],
+    ['lightning_bolt', 'thunder_clap', 'storm_front'], 'sky_rumble',
+    { body: 'twins', skin: '#e8c8a8', top: '#3f6fd8', top2: '#ffd23f', bottom: '#f4f4f8', boots: '#1d1d2b', gloves: '#f4f4f8', hair: 'messy', hairColor: '#f4f4f8', eyes: 'dot', mouth: 'grin', twinSym: 'T' },
+    { team: 'villain', short: 'Thunder&L.', bio: 'Két testvér, egy vihar. Mindig együtt dörögnek.' });
+
+  F('star_chef', 'Szakács Starfire', 'mystic', 'rare', [100, 11, 10, 11],
+    ['hot_pudding', 'taste_test', 'pudding_wave'], 'tamaran_feast',
+    {
+      skin: '#f0a04b', top: '#f4f4f8', sleeves: '#f4f4f8', bottom: '#7b2cbf', boots: '#7b2cbf', gloves: '#f0a04b', apron: '#ffffff',
+      hair: 'long', hairColor: '#d1153a', eyes: 'big', eyeColor: '#2ecc71', mouth: 'grin', gear: ['chef_hat'], skirt: true,
+    }, { short: 'Sz. Starfire', bio: 'Tamarani puding receptje titkos. Talán jobb is így.' });
+
+  F('robin_pirate', 'Kalóz Robin', 'brawn', 'rare', [105, 12, 10, 11],
+    ['cutlass', 'cannonball', 'plank_kick'], 'boarding',
+    {
+      skin: SKIN, top: '#f4f4f8', sleeves: '#f4f4f8', gloves: '#2f9e44', bottom: '#2a2a36', boots: '#1d1d2b', belt: '#d62828', stripes: '#d62828',
+      hair: 'spiky', hairColor: '#1d1d2b', mask: '#1d1d2b', eyes: 'lens', mouth: 'grin', gear: ['pirate_hat', 'staff'],
+    }, { short: 'K. Robin', bio: 'Arr! A hét tenger leggyorsabb Teeny kapitánya.' });
+
   // ---------- Teeny Titans 3: Menta-banda ----------
   F('mintguard', 'Menta Őr', 'tech', 'common', [105, 10, 12, 9],
     ['tape_shot', 'barcode_scan', 'stamp'], 'warehouse_lock',
@@ -340,5 +395,5 @@
     }
   }
 
-  TT.TEAM_NAMES = { titans: 'Titánok', east: 'Titánok Kelet', hive: 'H.I.V.E.', villain: 'Gonoszok', mint: 'Menta-banda' };
+  TT.TEAM_NAMES = { titans: 'Titánok', east: 'Titánok Kelet', hive: 'H.I.V.E.', villain: 'Gonoszok', mint: 'Menta-banda', brotherhood: 'Testvériség' };
 })(window.TT);
