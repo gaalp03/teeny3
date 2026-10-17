@@ -17,6 +17,8 @@ Gyűjts Teeny figurákat, harcolj 3v3 csapatcsatákban a Csatakupolában, és á
 - **Bejárható Jump City**: Titánok Tornya, Teeny Játékbolt, Csatakupola, Pizzéria, Képregénybolt,
   park, strand, kikötő, H.I.V.E. negyed és Mr. Mint trezorja — edzőkkel, rejtett figurákkal, érmékkel
 - **4 kupa + utójáték (Testvériség Kupa, Végtelen Aréna, éjszakai Red X)**, történet, stáblista
+- **Túlélő Torna** (naponta 5 harc gyógyulás nélkül), főellenségek **2. fázissal**
+- **Harci kellékek** (pizzaszelet, energiaital, tisztító spray), **Festőműhely** (arany, neon… figurák)
 - **Bejárható Titánok Tornya** figuravitrinnel, **Pizzafogó minijáték**, **Silkie-mellékküldetés**
 - **Menta-járőrök** és autók a városban, **valós napszak** (este besötétedik)
 - **36 teljesítmény**, napi jutalom, automatikus harc és gyorsítás (×1.6) gyakorláshoz

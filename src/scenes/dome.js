@@ -24,6 +24,32 @@
     };
   }
 
+  // Túlélő Torna: napi 5 harc gyógyulás nélkül
+  function todayKey() {
+    const d = new Date();
+    return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+  }
+  function survivalState() {
+    const s = TT.save;
+    if (!s.survival || s.survival.date !== todayKey()) s.survival = { date: todayKey(), round: 0, hp: {}, over: false, won: false };
+    return s.survival;
+  }
+  function survivalEnemy(round) {
+    const rnd = U.rng(U.hash(todayKey() + ':' + round));
+    const pool = TT.FIG_LIST.filter((f) => f.rarity !== 'legendary').map((f) => f.id);
+    const lvl = U.clamp(Math.round(teamAvg() + round * 0.6), 2, TT.MAX_LVL);
+    const team = [0, 1, 2].map(() => ({ id: pool[Math.floor(rnd() * pool.length)], lvl }));
+    const boss = round === 4;
+    if (boss) {
+      const legends = TT.FIG_LIST.filter((f) => f.rarity === 'legendary').map((f) => f.id);
+      team[2] = { id: legends[Math.floor(rnd() * legends.length)], lvl: Math.min(TT.MAX_LVL, lvl + 1) };
+    }
+    return {
+      name: boss ? 'Torna-bajnok' : `Túlélő – ${round + 1}. kör`, who: team[2].id, team,
+      ai: Math.min(0.85, 0.42 + round * 0.06), coins: 120 + round * 40, bg: 'dome', music: boss ? 'boss' : 'battle',
+    };
+  }
+
   const scene = {
     enter(p) {
       this.p = p;
@@ -35,6 +61,7 @@
       this.sel = p.sel != null ? p.sel : Math.max(0, firstOpen);
       TT.audio.music(this.venue === 'vault' ? 'vault' : 'shop');
       this.build();
+      this.menu.focus = this.sel;
       TT.checkAch();
       if (this.venue === 'vault' && !TT.save.flags.vaultIntro) {
         TT.save.flags.vaultIntro = true;
@@ -48,19 +75,21 @@
     cups() {
       if (this.venue === 'vault') return [TT.CUP.mint];
       const list = TT.CUPS.filter((c) => c.venue === 'dome');
+      if (TT.cupDone('rookie')) list.push({ id: 'survival', name: 'Túlélő Torna', color: '#2a9d8f', desc: '5 harc egymás után, gyógyulás nélkül — a kiesett figurák kiesve maradnak. Naponta egyszer. Fődíj: 1500 érme + legendás doboz!' });
       if (TT.cupDone('mint')) list.push({ id: 'endless', name: 'Végtelen Aréna', color: '#ff6b35', desc: 'Egyre erősebb csapatok, egyre nagyobb jutalmak. Minden 5. hullám egy bajnok!' });
       return list;
     },
     unlocked(c) {
-      if (c.id === 'endless') return true;
+      if (c.id === 'endless' || c.id === 'survival') return true;
       return !c.req || TT.cupDone(c.req);
     },
 
     build() {
       const cups = this.cups();
-      const tight = cups.length > 4;
+      const step = cups.length > 5 ? 63 : cups.length > 4 ? 76 : 92;
+      const ch = cups.length > 5 ? 58 : cups.length > 4 ? 70 : 82;
       const items = cups.map((c, i) => ({
-        id: 'cup' + i, x: 20, y: 72 + i * (tight ? 76 : 92), w: 300, h: tight ? 70 : 82, cup: c, i,
+        id: 'cup' + i, x: 20, y: 70 + i * step, w: 300, h: ch, cup: c, i,
         onClick: () => {
           this.sel = i;
           this.build();
@@ -68,9 +97,11 @@
         draw: (ctx, b, focus) => this.drawCupCard(ctx, b, focus),
       }));
       const c = cups[this.sel];
-      const ok = c && this.unlocked(c) && (c.id === 'endless' || !TT.cupDone(c.id));
-      items.push({ id: 'fight', x: 600, y: 456, w: 330, h: 64, label: c && TT.cupDone(c.id) && c.id !== 'endless' ? 'Megnyerve!' : 'HARC!', color: '#ff4f4f', size: 30, disabled: !ok,
-        onDisabled: () => TT.ui.toast(c && TT.cupDone(c.id) ? 'Ezt a kupát már megnyerted!' : 'Ez a kupa még zárva van.', { color: '#ff8a80' }),
+      const sv = c && c.id === 'survival' ? survivalState() : null;
+      const ok = c && this.unlocked(c) && (c.id === 'endless' || (sv ? !sv.over : !TT.cupDone(c.id)));
+      const label = sv ? (sv.over ? 'Holnap újra!' : 'HARC!') : c && TT.cupDone(c.id) && c.id !== 'endless' ? 'Megnyerve!' : 'HARC!';
+      items.push({ id: 'fight', x: 600, y: 456, w: 330, h: 64, label, color: '#ff4f4f', size: 30, disabled: !ok,
+        onDisabled: () => TT.ui.toast(sv ? 'A mai tornának vége. Holnap újra próbálhatod!' : c && TT.cupDone(c.id) ? 'Ezt a kupát már megnyerted!' : 'Ez a kupa még zárva van.', { color: '#ff8a80' }),
         onClick: () => this.fight(), glow: ok });
       items.push({ id: 'team', x: 350, y: 456, w: 230, h: 64, label: 'Csapat', color: '#3fa7ff', onClick: () => TT.go('collection', { from: 'dome', venue: this.venue, back: this.p.back, sel: this.sel }) });
       items.push({ id: 'back', x: 20, y: 470, w: 160, h: 52, label: 'Vissza', color: '#6c5ce7', sfx: 'back', onClick: () => TT.go('world', { pos: this.p.back, dir: 'down' }) });
@@ -80,6 +111,10 @@
     nextMatch(c) {
       const s = TT.save;
       if (c.id === 'endless') return { m: endlessEnemy((s.endless || 0) + 1), boss: (s.endless + 1) % 5 === 0, step: s.endless || 0 };
+      if (c.id === 'survival') {
+        const sv = survivalState();
+        return { m: survivalEnemy(sv.round), boss: sv.round === 4, step: sv.round };
+      }
       const step = s.cupStep[c.id] || 0;
       if (step < c.matches.length) return { m: c.matches[step], boss: false, step };
       return { m: c.boss, boss: true, step };
@@ -89,6 +124,10 @@
       const s = TT.save;
       const c = this.cups()[this.sel];
       const { m, boss } = this.nextMatch(c);
+      if (c.id === 'survival') {
+        this.fightSurvival(m);
+        return;
+      }
       const go = () => {
         const sel = this.sel;
         const venue = this.venue;
@@ -139,6 +178,51 @@
       } else go();
     },
 
+    fightSurvival(m) {
+      const s = TT.save;
+      const sv = survivalState();
+      const sel = this.sel, venue = this.venue, back = this.p.back;
+      const team = s.team.filter((id) => sv.hp[id] == null || sv.hp[id] > 0);
+      if (!team.length) {
+        sv.over = true;
+        this.build();
+        return;
+      }
+      // első kör: a csapat rögzül
+      if (sv.round === 0) sv.team = s.team.slice();
+      TT.go('battle', {
+        enemy: m, rewardFigs: [], playerTeam: sv.team.filter((id) => sv.hp[id] == null || sv.hp[id] > 0), hpFrac: sv.hp,
+        after: (won, sc) => {
+          if (!won) {
+            sv.over = true;
+            TT.store.write();
+            TT.go('dome', { venue, back, sel });
+            setTimeout(() => TT.ui.toast(`A torna véget ért a(z) ${sv.round + 1}. körben. Holnap újra!`, { color: '#ff8a80', dur: 4 }), 300);
+            return;
+          }
+          for (const f of sc.c.sides[0].fighters) sv.hp[f.id] = f.alive ? f.hp / f.maxHp : 0;
+          sv.round++;
+          if (sv.round >= 5) {
+            sv.over = true;
+            sv.won = true;
+            s.coins += 1500;
+            s.flags.survivalWins = (s.flags.survivalWins || 0) + 1;
+            const id = TT.rollBox(TT.BOXES[2]);
+            const info = TT.grantFigure(id);
+            TT.store.write();
+            TT.go('dome', { venue, back, sel });
+            setTimeout(() => {
+              TT.ui.toast('Túlélő Torna megnyerve! +1500 érme', { dur: 4 });
+              TT.ui.reveal(id, info, () => TT.checkAch());
+            }, 300);
+            return;
+          }
+          TT.store.write();
+          TT.go('dome', { venue, back, sel });
+        },
+      });
+    },
+
     update(dt) {
       this.t += dt;
       if (TT.input.hit('back')) {
@@ -181,10 +265,14 @@
       ctx.fillRect(-11, 15, 22, 6);
       ctx.strokeRect(-11, 15, 22, 6);
       ctx.restore();
-      const ly = b.h < 80 ? 50 : 56;
-      D.text(ctx, c.name, x + 72, b.y + (b.h < 80 ? 24 : 28), { size: 22 });
+      const ly = b.h - (b.h < 80 ? 16 : 26);
+      D.text(ctx, c.name, x + 72, b.y + b.h * 0.36, { size: b.h < 60 ? 20 : 22 });
       if (!unl) D.text(ctx, 'Zárva', x + 72, b.y + ly, { size: 16, color: '#a89cd8' });
       else if (c.id === 'endless') D.text(ctx, `Legjobb: ${TT.save.endless || 0}. hullám`, x + 72, b.y + ly, { size: 16, color: '#ffe9a0' });
+      else if (c.id === 'survival') {
+        const sv = survivalState();
+        D.text(ctx, sv.won ? 'Ma megnyerted!' : sv.over ? 'Ma véget ért' : `Kör: ${sv.round + 1}/5`, x + 72, b.y + ly, { size: 16, color: sv.won ? '#7bff6b' : sv.over ? '#ff8a80' : '#ffe9a0' });
+      }
       else {
         const step = TT.save.cupStep[c.id] || 0;
         for (let i = 0; i < 4; i++) {
@@ -224,13 +312,14 @@
           D.text(ctx, 'Nyerd meg előbb: ' + TT.CUP[c.req].name, px + pw / 2, py + 200, { size: 22, align: 'center', color: '#ff8a80' });
         } else {
           const nm = this.nextMatch(c);
-          const done = c.id !== 'endless' && TT.cupDone(c.id);
+          const sv = c.id === 'survival' ? survivalState() : null;
+          const done = sv ? sv.over : c.id !== 'endless' && TT.cupDone(c.id);
           const m = nm.m;
           if (done) {
-            D.text(ctx, 'Megnyerted ezt a kupát!', px + pw / 2, py + 170, { size: 28, align: 'center', color: '#7bff6b' });
+            D.text(ctx, sv ? (sv.won ? 'Ma megnyerted a tornát!' : 'A mai tornának vége — holnap újra!') : 'Megnyerted ezt a kupát!', px + pw / 2, py + 170, { size: 28, align: 'center', color: sv && !sv.won ? '#ff8a80' : '#7bff6b' });
             TT.art.drawFigure(ctx, TT.FIG.robin, px + pw / 2, py + 330, 1.2, { pose: 'cheer' });
           } else {
-            D.text(ctx, nm.boss ? 'FŐELLENSÉG' : c.id === 'endless' ? `${nm.step + 1}. hullám` : `${nm.step + 1}. meccs`, px + 22, py + 112, { size: 20, color: nm.boss ? '#ff4f4f' : '#ffd23f' });
+            D.text(ctx, nm.boss ? 'FŐELLENSÉG' : c.id === 'endless' ? `${nm.step + 1}. hullám` : c.id === 'survival' ? `${nm.step + 1}/5. kör` : `${nm.step + 1}. meccs`, px + 22, py + 112, { size: 20, color: nm.boss ? '#ff4f4f' : '#ffd23f' });
             D.text(ctx, m.name, px + 22, py + 142, { size: 30 });
             // ellenfél csapata
             m.team.forEach((t, i) => {

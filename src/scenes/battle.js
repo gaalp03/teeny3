@@ -487,6 +487,12 @@
       const pteam = (p.playerTeam || TT.save.team).filter((id) => TT.save.owned[id]).map((id) => ({ id, lvl: TT.save.owned[id].lvl, stars: TT.starsOf(id) }));
       this.c = new Combat(pteam, en.team, { ai: en.ai }, (type, d) => this.onEvent(type, d));
       if (en.music === 'boss') for (const f of this.c.sides[1].fighters) if (f.id === en.who) f.boss = true;
+      if (p.hpFrac) {
+        for (const f of this.c.sides[0].fighters) {
+          const fr = p.hpFrac[f.id];
+          if (fr != null) f.hp = f.ghost = Math.max(1, Math.round(f.maxHp * fr));
+        }
+      }
       this.itemsUsed = 0;
       this.t = 0;
       this.state = 'intro';

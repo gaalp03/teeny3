@@ -31,6 +31,7 @@
     A('star5', 'Ötcsillagos', 'Fejlessz egy figurát 5 csillagra.', 600, (s) => maxStars(s) >= 5),
     A('combo1', 'Barátság ereje', 'Használj egy kombó szuper támadást.', 150, (s) => !!s.flags.comboUsed),
     A('paint1', 'Művész', 'Fess át egy figurát a Festőműhelyben.', 100, (s) => !!s.flags.painted),
+    A('survival1', 'Túlélő', 'Nyerd meg a Túlélő Tornát.', 600, (s) => (s.flags.survivalWins || 0) >= 1),
     A('syn3', 'Csapatszellem', 'Nyerj egy harcot 3 azonos csapatú figurával.', 150, (s) => !!s.flags.synWin),
     A('cup1', 'Újonc bajnok', 'Nyerd meg az Újonc Kupát.', 100, () => TT.cupDone('rookie')),
     A('cup2', 'Keleti hős', 'Nyerd meg a Kelet Kupát.', 150, () => TT.cupDone('east')),
