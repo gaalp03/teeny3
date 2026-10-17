@@ -24,6 +24,16 @@
       const own = TT.save.owned;
       let l = TT.FIG_LIST.slice();
       if (this.filter === 'own') l = l.filter((f) => own[f.id]);
+      const sort = TT.settings.collSort || 'base';
+      const idx = new Map(TT.FIG_LIST.map((f, i) => [f.id, i]));
+      const by = {
+        base: () => 0,
+        lvl: (a, b) => (own[b.id] ? own[b.id].lvl : -1) - (own[a.id] ? own[a.id].lvl : -1),
+        rarity: (a, b) => TT.RARITY[b.rarity].order - TT.RARITY[a.rarity].order,
+        type: (a, b) => Object.keys(TT.TYPES).indexOf(a.type) - Object.keys(TT.TYPES).indexOf(b.type),
+        team: (a, b) => Object.keys(TT.TEAM_NAMES).indexOf(a.team) - Object.keys(TT.TEAM_NAMES).indexOf(b.team),
+      }[sort];
+      l.sort((a, b) => by(a, b) || idx.get(a.id) - idx.get(b.id));
       return l.map((f) => f.id);
     },
 
@@ -78,6 +88,16 @@
       items.push({ id: 'back', x: 16, y: 10, w: 120, h: 44, label: 'Vissza', color: '#6c5ce7', size: 20, onClick: () => this.leave() });
       items.push({ id: 'f_all', x: 150, y: 10, w: 100, h: 44, label: 'Mind', size: 18, color: this.filter === 'all' ? '#ff6b35' : '#4a3a8c', onClick: () => { this.filter = 'all'; this.list = this.makeList(); this.scroll = 0; } });
       items.push({ id: 'f_own', x: 258, y: 10, w: 120, h: 44, label: 'Megvan', size: 18, color: this.filter === 'own' ? '#ff6b35' : '#4a3a8c', onClick: () => { this.filter = 'own'; this.list = this.makeList(); this.scroll = 0; } });
+      const SORTS = [['base', 'Alap'], ['lvl', 'Szint'], ['rarity', 'Ritkaság'], ['type', 'Típus'], ['team', 'Csapat']];
+      const cur = SORTS.findIndex((x) => x[0] === (TT.settings.collSort || 'base'));
+      items.push({
+        id: 'sort', x: 386, y: 10, w: 150, h: 44, size: 16, label: 'Rend: ' + SORTS[cur][1], color: '#4a3a8c',
+        onClick: () => {
+          TT.settings.collSort = SORTS[(cur + 1) % SORTS.length][0];
+          TT.store.writeSettings();
+          this.list = this.makeList();
+        },
+      });
       // csapat helyek
       s.team.forEach((id, i) => {
         items.push({
@@ -200,7 +220,7 @@
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, TT.W, TT.H);
       const s = TT.save;
-      D.text(ctx, `Gyűjtemény ${Object.keys(s.owned).length}/${TT.FIG_LIST.length}`, 396, 33, { size: 22, color: '#ffd23f' });
+      D.text(ctx, `${Object.keys(s.owned).length}/${TT.FIG_LIST.length}`, 548, 33, { size: 20, color: '#ffd23f' });
       D.panel(ctx, 400 + 6, 66, 170, 40, { fill: '#2b1e5c', r: 12, lw: 2.5, shadow: false });
       D.coin(ctx, 428, 86, 12);
       D.text(ctx, U.fmt(s.coins), 448, 87, { size: 20, color: '#ffd23f' });
@@ -301,8 +321,10 @@
         if (!isSup) D.text(ctx, m.charge + ' mp', x + w - 22, my + 13, { size: 12, align: 'right', color: '#a89cd8', lw: 2.5 });
         D.text(ctx, m.desc || '', x + 22, my + 28, { size: 12, color: '#c8b8f0', lw: 2.5, maxWidth: w - 48 });
       });
-      const bio = D.wrap(ctx, f.bio, w - 186, 12);
-      bio.slice(0, 3).forEach((l, i) => D.text(ctx, l, x + 162, y + 196 + i * 14, { size: 12, color: '#a89cd8', stroke: false }));
+      const pas = TT.PASSIVES[TT.passiveOf(f)];
+      const pl = D.wrap(ctx, '• ' + pas.name + ': ' + pas.desc, w - 180, 12).slice(0, 2);
+      pl.forEach((l, i) => D.text(ctx, l, x + 162, y + 196 + i * 13, { size: 12, color: '#ffe066', lw: 2.5 }));
+      D.text(ctx, f.bio, x + 162, y + 198 + pl.length * 13 + 2, { size: 11, color: '#a89cd8', stroke: false, maxWidth: w - 176 });
     },
   };
 

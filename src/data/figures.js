@@ -385,6 +385,21 @@
     f.def = Math.round(f.def * k * 10) / 10;
   }
 
+  // Passzív képességek (ahol eltér a típus alapértelmezésétől)
+  const PASSIVE = {
+    robin: 'leader', robin_ultra: 'leader', robin_pirate: 'leader', mrmint: 'leader',
+    robin_ninja: 'crit', speedy: 'crit', red_x: 'crit', slade: 'crit', seemore: 'crit',
+    robin_rock: 'firstwind', starfire: 'firstwind', blackfire: 'firstwind', controlfreak: 'firstwind',
+    raven_white: 'regen', star_sleepy: 'regen', star_chef: 'regen', silkie: 'regen', silkie_gold: 'regen', plasmus: 'regen',
+    raven_rage: 'berserk',
+    bb_cowboy: 'lucky', bumblebee: 'lucky', jinx: 'lucky', billy: 'lucky', kitten: 'lucky', wykkyd: 'lucky',
+    star_warrior: 'thorns', terra: 'thorns', mammoth: 'thorns',
+    cinderblock: 'armor',
+    aqualad: 'shieldstart', mumbo: 'shieldstart', shrinkwrap: 'shieldstart', brain: 'shieldstart',
+    drlight: 'burnplus', trigon: 'burnplus',
+  };
+  for (const f of LIST) if (PASSIVE[f.id]) f.passive = PASSIVE[f.id];
+
   TT.FIG_LIST = LIST;
   TT.FIG = {};
   for (const f of LIST) {

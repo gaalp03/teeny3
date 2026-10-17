@@ -36,6 +36,24 @@
     haste: { name: 'Gyorsítás', color: '#ffd23f', good: true, desc: 'A támadások gyorsabban töltődnek.' },
   };
 
+  // Passzív képességek (minden figurának van egy)
+  TT.PASSIVES = {
+    leader: { name: 'Vezér', desc: '+20% szupermérő-töltődés.' },
+    armor: { name: 'Páncél', desc: '12%-kal kevesebb sebzést kap.' },
+    regen: { name: 'Regeneráció', desc: 'Harcban másodpercenként 1% HP-t gyógyul.' },
+    swift: { name: 'Fürgeség', desc: 'A támadások 10%-kal gyorsabban töltődnek.' },
+    crit: { name: 'Gyenge pont', desc: '+12% esély kritikus találatra.' },
+    thorns: { name: 'Tüskék', desc: 'A közelharci sebzés 15%-át visszaadja.' },
+    burnplus: { name: 'Átok', desc: 'Az okozott rossz állapotok 40%-kal tovább tartanak.' },
+    berserk: { name: 'Düh', desc: '+30% sebzés, ha a HP 35% alatt van.' },
+    lucky: { name: 'Szerencse', desc: '10% esély, hogy kitér egy találat elől.' },
+    firstwind: { name: 'Lendület', desc: '40%-os szupermérővel kezdi a harcot.' },
+    vampire: { name: 'Életszívás', desc: 'Az okozott sebzés 10%-át visszagyógyítja.' },
+    shieldstart: { name: 'Előpajzs', desc: 'Harc elején 12%-os pajzsot kap.' },
+  };
+  const DEFAULT_PASSIVE = { brawn: 'berserk', tech: 'armor', mystic: 'vampire', speed: 'swift' };
+  TT.passiveOf = (fig) => fig.passive || DEFAULT_PASSIVE[fig.type];
+
   TT.MAX_LVL = 30;
   TT.xpToNext = (lvl) => Math.round(40 + lvl * 20 + lvl * lvl * 1.6);
   TT.lvlFactor = (lvl) => 1 + (lvl - 1) * 0.07;

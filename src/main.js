@@ -16,6 +16,24 @@
     TT.start('title');
   }
 
+  // Android (Capacitor): a hardveres vissza gomb a játék "Vissza/Menü" gombjaként működik
+  function setupNativeBack() {
+    const cap = window.Capacitor;
+    const App = cap && cap.Plugins && cap.Plugins.App;
+    if (!App || !App.addListener) return;
+    App.addListener('backButton', () => {
+      if (TT.sceneName === 'title' && !TT.ui.overlayActive()) {
+        App.exitApp();
+        return;
+      }
+      const opts = { code: 'Escape', key: 'Escape', bubbles: true };
+      window.dispatchEvent(new KeyboardEvent('keydown', opts));
+      setTimeout(() => window.dispatchEvent(new KeyboardEvent('keyup', opts)), 60);
+    });
+    App.addListener('pause', () => TT.store.write());
+  }
+  window.addEventListener('load', setupNativeBack);
+
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js').catch(() => {});

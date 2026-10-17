@@ -11,12 +11,15 @@
   function mkFighter(id, lvl, side, idx, stars, mult) {
     const fig = TT.FIG[id];
     const st = TT.statsFor(fig, lvl, stars, mult);
+    const passive = TT.passiveOf(fig);
     return {
-      id, fig, lvl, st, side, idx, stars: stars || 0,
+      id, fig, lvl, st, side, idx, stars: stars || 0, passive,
       maxHp: st.hp, hp: st.hp, ghost: st.hp,
       moves: fig.moves.map((m, i) => ({ m: TT.MOVES[m], c: Math.random() * 0.3 + (i === 0 ? 0.45 : 0.1) })),
       sup: TT.MOVES[fig.sup],
-      superM: 0, status: {}, stun: 0, guard: 100, blocking: false, blockT: 0, blockCd: 0,
+      superM: passive === 'firstwind' ? 40 : 0,
+      status: passive === 'shieldstart' ? { shield: { t: 60, v: Math.round(st.hp * 0.12), max: 60 } } : {},
+      stun: 0, guard: 100, blocking: false, blockT: 0, blockCd: 0,
       action: null, alive: true, koT: 0,
       // animáció
       x: 0, y: 0, hurtT: 0, flashT: 0,
@@ -174,9 +177,16 @@
       const atkMul = (att.status.atkUp ? 1.3 : 1) * (att.status.weak ? 0.72 : 1);
       const defMul = (def.status.defUp ? 0.65 : 1) * (def.status.mark ? 1.25 : 1);
       const typeM = TT.typeMult(att.fig.type, def.fig.type);
-      let crit = Math.random() < (move.crit || (att.fig.type === 'speed' ? 0.1 : 0.06));
+      // szerencse: kitérés
+      if (def.passive === 'lucky' && !def.blocking && Math.random() < 0.1) {
+        this.emit('dodge', { att, def, move, a, hitIdx });
+        return;
+      }
+      let crit = Math.random() < (move.crit || (att.fig.type === 'speed' ? 0.1 : 0.06)) + (att.passive === 'crit' ? 0.12 : 0);
       let dmg = per * 1.35 * att.st.lf * Math.pow(att.st.atk / def.st.def, 0.6) * typeM * atkMul * defMul * U.rand(0.92, 1.08);
       if (crit) dmg *= 1.5;
+      if (att.passive === 'berserk' && att.hp < att.maxHp * 0.35) dmg *= 1.3;
+      if (def.passive === 'armor') dmg *= 0.88;
       let perfect = false, blocked = false, broke = false;
       if (def.blocking) {
         if (def.blockT <= PERFECT_WINDOW || def.perfectChain) {
@@ -203,7 +213,13 @@
       }
       dmg = Math.round(dmg);
       const dealt = this.damage(def, dmg);
-      att.superM = Math.min(100, att.superM + (dmg / def.maxHp) * 75 + (perfect ? 0 : 1.5));
+      if (att.passive === 'vampire' && dmg > 0 && att.alive) att.hp = Math.min(att.maxHp, att.hp + dmg * 0.1);
+      if (def.passive === 'thorns' && a.melee && dmg > 0 && !perfect && att.alive) {
+        const back = Math.max(1, Math.round(dmg * 0.15));
+        this.damage(att, back);
+        this.emit('thorns', { f: att, amount: back });
+      }
+      att.superM = Math.min(100, att.superM + ((dmg / def.maxHp) * 75 + (perfect ? 0 : 1.5)) * (att.passive === 'leader' ? 1.2 : 1));
       def.superM = Math.min(100, def.superM + (dmg / def.maxHp) * 45);
       def.hurtT = perfect ? 0 : 0.28;
       def.flashT = perfect ? 0 : 0.12;
@@ -212,7 +228,7 @@
         for (const e of move.eff) {
           if (e.self) continue;
           const p = perfect ? 0 : blocked ? e.p * 0.4 : e.p;
-          if (Math.random() < p) this.applyStatus(def, e.s, e.d, e.v, 'hit');
+          if (Math.random() < p) this.applyStatus(def, e.s, e.d * (att.passive === 'burnplus' ? 1.4 : 1), e.v, 'hit');
         }
       }
       if (hitIdx === a.hits.length - 1) {
@@ -255,6 +271,7 @@
       if (f.status.burn) this.damage(f, f.maxHp * 0.025 * dt);
       if (f.status.poison) this.damage(f, f.maxHp * 0.035 * dt);
       if (f.status.regen && f.alive) f.hp = Math.min(f.maxHp, f.hp + f.maxHp * 0.02 * dt);
+      if (f.passive === 'regen' && f.alive) f.hp = Math.min(f.maxHp, f.hp + f.maxHp * 0.01 * dt);
     }
 
     update(dt) {
@@ -285,6 +302,7 @@
           if (!isAct) rate *= 0.6;
           if (f.status.slow) rate *= 0.55;
           if (f.status.haste) rate *= 1.5;
+          if (f.passive === 'swift') rate *= 1.1;
           if (f.blocking) rate *= 0.5;
           for (const mv of f.moves) {
             if (mv.c < 1) {
@@ -557,6 +575,13 @@
           }
           break;
         }
+        case 'dodge':
+          TT.audio.sfx('whoosh');
+          TT.fx.text(d.def.x, d.def.y - 130, 'KITÉRÉS!', { color: '#9be7ff', tsize: 24 });
+          break;
+        case 'thorns':
+          TT.fx.text(d.f.x, d.f.y - 120, 'Tüske ' + d.amount, { color: '#c8a165', tsize: 18 });
+          break;
         case 'heal':
           TT.fx.text(d.f.x, d.f.y - 120, '+' + d.amount, { color: '#7bff6b', tsize: 28 });
           TT.fx.burst(d.f.x, d.f.y - 60, 16, { color: '#9bff9b', shape: 'star', speed: 120, size: 6, life: 0.9, g: -120 });
