@@ -219,6 +219,7 @@
       }
       dmg = Math.round(dmg);
       const dealt = this.damage(def, dmg);
+      this.checkPhase(def);
       if (att.passive === 'vampire' && dmg > 0 && att.alive) att.hp = Math.min(att.maxHp, att.hp + dmg * 0.1);
       if (def.passive === 'thorns' && a.melee && dmg > 0 && !perfect && att.alive) {
         const back = Math.max(1, Math.round(dmg * 0.15));
@@ -240,6 +241,36 @@
       if (hitIdx === a.hits.length - 1) {
         for (const e of move.eff) if (e.self) this.applyStatus(att, e.s, e.d, e.v, 'self');
       }
+    }
+
+    // Kellék használata az aktív figurán
+    useItem(s, item) {
+      const f = this.act(s);
+      if (!f || !f.alive || !this.started || this.winner != null) return false;
+      if (item === 'pizza') {
+        const h = Math.round(f.maxHp * 0.3);
+        f.hp = Math.min(f.maxHp, f.hp + h);
+        this.emit('heal', { f, amount: h });
+      } else if (item === 'energy') {
+        const before = f.superM;
+        f.superM = Math.min(100, f.superM + 50);
+        if (before < 100 && f.superM >= 100) this.emit('superReady', { f });
+      } else if (item === 'cleanse') {
+        for (const k of Object.keys(f.status)) if (!TT.STATUS[k].good) delete f.status[k];
+        f.stun = 0;
+      }
+      this.emit('item', { f, item });
+      return true;
+    }
+
+    checkPhase(f) {
+      if (!f.boss || f.phase2 || !f.alive || f.hp > f.maxHp * 0.5) return;
+      f.phase2 = true;
+      this.applyStatus(f, 'shield', 12, Math.round(f.maxHp * 0.15), 'phase');
+      this.applyStatus(f, 'atkUp', 10, null, 'phase');
+      this.applyStatus(f, 'haste', 10, null, 'phase');
+      f.superM = Math.min(100, f.superM + 35);
+      this.emit('phase', { f });
     }
 
     applySelf(f, move) {
@@ -455,6 +486,8 @@
       this.bg = en.bg || 'dome';
       const pteam = (p.playerTeam || TT.save.team).filter((id) => TT.save.owned[id]).map((id) => ({ id, lvl: TT.save.owned[id].lvl, stars: TT.starsOf(id) }));
       this.c = new Combat(pteam, en.team, { ai: en.ai }, (type, d) => this.onEvent(type, d));
+      if (en.music === 'boss') for (const f of this.c.sides[1].fighters) if (f.id === en.who) f.boss = true;
+      this.itemsUsed = 0;
       this.t = 0;
       this.state = 'intro';
       this.projectiles = [];
@@ -592,6 +625,20 @@
           }
           break;
         }
+        case 'phase':
+          TT.audio.sfx('super');
+          TT.shake(14, 0.6);
+          this.flashT = 0.2;
+          this.banners.push({ f: d.f, text: '2. FÁZIS! ' + d.f.fig.short + ' feldühödött!', t: 0, dur: 2.2, color: '#ff4f4f', sup: true });
+          TT.fx.ring(d.f.x, d.f.y - 70, { color: '#ff4f4f', size: 20, size2: 220, life: 0.6, lw: 10 });
+          break;
+        case 'item': {
+          const it = TT.ITEMS[d.item];
+          TT.audio.sfx(d.item === 'pizza' ? 'heal' : d.item === 'energy' ? 'buff' : 'shield');
+          TT.fx.text(d.f.x, d.f.y - 175, it.name + '!', { color: it.color, tsize: 22, vy: -60 });
+          TT.fx.burst(d.f.x, d.f.y - 70, 14, { color: it.color, shape: 'star', speed: 160, size: 6, life: 0.6 });
+          break;
+        }
         case 'dodge':
           TT.audio.sfx('whoosh');
           TT.fx.text(d.def.x, d.def.y - 130, 'KITÉRÉS!', { color: '#9be7ff', tsize: 24 });
@@ -608,7 +655,7 @@
           if (d.src === 'counter') {
             TT.fx.text(d.f.x, d.f.y - 150, 'SZÉDÜL!', { color: '#ffe066', tsize: 22 });
             TT.audio.sfx('stun');
-          } else if (d.src !== 'guardbreak') {
+          } else if (d.src !== 'guardbreak' && d.src !== 'phase') {
             TT.fx.text(d.f.x, d.f.y - 160, st.name + (st.good ? '!' : ''), { color: st.color, tsize: 20, vy: -70 });
             if (d.s === 'burn' || d.s === 'poison') TT.audio.sfx('burn');
             else if (d.s === 'slow') TT.audio.sfx('freeze');
@@ -701,6 +748,7 @@
         bench: [0, 1].map((k) => ({ x: 14 + k * 128, y: this.benchY(0), w: 122, h: 44, k })),
         pause: { x: TT.W / 2 - 26, y: 8, w: 52, h: 40 },
         speed: { x: TT.W / 2 - 112, y: 8, w: 76, h: 40 },
+        item: { x: 676, y, w: 134, h },
         auto: { x: TT.W / 2 + 36, y: 8, w: 76, h: 40 },
       };
     },
@@ -739,6 +787,10 @@
       if (I.hit('super')) used('super');
       for (const card of L.cards) if (I.tapIn(card.x, card.y, card.w, card.h)) used(card.i);
       if (I.tapIn(L.sup.x, L.sup.y, L.sup.w, L.sup.h)) used('super');
+      if (!this.p.tutorial && (I.pressed('KeyF') || I.tapIn(L.item.x, L.item.y, L.item.w, L.item.h))) {
+        this.openItems();
+        return;
+      }
       // csere
       const doSwap = (k) => {
         if (!c.swap(0, k)) TT.audio.sfx('error');
@@ -757,6 +809,33 @@
       if (!hold && this.blockHeld) c.setBlock(0, false);
       if (!hold && c.act(0).blocking) c.setBlock(0, false);
       this.blockHeld = hold;
+    },
+
+    openItems() {
+      const s = TT.save;
+      s.items = s.items || {};
+      const left = TT.ITEMS_PER_BATTLE - this.itemsUsed;
+      if (left <= 0) {
+        TT.audio.sfx('error');
+        TT.ui.toast('Ebben a harcban már nem használhatsz több kelléket.', { color: '#ff8a80' });
+        return;
+      }
+      TT.audio.sfx('select');
+      TT.ui.choose({
+        title: 'Kellékek',
+        text: `Még ${left} használható ebben a harcban. Vásárlás: Pizzéria.`,
+        options: Object.entries(TT.ITEMS).map(([id, it]) => ({
+          label: `${it.name} (${s.items[id] || 0} db)`, value: id, disabled: !(s.items[id] > 0), color: '#ff6b35',
+          onDisabled: () => TT.ui.toast('Nincs ilyen kelléked. A Pizzériában vehetsz.', { color: '#ff8a80' }),
+        })).concat([{ label: 'Mégse', value: null }]),
+      }, (v) => {
+        if (!v || !(s.items[v] > 0)) return;
+        if (this.c.useItem(0, v)) {
+          s.items[v]--;
+          this.itemsUsed++;
+          TT.store.write();
+        }
+      });
     },
 
     setAuto(on) {
@@ -1629,6 +1708,34 @@
       D.text(ctx, 'SZUPER', sp.x + sp.w / 2, sp.y + 28, { size: 24, align: 'center', color: full ? '#ffffff' : '#c8b8f0' });
       D.text(ctx, full ? f.sup.name : Math.floor(f.superM) + '%', sp.x + sp.w / 2, sp.y + 56, { size: 13, align: 'center', color: '#ffe9a0', maxWidth: sp.w - 12 });
       D.keycap(ctx, 'R', sp.x + sp.w - 14, sp.y + 14, { size: 11 });
+      // kellék
+      if (!this.p.tutorial) {
+        const it = L.item;
+        const left = TT.ITEMS_PER_BATTLE - this.itemsUsed;
+        const total = Object.values(TT.save.items || {}).reduce((a, b) => a + b, 0);
+        D.button(ctx, it.x, it.y, it.w, it.h, '', { color: left > 0 && total > 0 ? '#2a9d8f' : '#4a4460' });
+        // pizzaszelet ikon
+        ctx.save();
+        ctx.translate(it.x + it.w / 2, it.y + 30);
+        ctx.beginPath();
+        ctx.moveTo(0, -14);
+        ctx.lineTo(13, 10);
+        ctx.quadraticCurveTo(0, 15, -13, 10);
+        ctx.closePath();
+        ctx.fillStyle = '#ffcf6b';
+        ctx.fill();
+        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = '#1d1433';
+        ctx.stroke();
+        ctx.fillStyle = '#d62828';
+        ctx.beginPath();
+        ctx.arc(-2, 2, 3, 0, Math.PI * 2);
+        ctx.arc(4, 6, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        D.text(ctx, `KELLÉK ${left}/${TT.ITEMS_PER_BATTLE}`, it.x + it.w / 2, it.y + 62, { size: 15, align: 'center' });
+        D.keycap(ctx, 'F', it.x + it.w - 14, it.y + 14, { size: 11 });
+      }
       // blokk
       const bl = L.block;
       const bon = f.blocking;

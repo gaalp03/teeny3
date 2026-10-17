@@ -526,10 +526,15 @@
         text: `Pizzaparti: mind a 3 csapattag +80 XP (${price} érme). Vagy próbáld ki a Pizzafogót érméért! (Neked ${U.fmt(s.coins)} van.)`,
         options: [
           { label: 'Pizzafogó játék', value: 'game', color: '#2ecc71' },
+          { label: 'Büfé: harci kellékek', value: 'shop', color: '#2a9d8f' },
           { label: `Pizzaparti! (${price})`, value: 'buy', disabled: s.coins < price },
           { label: 'Csak nézelődöm', value: null },
         ],
       }, (v) => {
+        if (v === 'shop') {
+          this.itemShop();
+          return;
+        }
         if (v === 'game') {
           const b = W.buildings.find((x) => x.id === 'pizza');
           TT.go('pizzagame', { back: { x: b.door[0], y: b.door[1] + 1.15 } });
@@ -543,6 +548,31 @@
         TT.audio.sfx('buy');
         if (ups) TT.checkAch();
         TT.ui.say([{ who: 'kid_pizza', text: 'Mamma mia! Egy pizza mindenre jó!' + (ups ? ' Valaki szintet is lépett!' : '') }]);
+      });
+    },
+
+    itemShop() {
+      const s = TT.save;
+      s.items = s.items || {};
+      TT.ui.choose({
+        title: 'Büfé',
+        text: `Harcban a KELLÉK gombbal (F) használhatod, harconként kettőt. Érméd: ${U.fmt(s.coins)}`,
+        buttonH: 44,
+        options: Object.entries(TT.ITEMS).map(([id, it]) => ({
+          label: `${it.name} — ${it.price} érme (${s.items[id] || 0}/${TT.ITEM_MAX})`, value: id,
+          disabled: s.coins < it.price || (s.items[id] || 0) >= TT.ITEM_MAX,
+          onDisabled: () => TT.ui.toast((s.items[id] || 0) >= TT.ITEM_MAX ? 'Ebből már tele a hátizsák.' : 'Nincs elég érméd!', { color: '#ff8a80' }),
+        })).concat([{ label: 'Kész', value: null, color: '#6c5ce7' }]),
+      }, (v) => {
+        if (!v) return;
+        const it = TT.ITEMS[v];
+        if (s.coins < it.price) return;
+        s.coins -= it.price;
+        s.items[v] = (s.items[v] || 0) + 1;
+        TT.store.write();
+        TT.audio.sfx('buy');
+        TT.ui.toast(`${it.name}: ${it.desc}`);
+        this.itemShop();
       });
     },
 

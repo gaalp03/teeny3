@@ -169,6 +169,15 @@
     return TT.U.weighted(weighted);
   };
 
+  // Harci kellékek (harconként legfeljebb 2 használható)
+  TT.ITEMS = {
+    pizza: { name: 'Pizzaszelet', desc: 'Az aktív figura 30% HP-t gyógyul.', price: 80, color: '#ffcf6b' },
+    energy: { name: 'Energiaital', desc: '+50% szupermérő.', price: 120, color: '#7bd65b' },
+    cleanse: { name: 'Tisztító spray', desc: 'Leveszi a rossz állapotokat és a kábulatot.', price: 60, color: '#9be7ff' },
+  };
+  TT.ITEM_MAX = 9;
+  TT.ITEMS_PER_BATTLE = 2;
+
   // Festőműhely: figurák átfestése
   TT.PAINTS = [
     { id: 'gold', name: 'Arany', price: 900 },

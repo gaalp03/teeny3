@@ -18,6 +18,7 @@
       pos: null,
       stats: { wins: 0, losses: 0, boxes: 0, perfects: 0, kos: 0 },
       endless: 0,
+      items: { pizza: 2, energy: 1, cleanse: 1 },
       playTime: 0,
       created: Date.now(),
     };
