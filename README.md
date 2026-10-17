@@ -10,7 +10,8 @@ Gyűjts Teeny figurákat, harcolj 3v3 csapatcsatákban a Csatakupolában, és á
 
 - **52 gyűjthető figura** (Titánok, változatok, Titánok Kelet, H.I.V.E., gonoszok, Gonosz Testvériség és az új
   Menta-banda), mind kódból rajzolva, 4 ritkasággal és 4 típussal (Erő › Tech › Misztikus › Gyorsaság › Erő)
-- **Csillagszint** a dupla figurákból, **csapatbónusz** azonos csapatú figurákkal
+- **Csillagszint** a dupla figurákból, **csapatbónusz** azonos csapatú figurákkal, **barátság-kombók**
+  (pl. Robin + Starfire szuper támadásnál a társ is beugrik), **passzív képességek**
 - **Valós idejű harcrendszer**: töltődő támadások, blokk és *tökéletes blokk* (a zöld körnél),
   csere a pihenő figurákra, szuper támadás, állapotok (égés, méreg, kábulat, pajzs, erősítés…)
 - **Bejárható Jump City**: Titánok Tornya, Teeny Játékbolt, Csatakupola, Pizzéria, Képregénybolt,
@@ -18,10 +19,10 @@ Gyűjts Teeny figurákat, harcolj 3v3 csapatcsatákban a Csatakupolában, és á
 - **4 kupa + utójáték (Testvériség Kupa, Végtelen Aréna, éjszakai Red X)**, történet, stáblista
 - **Bejárható Titánok Tornya** figuravitrinnel, **Pizzafogó minijáték**, **Silkie-mellékküldetés**
 - **Menta-járőrök** és autók a városban, **valós napszak** (este besötétedik)
-- **35 teljesítmény**, napi jutalom, automatikus harc és gyorsítás (×1.6) gyakorláshoz
+- **36 teljesítmény**, napi jutalom, automatikus harc és gyorsítás (×1.6) gyakorláshoz
 - **Vakdobozok** a boltban (Alap / Prémium / Legendás), duplikátumokból tapasztalat
 - Szintlépés (max. 30), edzés, pizzaparti, gyűjtői jutalmak
-- Szintetizált zene és hangok, magyar felület, mentés automatikusan
+- Szintetizált zene és hangok, magyar felület, mentés automatikusan, 3 nehézségi szint
 - Billentyűzet, egér, érintés és kontroller támogatás
 
 ## Indítás

@@ -228,6 +228,12 @@
       const syn = TT.synergy(s.team);
       if (syn) D.text(ctx, `Bónusz: ${TT.TEAM_NAMES[syn.team]} ×${syn.n} +${Math.round(syn.bonus * 100)}%`, 404, 146, { size: 14, color: '#ffe066', lw: 3, maxWidth: 172 });
       else D.text(ctx, 'Azonos csapat: bónusz!', 404, 146, { size: 14, color: '#c8b8f0', stroke: false });
+      const combos = [];
+      for (let i = 0; i < 3; i++) for (let j = i + 1; j < 3; j++) {
+        const n = TT.comboOf(s.team[i], s.team[j]);
+        if (n) combos.push(n);
+      }
+      if (combos.length) D.text(ctx, 'Kombó: ' + combos.join(', '), 404, 166, { size: 13, color: '#ff9ecd', lw: 3, maxWidth: 172 });
 
       // rács kivágva
       ctx.save();

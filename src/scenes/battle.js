@@ -77,6 +77,11 @@
 
     startAction(f, move, isSuper) {
       const a = { move, t: 0, windup: move.windup, hits: [], hi: 0, launched: false, isSuper, kind: move.kind };
+      if (isSuper) {
+        const side = this.sides[f.side];
+        const partner = side.fighters.find((o) => o !== f && o.alive && TT.comboOf(f.id, o.id));
+        if (partner) a.combo = { partner, name: TT.comboOf(f.id, partner.id) };
+      }
       const n = move.hits || 1;
       if (move.kind === 'self') a.hits = [move.windup];
       else if (move.kind === 'shot' || (move.kind === 'multi' && !move.melee)) {
@@ -187,6 +192,7 @@
       if (crit) dmg *= 1.5;
       if (att.passive === 'berserk' && att.hp < att.maxHp * 0.35) dmg *= 1.3;
       if (def.passive === 'armor') dmg *= 0.88;
+      if (a.combo) dmg *= 1.3;
       let perfect = false, blocked = false, broke = false;
       if (def.blocking) {
         if (def.blockT <= PERFECT_WINDOW || def.perfectChain) {
@@ -437,7 +443,14 @@
   const scene = {
     enter(p) {
       this.p = p;
-      const en = p.enemy;
+      // nehézség: az ellenfél szintje és ügyessége
+      const DIFF = { easy: { lvl: -2, ai: -0.18, xp: 0.9 }, normal: { lvl: 0, ai: 0, xp: 1 }, hard: { lvl: 2, ai: 0.12, xp: 1.25 } };
+      const df = DIFF[TT.settings.difficulty || 'normal'] || DIFF.normal;
+      this.diff = df;
+      const en = Object.assign({}, p.enemy, {
+        ai: U.clamp((p.enemy.ai || 0.4) + (p.tutorial ? 0 : df.ai), 0, 0.95),
+        team: p.enemy.team.map((t) => Object.assign({}, t, { lvl: U.clamp(t.lvl + (p.tutorial ? 0 : df.lvl), 1, TT.MAX_LVL) })),
+      });
       this.en = en;
       this.bg = en.bg || 'dome';
       const pteam = (p.playerTeam || TT.save.team).filter((id) => TT.save.owned[id]).map((id) => ({ id, lvl: TT.save.owned[id].lvl, stars: TT.starsOf(id) }));
@@ -500,7 +513,11 @@
             this.superCine = { f, t: 0 };
             TT.slowmo(0.35, 0.5);
           } else TT.audio.sfx('windup');
-          this.banners.push({ f, text: d.move.name, t: 0, dur: d.a.windup + 0.5, color: d.a.isSuper ? '#ffd23f' : '#ffffff', sup: d.a.isSuper });
+          this.banners.push({ f, text: d.a.combo ? `KOMBÓ: ${d.a.combo.name}!` : d.move.name, t: 0, dur: d.a.windup + 0.5, color: d.a.isSuper ? '#ffd23f' : '#ffffff', sup: d.a.isSuper });
+          if (d.a.combo) {
+            d.a.combo.partner.cameo = { t: 0, dur: d.a.windup + 0.9, host: f };
+            if (f.side === 0) TT.save.flags.comboUsed = true;
+          }
           if (this.p.tutorial && f.side === 1 && !this.tipsShown.block) {
             this.tipsShown.block = true;
             this.showTip('VÉDEKEZZ! Tartsd lenyomva a BLOKK gombot (Szóköz). Ha a kör zöld, amikor becsapódik: TÖKÉLETES blokk!', 7);
@@ -800,6 +817,10 @@
 
       // animációk
       for (const side of c.sides) for (const f of side.fighters) {
+        if (f.cameo) {
+          f.cameo.t += dt;
+          if (f.cameo.t > f.cameo.dur) f.cameo = null;
+        }
         const k = 1 - Math.pow(0.0005, dt);
         f.x = U.lerp(f.x, f.tx, k);
         f.y = U.lerp(f.y, f.ty, k);
@@ -837,7 +858,7 @@
       const s = TT.save;
       const en = this.en;
       const avgLvl = en.team.reduce((a, t) => a + t.lvl, 0) / en.team.length;
-      const xpBase = Math.round(30 + avgLvl * 18);
+      const xpBase = Math.round((30 + avgLvl * 18) * (this.diff ? this.diff.xp : 1));
       const rows = c.sides[0].fighters.map((f) => {
         const xp = won ? (f.alive ? xpBase : Math.round(xpBase * 0.65)) : Math.round(xpBase * 0.3);
         const o = s.owned[f.id];
@@ -954,6 +975,16 @@
       const c = this.c;
       const facing = f.side === 0 ? 1 : -1;
       let x = f.x, y = f.y;
+      if (f.cameo && f.alive) {
+        // kombó: a társ beugrik az aktív figura mellé
+        const cm = f.cameo;
+        const k = U.ease.outBack(U.clamp(cm.t / 0.35, 0, 1)) * (1 - U.clamp((cm.t - cm.dur + 0.3) / 0.3, 0, 1));
+        const hx = cm.host.x - facing * 95, hy = cm.host.y + 6;
+        const cx = U.lerp(f.x, hx, k), cy = U.lerp(f.y, hy, k) - Math.sin(Math.min(1, cm.t / 0.35) * Math.PI) * 60;
+        TT.art.drawFigure(ctx, f.fig, cx, cy, U.lerp(f.s, 1.3, k), { facing, pose: cm.t > 0.35 ? 'cast' : 'cheer', t: TT.time + f.idx, pedestal: false });
+        if (Math.random() < 0.5) TT.fx.spawn(cx + U.rand(-30, 30), cy - U.rand(20, 110), { vy: -90, color: '#ffd23f', shape: 'star', size: 5, life: 0.5 });
+        return;
+      }
       let pose = 'idle', lean = 0, alpha = 1, rot = 0;
       const a = f.action;
       if (!f.alive) {

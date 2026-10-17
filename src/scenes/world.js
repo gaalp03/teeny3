@@ -1183,10 +1183,12 @@
     };
     TT.ui.choose({
       title: 'Beállítások',
+      buttonH: 42,
       options: [
         { label: 'Zene: ' + pct(st.music), value: 'music' },
         { label: 'Hangeffektek: ' + pct(st.sfx), value: 'sfx' },
         { label: 'Képernyőrázás: ' + (st.shake ? 'Be' : 'Ki'), value: 'shake' },
+        { label: 'Nehézség: ' + ({ easy: 'Könnyű', normal: 'Normál', hard: 'Nehéz' }[st.difficulty || 'normal']), value: 'diff' },
         { label: 'Napszak: ' + (st.dayNight === 'day' ? 'mindig nappal' : 'valós idő'), value: 'daynight' },
         { label: 'Teljes képernyő', value: 'fs' },
         { label: 'Mentés exportálása', value: 'export' },
@@ -1198,6 +1200,7 @@
       if (v === 'sfx') st.sfx = cycle(st.sfx);
       if (v === 'shake') st.shake = !st.shake;
       if (v === 'daynight') st.dayNight = st.dayNight === 'day' ? 'real' : 'day';
+      if (v === 'diff') st.difficulty = { easy: 'normal', normal: 'hard', hard: 'easy' }[st.difficulty || 'normal'];
       if (v === 'fs') {
         try {
           if (!document.fullscreenElement) document.documentElement.requestFullscreen();

@@ -29,6 +29,7 @@
     A('lvl30', 'Csúcsforma', 'Fejlessz egy figurát a 30. szintre.', 1000, (s) => maxLvl(s) >= 30),
     A('star1', 'Duplán jó', 'Szerezz egy csillagot egy duplikátummal.', 80, (s) => maxStars(s) >= 1),
     A('star5', 'Ötcsillagos', 'Fejlessz egy figurát 5 csillagra.', 600, (s) => maxStars(s) >= 5),
+    A('combo1', 'Barátság ereje', 'Használj egy kombó szuper támadást.', 150, (s) => !!s.flags.comboUsed),
     A('syn3', 'Csapatszellem', 'Nyerj egy harcot 3 azonos csapatú figurával.', 150, (s) => !!s.flags.synWin),
     A('cup1', 'Újonc bajnok', 'Nyerd meg az Újonc Kupát.', 100, () => TT.cupDone('rookie')),
     A('cup2', 'Keleti hős', 'Nyerd meg a Kelet Kupát.', 150, () => TT.cupDone('east')),

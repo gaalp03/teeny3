@@ -410,5 +410,33 @@
     }
   }
 
+  // Változatok alapfigurája (kombókhoz)
+  TT.baseOf = function (id) {
+    if (id.startsWith('robin')) return 'robin';
+    if (id.startsWith('raven')) return 'raven';
+    if (id.startsWith('bb_') || id === 'beastboy') return 'beastboy';
+    if (id.startsWith('cyborg')) return 'cyborg';
+    if (id.startsWith('star_') || id === 'starfire') return 'starfire';
+    if (id.startsWith('silkie')) return 'silkie';
+    return id;
+  };
+
+  // Barátság-kombók: ha a társ pihen és él, a szuper támadás +30% sebzést kap, és a társ is beugrik
+  TT.COMBOS = [
+    ['robin', 'starfire', 'Titán-szívek'], ['cyborg', 'beastboy', 'Legjobb haverok'], ['raven', 'beastboy', 'Sötét és zöld'],
+    ['terra', 'beastboy', 'Kőkemény barátság'], ['silkie', 'starfire', 'Silkie és a mamája'], ['robin', 'cyborg', 'Titán-taktika'],
+    ['raven', 'starfire', 'Sötét és fény'], ['jinx', 'kidflash', 'Szerencsés futás'], ['brain', 'mallah', 'Mester és társa'],
+    ['rouge', 'brain', 'Testvériség'], ['mrmint', 'shrinkwrap', 'Gyári csomag'], ['speedy', 'aqualad', 'Kelet ereje'],
+    ['bumblebee', 'masymenos', 'Kelet csípése'], ['gizmo', 'mammoth', 'H.I.V.E. haverok'], ['jinx', 'gizmo', 'H.I.V.E. Ötök'],
+    ['slade', 'red_x', 'Árnyékok'], ['trigon', 'raven', 'Apa és lánya'], ['blackfire', 'starfire', 'Testvérharc'],
+    ['boxbot', 'mintguard', 'Raktárcsapat'], ['cinderblock', 'plasmus', 'Nagy és ragacsos'], ['mumbo', 'controlfreak', 'Show-műsor'],
+  ];
+  TT.comboOf = function (a, b) {
+    const x = TT.baseOf(a), y = TT.baseOf(b);
+    if (x === y) return null;
+    const c = TT.COMBOS.find((k) => (k[0] === x && k[1] === y) || (k[0] === y && k[1] === x));
+    return c ? c[2] : null;
+  };
+
   TT.TEAM_NAMES = { titans: 'Titánok', east: 'Titánok Kelet', hive: 'H.I.V.E.', villain: 'Gonoszok', mint: 'Menta-banda', brotherhood: 'Testvériség' };
 })(window.TT);
