@@ -904,6 +904,33 @@
         fs(ctx, L.cowlColor || '#1d1d2b');
       }
     }
+    if (has(L, 'antlers')) {
+      ctx.save();
+      ctx.lineCap = 'round';
+      for (const sd of [-1, 1]) {
+        ctx.strokeStyle = OUT;
+        ctx.lineWidth = r * 0.2;
+        ctx.beginPath();
+        ctx.moveTo(hx + sd * r * 0.45, hy - r * 0.85);
+        ctx.lineTo(hx + sd * r * 0.75, hy - r * 1.6);
+        ctx.moveTo(hx + sd * r * 0.62, hy - r * 1.28);
+        ctx.lineTo(hx + sd * r * 1.05, hy - r * 1.4);
+        ctx.moveTo(hx + sd * r * 0.72, hy - r * 1.52);
+        ctx.lineTo(hx + sd * r * 0.55, hy - r * 1.85);
+        ctx.stroke();
+        ctx.strokeStyle = '#a0703a';
+        ctx.lineWidth = r * 0.12;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    if (has(L, 'red_nose') && !P.back) {
+      circle(ctx, hx + r * 0.08, hy + r * 0.3, r * 0.14);
+      fs(ctx, '#ff2a2a', 1.4);
+      circle(ctx, hx + r * 0.04, hy + r * 0.26, r * 0.04);
+      ctx.fillStyle = '#fff';
+      ctx.fill();
+    }
     if (has(L, 'beret')) {
       ellipse(ctx, hx - r * 0.1, hy - r * 0.86, r * 0.95, r * 0.34, -0.2);
       fs(ctx, L.hatColor || '#d62828');

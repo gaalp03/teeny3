@@ -81,6 +81,16 @@
       this.okCooldown = 0.45;
       this.initPatrols();
       this.initCars();
+      this.ev = TT.activeEvent();
+      this.flakes = [];
+      if (this.ev && s.flags.tutorial) {
+        const st = TT.eventState(this.ev);
+        if (!st.intro) {
+          st.intro = true;
+          TT.store.write();
+          setTimeout(() => TT.ui.say([{ who: this.ev.id === 'xmas' ? 'beastboy' : 'raven', text: this.ev.intro }]), 600);
+        }
+      }
       if (p.event) this.runEvent(p.event);
       TT.dailyReward();
       TT.checkAch();
@@ -630,6 +640,114 @@
       if (n === W.toys.length) setTimeout(() => TT.ui.toast('Mind megvan! Vidd vissza Silkie-nek a Toronyhoz!', { color: '#ff9ecd', dur: 4 }), 900);
     },
 
+    // ---------- Szezonális esemény ----------
+    eventItems() {
+      if (!this.ev || !TT.save.flags.tutorial) return [];
+      const st = TT.eventState(this.ev);
+      if (st.done) return [];
+      return this.ev.spots.map((p, i) => ({ i, x: p[0], y: p[1] })).filter((p) => !st.found[p.i]);
+    },
+
+    collectEventItem(it) {
+      const s = TT.save;
+      const ev = this.ev;
+      const st = TT.eventState(ev);
+      st.found[it.i] = true;
+      const n = Object.keys(st.found).length;
+      TT.audio.sfx('found');
+      TT.ui.toast(`${ev.itemName}: ${n}/${ev.spots.length}`, { color: ev.color });
+      TT.fx.burst(it.x * W.TS - this.cam.x, it.y * W.TS - this.cam.y - 10, 14, { color: ev.color, shape: 'star', speed: 180, size: 6, life: 0.6, layer: 1 });
+      if (n >= ev.spots.length) {
+        st.done = true;
+        s.coins += ev.coins;
+        const info = TT.grantFigure(ev.reward);
+        TT.store.write();
+        setTimeout(() => {
+          TT.ui.toast(`${ev.name} esemény teljesítve! +${ev.coins} érme`, { color: ev.color, dur: 4 });
+          TT.ui.reveal(ev.reward, info, () => TT.checkAch());
+        }, 500);
+      } else TT.store.write();
+    },
+
+    drawEventItem(ctx, it, x, y) {
+      const b = Math.sin(TT.time * 3 + it.i) * 3;
+      ctx.save();
+      ctx.globalAlpha = 0.3 + Math.sin(TT.time * 5 + it.i) * 0.12;
+      ctx.beginPath();
+      ctx.arc(x, y - 6, 18, 0, Math.PI * 2);
+      ctx.fillStyle = this.ev.color;
+      ctx.fill();
+      ctx.restore();
+      if (this.ev.id === 'halloween') this.drawPumpkin(ctx, x, y - 6 + b, 1);
+      else this.drawGift(ctx, x, y - 6 + b);
+    },
+
+    drawPumpkin(ctx, x, y, s) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(s, s);
+      ctx.fillStyle = '#ff8c1a';
+      ctx.strokeStyle = '#1d1433';
+      ctx.lineWidth = 2;
+      for (const [ox, rx] of [[-6, 8], [6, 8], [0, 9]]) {
+        ctx.beginPath();
+        ctx.ellipse(ox, 0, rx, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      }
+      ctx.fillStyle = '#2e7d32';
+      ctx.fillRect(-1.5, -14, 3, 5);
+      ctx.fillStyle = '#ffe066';
+      ctx.beginPath();
+      ctx.moveTo(-6, -3); ctx.lineTo(-3, -6); ctx.lineTo(-1, -2); ctx.closePath();
+      ctx.moveTo(6, -3); ctx.lineTo(3, -6); ctx.lineTo(1, -2); ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(-6, 3); ctx.lineTo(-3, 6); ctx.lineTo(0, 3); ctx.lineTo(3, 6); ctx.lineTo(6, 3); ctx.lineTo(0, 8); ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    },
+
+    drawGift(ctx, x, y) {
+      ctx.save();
+      TT.D.rr(ctx, x - 11, y - 10, 22, 20, 3);
+      ctx.fillStyle = '#d62828';
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#1d1433';
+      ctx.stroke();
+      ctx.fillStyle = '#ffd23f';
+      ctx.fillRect(x - 2.5, y - 10, 5, 20);
+      ctx.fillRect(x - 11, y - 2.5, 22, 5);
+      ctx.beginPath();
+      ctx.ellipse(x - 5, y - 13, 5, 3, -0.4, 0, Math.PI * 2);
+      ctx.ellipse(x + 5, y - 13, 5, 3, 0.4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    },
+
+    drawSeason(ctx) {
+      if (!this.ev) return;
+      if (this.ev.id === 'xmas') {
+        if (this.flakes.length < 90) this.flakes.push({ x: Math.random() * TT.W, y: -10, v: 30 + Math.random() * 50, s: 1.5 + Math.random() * 2.5, ph: Math.random() * 6 });
+        ctx.save();
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        for (const f of this.flakes) {
+          f.y += f.v / 60;
+          f.x += Math.sin(TT.time + f.ph) * 0.4;
+          if (f.y > TT.H + 10) {
+            f.y = -10;
+            f.x = Math.random() * TT.W;
+          }
+          ctx.beginPath();
+          ctx.arc(f.x, f.y, f.s, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    },
+
     toyActive(t) {
       const s = TT.save;
       return s.flags.silkieQuest && !s.flags.silkieDone && !(s.toys && s.toys[t.id]);
@@ -843,6 +961,9 @@
         for (const t of W.toys) {
           if (this.toyActive(t) && U.dist(pl.x, pl.y, t.x * TS, t.y * TS) < 22) this.collectToy(t);
         }
+        for (const it of this.eventItems()) {
+          if (U.dist(pl.x, pl.y, (it.x + 0.5) * TS, (it.y + 0.5) * TS) < 24) this.collectEventItem(it);
+        }
         // rejtett tárgyak automatikus felvétele
         for (const h of W.hidden) {
           if (!s.found[h.id] && U.dist(pl.x, pl.y, h.x * TS, h.y * TS) < 20) {
@@ -921,6 +1042,21 @@
         if (tx < -40 || tx > TT.W + 40 || ty < -40 || ty > TT.H + 40) continue;
         items.push({ y: t.y * TS, draw: () => this.drawToy(ctx, t, tx, ty) });
       }
+      for (const it of this.eventItems()) {
+        const ex = (it.x + 0.5) * TS - cx, ey = (it.y + 0.5) * TS - cy;
+        if (ex < -40 || ex > TT.W + 40 || ey < -40 || ey > TT.H + 40) continue;
+        items.push({ y: (it.y + 0.5) * TS, draw: () => this.drawEventItem(ctx, it, ex, ey) });
+      }
+      if (this.ev && this.ev.id === 'halloween') {
+        for (const b of W.buildings) {
+          if (!b.door) continue;
+          for (const sd of [-1, 1]) {
+            const px = (b.door[0] + sd * 1.4) * TS - cx, py = b.door[1] * TS - cy + 4;
+            if (px < -30 || px > TT.W + 30 || py < -30 || py > TT.H + 30) continue;
+            items.push({ y: b.door[1] * TS + 4, draw: () => this.drawPumpkin(ctx, px, py - 8, 0.9) });
+          }
+        }
+      }
       for (const pt of this.patrols) {
         if (!pt.visible) continue;
         const px = pt.x - cx, py = pt.y - cy;
@@ -945,6 +1081,7 @@
       for (const it of items) it.draw();
 
       this.drawNight(ctx, cx, cy);
+      this.drawSeason(ctx);
 
       // ajtó feliratok
       for (const b of W.buildings) {
@@ -1181,6 +1318,12 @@
         ctx.beginPath();
         ctx.arc(x + n.x * TS * k, y + n.y * TS * k, 3.5, 0, Math.PI * 2);
         ctx.fillStyle = '#ff4f4f';
+        ctx.fill();
+      }
+      for (const it of this.eventItems()) {
+        ctx.beginPath();
+        ctx.arc(x + (it.x + 0.5) * TS * k, y + (it.y + 0.5) * TS * k, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = this.ev.color;
         ctx.fill();
       }
       for (const t of W.toys) {

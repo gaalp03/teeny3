@@ -285,6 +285,16 @@
   M('plank_kick', 'Pallórúgás', 'melee', 38, 8, 'kick', '#8b5a2b');
   M('boarding', 'Fedélzeti roham', 'multi', 78, 0, 'slash', '#c0c0c0', { super: true, hits: 4, melee: true });
 
+  // ---------- Szezonális figurák ----------
+  M('bat_swarm', 'Denevérraj', 'multi', 12, 2.3, 'moth', '#3a2a5a', { hits: 3 });
+  M('blood_moon', 'Vérhold', 'self', 0, 7, 'buff', '#c1121f', { eff: [E('atkUp', 1, 5, { self: true }), E('regen', 1, 5, { self: true })] });
+  M('night_bite', 'Éjféli harapás', 'melee', 40, 8, 'claw', '#c1121f', { eff: [E('weak', 0.4, 4)] });
+  M('dracula_robin', 'Drakula-Robin', 'multi', 86, 0, 'slash', '#c1121f', { super: true, hits: 5, melee: true });
+  M('antler_charge', 'Agancsroham', 'melee', 12, 2.2, 'punch', '#8b5a2b');
+  M('snowball', 'Hógolyó', 'shot', 22, 4.5, 'orb', '#ffffff', { eff: [E('slow', 0.4, 3)] });
+  M('sleigh_dash', 'Szánkóroham', 'melee', 40, 7.8, 'kick', '#d62828');
+  M('sleigh_ride', 'Rénszarvas-roham', 'multi', 84, 0, 'punch', '#d62828', { super: true, hits: 6, melee: true });
+
   // Leírás generálása
   for (const m of Object.values(MOVES)) {
     const parts = [];

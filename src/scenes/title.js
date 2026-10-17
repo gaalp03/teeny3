@@ -99,6 +99,17 @@
       D.text(ctx, '3', 0, 4, { size: 64, align: 'center', color: '#ffffff', lw: 10 });
       ctx.restore();
       D.text(ctx, 'A Világliga — rajongói kiadás', TT.W / 2, 132, { size: 22, align: 'center', color: '#ff9ecd' });
+      const ev = TT.activeEvent();
+      if (ev) {
+        const p = 1 + Math.sin(t * 4) * 0.04;
+        ctx.save();
+        ctx.translate(812, 372);
+        ctx.rotate(0.1);
+        ctx.scale(p, p);
+        D.panel(ctx, -90, -22, 180, 44, { fill: ev.color, r: 14, lw: 3 });
+        D.text(ctx, ev.name + ' esemény!', 0, 1, { size: 20, align: 'center' });
+        ctx.restore();
+      }
       this.menu.draw(ctx);
       D.text(ctx, 'Nem hivatalos rajongói játék. A Teen Titans Go! a Warner Bros. / Cartoon Network védjegye.', TT.W / 2, TT.H - 14, { size: 12, align: 'center', color: '#8a80b8', stroke: false });
       if (TT.custom.count) D.text(ctx, `Saját textúrák betöltve: ${TT.custom.count}`, 12, TT.H - 14, { size: 12, color: '#7bff6b', stroke: false });

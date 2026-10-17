@@ -350,6 +350,22 @@
       hair: 'spiky', hairColor: '#1d1d2b', mask: '#1d1d2b', eyes: 'lens', mouth: 'grin', gear: ['pirate_hat', 'staff'],
     }, { short: 'K. Robin', bio: 'Arr! A hét tenger leggyorsabb Teeny kapitánya.' });
 
+  // ---------- Szezonális (eseményjutalom) ----------
+  F('robin_vamp', 'Vámpír Robin', 'mystic', 'epic', [100, 13, 10, 12],
+    ['bat_swarm', 'blood_moon', 'night_bite'], 'dracula_robin',
+    {
+      skin: '#e8e4f4', top: '#1d1d2b', sleeves: '#1d1d2b', gloves: '#1d1d2b', bottom: '#2a0a14', boots: '#1d1d2b', belt: '#c1121f',
+      cape: '#1d1d2b', capeIn: '#c1121f', hair: 'spiky', hairColor: '#1d1d2b', mask: '#c1121f', eyes: 'lens', mouth: 'fang', gear: ['collar'],
+      chest: { sym: 'R', color: '#c1121f', ink: '#1d1d2b' },
+    }, { short: 'V. Robin', bio: 'Halloweeni kiadás. Csak éjfél után harap… vagy ha nyerni akar.', noBox: true, passive: 'vampire' });
+
+  F('bb_reindeer', 'Rénszarvas Beast Boy', 'speed', 'epic', [105, 12, 11, 13],
+    ['antler_charge', 'snowball', 'sleigh_dash'], 'sleigh_ride',
+    {
+      skin: '#78d66a', top: '#8b5a2b', sleeves: '#8b5a2b', gloves: '#5a3a1a', bottom: '#8b5a2b', boots: '#5a3a1a', belt: '#d62828',
+      hair: 'messy', hairColor: '#2c7a2c', eyes: 'dot', mouth: 'grin', gear: ['ears_pointy', 'antlers', 'red_nose', 'bandana'], bandColor: '#d62828',
+    }, { short: 'R. Beast Boy', bio: 'Karácsonyi kiadás. Szánt húz, ajándékot hoz, és harcol.', noBox: true });
+
   // ---------- Teeny Titans 3: Menta-banda ----------
   F('mintguard', 'Menta Őr', 'tech', 'common', [105, 10, 12, 9],
     ['tape_shot', 'barcode_scan', 'stamp'], 'warehouse_lock',
