@@ -54,6 +54,7 @@
     { who: 'raven', text: 'Amikor az ellenfél támad, kör zsugorodik a figurád körül. Ha zöld, amikor blokkolni kezdesz: tökéletes blokk, nulla sebzés.' },
     { who: 'cyborg', text: 'Típusok: Erő > Tech > Misztikus > Gyorsaság > Erő. Az erős típus 30%-kal többet sebez.' },
     { who: 'beastboy', text: 'Érmét harcokból, rejtett helyekről és kupákból kapsz. A Játékboltban dobozt vehetsz, a Toronyban és a Gyűjteményben csapatot rendezhetsz.' },
+    { who: 'starfire', text: 'Minden nap 3 napi küldetést kapsz (bal felső sarok, vagy a Q gomb). Ha mindhármat teljesíted, bónusz jár!' },
   ];
 
   const scene = {
@@ -323,6 +324,7 @@
           if (won) s.stats.patrols = (s.stats.patrols || 0) + 1;
           else pt.cdUntil = TT.rtime + 40;
           TT.store.write();
+          if (won) TT.checkAch();
           TT.go('world', { pos: back, dir });
         },
       });
@@ -839,9 +841,11 @@
       TT.audio.sfx('select');
       TT.ui.choose({
         title: 'Menü',
+        buttonH: 46,
         options: [
           { label: 'Csapat és gyűjtemény', value: 'team' },
           { label: 'Térkép', value: 'map' },
+          { label: 'Napi küldetések', value: 'quests' },
           { label: 'Teljesítmények', value: 'ach' },
           { label: 'Mentés', value: 'save' },
           { label: 'Beállítások', value: 'settings' },
@@ -857,6 +861,7 @@
         } else if (v === 'settings') TT.openSettings();
         else if (v === 'help') TT.ui.say(HELP);
         else if (v === 'ach') TT.openAchievements();
+        else if (v === 'quests') TT.openQuests();
         else if (v === 'title') {
           TT.store.write();
           TT.go('title');
@@ -870,6 +875,7 @@
         a: { x: TT.W - 120, y: TT.H - 128, r: 48 },
         menu: { x: TT.W - 66, y: 12, w: 54, h: 46 },
         map: { x: TT.W - 128, y: 12, w: 54, h: 46 },
+        quest: { x: 12, y: 58, w: 150, h: 32 },
       };
     },
 
@@ -891,11 +897,17 @@
         this.showMap = !this.showMap;
         TT.audio.sfx('select');
       }
+      if (TT.questSummary() && (I.pressed('KeyQ') || I.tapIn(L.quest.x, L.quest.y, L.quest.w, L.quest.h))) {
+        TT.audio.sfx('select');
+        TT.openQuests();
+        return;
+      }
 
       // érintéses joystick
       let jx = 0, jy = 0;
       for (const tp of I.taps) {
-        if (tp.x < TT.W * 0.5 && tp.y > 70 && !this.joy) this.joy = { id: tp.id, ox: tp.x, oy: tp.y, x: tp.x, y: tp.y };
+        const onQuest = tp.x < L.quest.x + L.quest.w && tp.y < L.quest.y + L.quest.h;
+        if (tp.x < TT.W * 0.5 && tp.y > 70 && !onQuest && !this.joy) this.joy = { id: tp.id, ox: tp.x, oy: tp.y, x: tp.x, y: tp.y };
       }
       if (this.joy) {
         const ptr = I.pointers.get(this.joy.id);
@@ -1226,6 +1238,21 @@
       D.panel(ctx, 12, 12, 150, 40, { fill: '#2b1e5c', r: 12, lw: 2.5 });
       D.coin(ctx, 34, 32, 12);
       D.text(ctx, U.fmt(s.coins), 54, 33, { size: 22, color: '#ffd23f' });
+      // napi küldetések
+      const qs = TT.questSummary();
+      if (qs) {
+        const all = qs.done >= qs.total;
+        const Lq = this.touchLayout().quest;
+        D.panel(ctx, Lq.x, Lq.y, Lq.w, Lq.h, { fill: all ? '#2f6a3a' : '#2b1e5c', r: 10, lw: 2.5 });
+        D.star(ctx, Lq.x + 18, Lq.y + 16, 10, 4.5, 5);
+        ctx.fillStyle = all ? '#ffd23f' : '#9be7ff';
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#120a2c';
+        ctx.stroke();
+        D.text(ctx, `Napi ${qs.done}/${qs.total}`, Lq.x + 34, Lq.y + 17, { size: 16, color: all ? '#7bff6b' : '#ffffff', lw: 3 });
+        if (!TT.input.isTouch()) D.keycap(ctx, 'Q', Lq.x + Lq.w - 16, Lq.y + 16, { size: 10 });
+      }
       // cél
       const obj = TT.objective();
       ctx.save();

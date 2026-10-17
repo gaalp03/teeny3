@@ -8,7 +8,7 @@ Gyűjts Teeny figurákat, harcolj 3v3 csapatcsatákban a Csatakupolában, és á
 
 ## Mi van benne
 
-- **52 gyűjthető figura** (Titánok, változatok, Titánok Kelet, H.I.V.E., gonoszok, Gonosz Testvériség és az új
+- **54 gyűjthető figura** (Titánok, változatok, Titánok Kelet, H.I.V.E., gonoszok, Gonosz Testvériség és az új
   Menta-banda), mind kódból rajzolva, 4 ritkasággal és 4 típussal (Erő › Tech › Misztikus › Gyorsaság › Erő)
 - **Csillagszint** a dupla figurákból, **csapatbónusz** azonos csapatú figurákkal, **barátság-kombók**
   (pl. Robin + Starfire szuper támadásnál a társ is beugrik), **passzív képességek**
@@ -23,7 +23,7 @@ Gyűjts Teeny figurákat, harcolj 3v3 csapatcsatákban a Csatakupolában, és á
 - **Blokk-edzés** minijáték a Toronyban, **szezonális események** (Halloween, Karácsony)
 - **Bejárható Titánok Tornya** figuravitrinnel, **Pizzafogó minijáték**, **Silkie-mellékküldetés**
 - **Menta-járőrök** és autók a városban, **valós napszak** (este besötétedik)
-- **36 teljesítmény**, napi jutalom, automatikus harc és gyorsítás (×1.6) gyakorláshoz
+- **44 teljesítmény**, **napi küldetések** (3 feladat naponta, bónusszal), napi jutalom, automatikus harc és gyorsítás (×1.6) gyakorláshoz
 - **Vakdobozok** a boltban (Alap / Prémium / Legendás), duplikátumokból tapasztalat
 - Szintlépés (max. 30), edzés, pizzaparti, gyűjtői jutalmak
 - Szintetizált zene és hangok, magyar felület, mentés automatikusan, 3 nehézségi szint
@@ -65,6 +65,7 @@ cd android && ./gradlew assembleDebug
 | Mozgás | WASD / nyilak, Shift = futás | bal oldalon húzd az ujjad |
 | Beszéd / belépés | E / Enter / Szóköz | A gomb |
 | Menü / térkép | Esc / M | jobb felső gombok |
+| Napi küldetések | Q (városban) | bal felső „Napi” gomb |
 | Támadások | 1, 2, 3 (J, K, L) | kártyák alul |
 | Szuper | R / 4 | SZUPER gomb |
 | Blokk | Szóköz (tartsd) | BLOKK gomb (tartsd) |

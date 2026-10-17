@@ -86,6 +86,7 @@
       const s = TT.save;
       s.trainDay = s.trainDay && s.trainDay.date === today() ? s.trainDay : { date: today(), plays: 0 };
       s.trainDay.plays++;
+      s.stats.trains = (s.stats.trains || 0) + 1;
       const full = s.trainDay.plays <= DAILY_FULL;
       const xp = Math.round((this.perfect * 14 + this.good * 5) * (full ? 1 : 0.34));
       let ups = 0;

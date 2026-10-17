@@ -547,6 +547,7 @@
         case 'windup': {
           const f = d.f;
           if (d.a.isSuper) {
+            if (f.side === 0) TT.save.stats.supers = (TT.save.stats.supers || 0) + 1;
             TT.audio.sfx('super');
             this.superCine = { f, t: 0 };
             TT.slowmo(0.35, 0.5);
@@ -799,6 +800,7 @@
       // csere
       const doSwap = (k) => {
         if (!c.swap(0, k)) TT.audio.sfx('error');
+        else TT.save.stats.swaps = (TT.save.stats.swaps || 0) + 1;
       };
       if (I.hit('swapL')) doSwap(0);
       if (I.hit('swapR')) doSwap(1);
@@ -837,6 +839,7 @@
         if (!v || !(s.items[v] > 0)) return;
         if (this.c.useItem(0, v)) {
           s.items[v]--;
+          s.stats.items = (s.stats.items || 0) + 1;
           this.itemsUsed++;
           TT.store.write();
         }
