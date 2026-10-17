@@ -150,8 +150,8 @@
         }
         g.stroke();
       }
-      D.panel(g, W / 2 - 110, 30, 220, 60, { fill: '#ffd23f', r: 10, lw: 4 });
-      D.text(g, 'H.I.V.E.', W / 2, 61, { size: 34, align: 'center', color: '#2a2540', strokeColor: '#ffd23f' });
+      D.panel(g, W / 2 - 100, 62, 200, 52, { fill: '#ffd23f', r: 10, lw: 4 });
+      D.text(g, 'H.I.V.E.', W / 2, 89, { size: 30, align: 'center', color: '#2a2540', strokeColor: '#ffd23f' });
       g.fillStyle = '#1b1530';
       g.fillRect(0, 352, W, H - 352);
       stage(g, '#4a4060', '#241c38', '#ffd23f');

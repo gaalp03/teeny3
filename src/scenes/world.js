@@ -48,6 +48,14 @@
 
   const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 
+  const HELP = [
+    { who: 'robin', text: 'Városban: WASD vagy nyilak (telefonon húzd az ujjad bal oldalt), Shift = futás, E vagy az A gomb = beszéd, belépés.' },
+    { who: 'robin', text: 'Harcban a kártyák maguktól töltődnek. 1, 2, 3 (vagy koppintás) = támadás, R = szuper, Szóköz tartva = blokk, Q/E = csere.' },
+    { who: 'raven', text: 'Amikor az ellenfél támad, kör zsugorodik a figurád körül. Ha zöld, amikor blokkolni kezdesz: tökéletes blokk, nulla sebzés.' },
+    { who: 'cyborg', text: 'Típusok: Erő > Tech > Misztikus > Gyorsaság > Erő. Az erős típus 30%-kal többet sebez.' },
+    { who: 'beastboy', text: 'Érmét harcokból, rejtett helyekről és kupákból kapsz. A Játékboltban dobozt vehetsz, a Toronyban és a Gyűjteményben csapatot rendezhetsz.' },
+  ];
+
   const scene = {
     enter(p) {
       W = TT.WORLD;
@@ -438,6 +446,7 @@
           { label: 'Térkép', value: 'map' },
           { label: 'Mentés', value: 'save' },
           { label: 'Beállítások', value: 'settings' },
+          { label: 'Súgó', value: 'help' },
           { label: 'Főmenü', value: 'title', color: '#6c5ce7' },
         ],
       }, (v) => {
@@ -447,6 +456,7 @@
           TT.store.write();
           TT.ui.toast('Játék elmentve!');
         } else if (v === 'settings') TT.openSettings();
+        else if (v === 'help') TT.ui.say(HELP);
         else if (v === 'title') {
           TT.store.write();
           TT.go('title');
