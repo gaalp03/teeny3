@@ -13,14 +13,9 @@
   <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
   <style>
     @font-face {
-      font-family: 'Lilita One';
-      src: url('assets/fonts/LilitaOne-latin.woff2') format('woff2');
-      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-    }
-    @font-face {
-      font-family: 'Lilita One';
-      src: url('assets/fonts/LilitaOne-latin-ext.woff2') format('woff2');
-      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F;
+      font-family: 'TT3 Display';
+      src: url('assets/fonts/TT3Display.woff2') format('woff2');
+      font-display: swap;
     }
     html, body {
       margin: 0; padding: 0; height: 100%; overflow: hidden;
@@ -32,7 +27,7 @@
     canvas { display: block; outline: none; image-rendering: auto; }
     #loading {
       position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
-      color: #ffd23f; font: 28px 'Lilita One', 'Trebuchet MS', sans-serif; letter-spacing: 1px;
+      color: #ffd23f; font: 28px 'TT3 Display', 'Trebuchet MS', sans-serif; letter-spacing: 1px;
     }
   </style>
 </head>
@@ -69,6 +64,7 @@
   <script src="src/scenes/battle.js"></script>
   <script src="src/scenes/shop.js"></script>
   <script src="src/scenes/pizzagame.js"></script>
+  <script src="src/scenes/training.js"></script>
   <script src="src/scenes/dome.js"></script>
   <script src="src/scenes/collection.js"></script>
   <script src="src/scenes/credits.js"></script>

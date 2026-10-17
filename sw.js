@@ -1,6 +1,6 @@
 'use strict';
 // Offline gyorsítótár: a játék internet nélkül is fut, ha egyszer betöltötted.
-const CACHE = 'tt3-ced878be37';
+const CACHE = 'tt3-ef4ea1c8b4';
 const FILES = [
   "./",
   "index.html",
@@ -34,9 +34,9 @@ const FILES = [
   "src/scenes/shop.js",
   "src/scenes/title.js",
   "src/scenes/tower.js",
+  "src/scenes/training.js",
   "src/scenes/world.js",
-  "assets/fonts/LilitaOne-latin-ext.woff2",
-  "assets/fonts/LilitaOne-latin.woff2",
+  "assets/fonts/TT3Display.woff2",
   "assets/icons/icon-192.png",
   "assets/icons/icon-512.png"
 ];

@@ -11,7 +11,7 @@
   TT.sceneName = '';
   TT.view = { k: 1, left: 0, top: 0, cssW: TT.W, cssH: TT.H };
 
-  const FONT = "'Lilita One', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif";
+  const FONT = "'TT3 Display', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif";
   TT.FONT = FONT;
 
   let canvas, ctx;

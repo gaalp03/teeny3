@@ -51,6 +51,7 @@
         { id: 'couch', x: 380, y: 360, label: 'Mentés' },
         { id: 'vitrin', x: 280, y: 330, label: 'Vitrin' },
         { id: 'door', x: 480, y: 516, label: 'Kijárat' },
+        { id: 'train', x: 690, y: 478, label: 'Blokk-edzés' },
       ];
       TT.audio.music('tower');
     },
@@ -85,6 +86,9 @@
           break;
         case 'door':
           this.exitTower();
+          break;
+        case 'train':
+          TT.go('training', { back: this.p.back });
           break;
         default:
           break;
@@ -351,6 +355,13 @@
           },
         });
       }
+      items.push({
+        y: 470, draw: () => {
+          TT.art.drawFigure(ctx, TT.FIG.mintguard, 720, 470, 0.75, { facing: -1, paint: 'silver', t: this.t, rarity: 'common' });
+          D.panel(ctx, 670, 486, 100, 22, { fill: '#2b1e5c', r: 6, lw: 2, shadow: false });
+          D.text(ctx, 'EDZŐROBOT', 720, 497, { size: 12, align: 'center', color: '#ffd23f', lw: 2.5 });
+        },
+      });
       const pl = this.pl;
       items.push({
         y: pl.y, draw: () => {
