@@ -278,6 +278,24 @@
         'E5:2 F#5:2 G5:2 B5:2 E6:4 D6:4 C6:4 B5:2 A5:2 G5:4 E5:4 D5:4 F#5:4 A5:4 D6:4 B5:8 F#5:8',
       drums: 'k.h.skh.k.h.s.hh', leadType: 'square', leadVol: 0.08,
     }),
+    tower: song({
+      bpm: 100, chords: ['C', 'Em', 'F', 'G', 'Am', 'Em', 'F', 'G'], bass: 'half', arpVol: 0.04,
+      lead: 'E5:6 D5:2 C5:4 G4:4 B4:6 C5:2 D5:4 G5:4 A5:6 G5:2 F5:4 C5:4 D5:8 G4:8 ' +
+        'C5:4 E5:4 A5:6 G5:2 G5:4 E5:4 B4:8 A4:4 C5:4 F5:6 E5:2 D5:4 B4:4 G4:8',
+      drums: 'k.......s.......', leadType: 'triangle', leadVol: 0.15,
+    }),
+    pizza: song({
+      bpm: 172, chords: ['C', 'G', 'C', 'G', 'F', 'C', 'G', 'C'], bass: 'pump', bassType: 'square', bassVol: 0.08, arp: false,
+      lead: 'C5:2 E5:2 G5:2 E5:2 C6:4 G5:4 B4:2 D5:2 G5:2 D5:2 B5:4 G5:4 C5:2 E5:2 G5:2 C6:2 E6:4 C6:4 D6:2 B5:2 G5:2 B5:2 D6:4 r:4 ' +
+        'A5:2 F5:2 C5:2 F5:2 A5:4 C6:4 G5:2 E5:2 C5:2 E5:2 G5:4 C6:4 B5:2 A5:2 G5:2 F5:2 E5:2 D5:2 B4:4 C5:4 G4:4 C5:8',
+      drums: 'k.s.k.s.k.s.kks.', leadType: 'square', leadVol: 0.08,
+    }),
+    vault: song({
+      bpm: 112, chords: ['Am', 'Dm', 'E', 'Am', 'F', 'Dm', 'E7', 'E'], bass: 'oct', bassType: 'triangle', bassVol: 0.2, arpVol: 0.025,
+      lead: 'A4:2 r:2 C5:2 r:2 E5:2 r:2 D5:4 F5:2 r:2 A5:2 r:2 G5:2 F5:2 E5:4 G#5:2 r:2 B5:2 r:2 E6:4 D6:2 C6:2 B5:2 A5:6 r:8 ' +
+        'C6:2 r:2 A5:2 r:2 F5:4 E5:4 D5:2 F5:2 A5:2 D6:2 C6:4 A5:4 B5:2 G#5:2 E5:2 D5:2 B4:4 E5:4 G#5:8 B5:8',
+      drums: 'k...h.s.k.h.s..h', leadType: 'triangle', leadVol: 0.14,
+    }),
     victory: song({
       bpm: 150, loop: false, chords: ['C', 'G', 'C', 'C'], bass: 'half', arp: false,
       lead: 'C5:2 E5:2 G5:2 C6:6 B5:2 C6:2 D6:2 E6:6 D6:2 E6:2 G6:12 r:16',

@@ -24,7 +24,7 @@
       this.stun = 0;
       this.combo = 0;
       this.menu = new TT.ui.Menu();
-      TT.audio.music('shop');
+      TT.audio.music('pizza');
     },
 
     spawn() {

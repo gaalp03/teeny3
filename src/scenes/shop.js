@@ -95,8 +95,31 @@
         };
       });
       items.push({ id: 'back', x: 20, y: 470, w: 160, h: 52, label: 'Vissza', color: '#6c5ce7', sfx: 'back', onClick: () => TT.go('world', { pos: this.p.back, dir: 'down' }) });
+      const off = TT.dailyOffer();
+      this.offer = off;
+      items.push({
+        id: 'offer', x: 584, y: 464, w: 128, h: 50, size: 17,
+        label: off.bought ? 'Megvetted' : `${U.fmt(off.price)} érme`, color: '#ffb000',
+        disabled: off.bought || s.coins < off.price,
+        onDisabled: () => TT.ui.toast(off.bought ? 'A mai ajánlatot már megvetted. Holnap új jön!' : 'Nincs elég érméd!', { color: '#ff8a80' }),
+        onClick: () => this.buyOffer(off),
+      });
       items.push({ id: 'team', x: TT.W - 220, y: 470, w: 200, h: 52, label: 'Gyűjtemény', color: '#3fa7ff', onClick: () => TT.go('collection', { from: 'shop', back: this.p.back }) });
       this.menu.set(items);
+    },
+
+    buyOffer(off) {
+      const s = TT.save;
+      if (off.bought || s.coins < off.price) return;
+      s.coins -= off.price;
+      s.offerBought = off.key;
+      const info = TT.grantFigure(off.id);
+      TT.store.write();
+      TT.audio.sfx('buy');
+      TT.ui.reveal(off.id, info, () => {
+        this.build();
+        TT.checkAch();
+      });
     },
 
     buy(b) {
@@ -225,6 +248,23 @@
           ctx.lineWidth = 2;
           ctx.strokeRect(it.x + 16, 336, bw, 10);
         });
+        // napi ajánlat
+        const off = this.offer;
+        if (off) {
+          const f = TT.FIG[off.id];
+          D.panel(ctx, 196, 456, 528, 66, { fill: '#2b1e5c', r: 14, lw: 3, stroke: TT.RARITY[f.rarity].color });
+          ctx.save();
+          D.rr(ctx, 204, 460, 58, 58, 10);
+          ctx.clip();
+          ctx.fillStyle = U.shade(TT.RARITY[f.rarity].ring, -0.4);
+          ctx.fillRect(204, 460, 58, 58);
+          ctx.drawImage(TT.art.figureCanvas(off.id, 96), 199, 458, 68, 68);
+          ctx.restore();
+          D.text(ctx, 'NAPI AJÁNLAT', 274, 474, { size: 14, color: '#ffd23f', lw: 3 });
+          D.text(ctx, f.name, 274, 497, { size: 20, maxWidth: 210 });
+          D.rarityStars(ctx, f.rarity, 280, 513, 10);
+          if (TT.save.owned[off.id]) D.text(ctx, 'megvan: +csillag', 340, 513, { size: 11, color: '#c8b8f0', lw: 2.5 });
+        }
         this.menu.draw(ctx);
       } else {
         const op = this.opening;

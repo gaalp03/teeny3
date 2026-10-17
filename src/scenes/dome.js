@@ -33,7 +33,7 @@
       const cups = this.cups();
       const firstOpen = cups.findIndex((c) => c.id !== 'endless' && this.unlocked(c) && !TT.cupDone(c.id));
       this.sel = p.sel != null ? p.sel : Math.max(0, firstOpen);
-      TT.audio.music(this.venue === 'vault' ? 'hive' : 'shop');
+      TT.audio.music(this.venue === 'vault' ? 'vault' : 'shop');
       this.build();
       TT.checkAch();
       if (this.venue === 'vault' && !TT.save.flags.vaultIntro) {

@@ -169,6 +169,16 @@
     return TT.U.weighted(weighted);
   };
 
+  // Napi ajánlat: minden nap egy konkrét (nem gyakori) figura megvehető a boltban
+  TT.dailyOffer = function () {
+    const d = new Date();
+    const key = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+    const pool = TT.FIG_LIST.filter((f) => !f.noBox && f.rarity !== 'common');
+    const fig = pool[TT.U.hash('ajanlat:' + key) % pool.length];
+    const price = { rare: 600, epic: 1400, legendary: 3200 }[fig.rarity];
+    return { key, id: fig.id, price, bought: TT.save && TT.save.offerBought === key };
+  };
+
   // ---------- Szint és figura kezelés ----------
   // Figura hozzáadása; ha már megvan, XP-t ad. Visszaad: {isNew, xp, lvlUps}
   TT.grantFigure = function (id) {

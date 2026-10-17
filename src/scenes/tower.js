@@ -52,7 +52,7 @@
         { id: 'vitrin', x: 280, y: 330, label: 'Vitrin' },
         { id: 'door', x: 480, y: 516, label: 'Kijárat' },
       ];
-      TT.audio.music('shop');
+      TT.audio.music('tower');
     },
 
     exitTower() {
