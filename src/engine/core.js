@@ -152,6 +152,11 @@
       ctx.fillRect(0, 0, TT.W, TT.H);
     }
     TT.ui.drawToasts(ctx);
+    if (window.innerHeight > window.innerWidth * 1.15) {
+      ctx.fillStyle = 'rgba(13,8,32,0.8)';
+      ctx.fillRect(0, TT.H - 60, TT.W, 60);
+      TT.D.text(ctx, 'Fordítsd el a telefont fekvő helyzetbe a nagyobb képhez!', TT.W / 2, TT.H - 30, { size: 26, align: 'center', color: '#ffd23f' });
+    }
 
     TT.input.endFrame();
   }

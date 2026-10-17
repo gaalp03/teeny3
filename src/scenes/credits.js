@@ -46,9 +46,10 @@
         if (x < -80 || x > TT.W + 80) continue;
         TT.art.drawFigure(ctx, TT.FIG[this.parade[i]], x, TT.H - 30, 0.75, { pose: 'walk', walk: TT.time * 10 + i, facing: -1, t: TT.time + i });
       }
-      let y = TT.H - this.t * 40 + 40;
+      let y = 330 - this.t * 36;
       for (const [txt, size, color] of LINES) {
-        if (txt && y > -40 && y < TT.H - 110) D.text(ctx, txt, TT.W / 2, y, { size, align: 'center', color });
+        const a = Math.min(1, (TT.H - 120 - y) / 40, (y + 20) / 40);
+        if (txt && a > 0) D.text(ctx, txt, TT.W / 2, y, { size, align: 'center', color, alpha: a });
         y += size + 22;
       }
       D.text(ctx, 'Koppints a folytatáshoz', TT.W - 16, 20, { size: 14, align: 'right', color: '#8a80b8', stroke: false });
