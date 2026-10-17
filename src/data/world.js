@@ -12,7 +12,6 @@
   const SOLID = new Set([T.WATER, T.TREE, T.HEDGE, T.FENCE, T.ROCK, T.POND]);
 
   function build() {
-    const rnd = U.rng(20263);
     const map = new Uint8Array(MW * MH);
     const idx = (x, y) => y * MW + x;
     const get = (x, y) => (x < 0 || y < 0 || x >= MW || y >= MH ? T.WATER : map[idx(x, y)]);
@@ -97,10 +96,11 @@
     { id: 'hive', kind: 'hive', x: 88, y: 48, w: 6, h: 4, door: [91, 52.6], name: 'H.I.V.E. Akadémia' },
     { id: 'vault', kind: 'vault', x: 11, y: 3, w: 9, h: 4, door: [15.5, 7.6], name: 'Mint Trezor' },
     { id: 'comics', kind: 'comics', x: 46, y: 21, w: 6, h: 4, door: [49, 25.6], name: 'Képregénybolt' },
+    { id: 'factory', kind: 'factory', x: 73, y: 48, w: 7, h: 3, door: [76.5, 51.6], name: 'Menta Gyár' },
   ];
   const HOUSES = [
     [6, 21], [13, 21], [20, 21], [60, 21], [67, 21], [74, 21],
-    [6, 48], [13, 48], [20, 48], [33, 48], [40, 48], [47, 48], [60, 48], [67, 48], [74, 48],
+    [6, 48], [13, 48], [20, 48], [33, 48], [40, 48], [47, 48], [60, 48], [67, 48],
   ];
   HOUSES.forEach(([x, y], i) => BUILDINGS.push({ id: 'house' + i, kind: 'house', x, y, w: 5, h: 3, seed: i }));
 

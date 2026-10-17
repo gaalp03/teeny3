@@ -543,7 +543,6 @@
     },
 
     onEvent(type, d) {
-      const c = this.c;
       switch (type) {
         case 'windup': {
           const f = d.f;

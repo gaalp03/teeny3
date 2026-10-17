@@ -282,6 +282,49 @@
       box(g, cx - 34, H - 74, 68, 18, '#2b1e5c', 4, 2.5);
       D.text(g, 'T', cx, H - 64, { size: 16, align: 'center', color: '#ffd23f' });
     },
+    factory(g, W, H) {
+      const wy = H - 96;
+      // fűrészfog tető
+      g.beginPath();
+      g.moveTo(4, wy);
+      for (let i = 0; i < 4; i++) {
+        const x0 = 4 + i * ((W - 8) / 4);
+        g.lineTo(x0, wy - 30);
+        g.lineTo(x0 + (W - 8) / 4, wy);
+      }
+      g.closePath();
+      fs(g, '#5a6470');
+      g.fillStyle = '#9be7ff';
+      for (let i = 0; i < 4; i++) {
+        const x0 = 4 + i * ((W - 8) / 4);
+        g.beginPath();
+        g.moveTo(x0 + 3, wy - 25);
+        g.lineTo(x0 + 3, wy - 3);
+        g.lineTo(x0 + 20, wy - 3);
+        g.closePath();
+        g.fill();
+      }
+      // kémény
+      box(g, W - 46, wy - 70, 20, 44, '#8d99a6', 2, 2.5);
+      g.fillStyle = '#e84545';
+      g.fillRect(W - 46, wy - 62, 20, 6);
+      box(g, 4, wy, W - 8, 92, '#9aa5b1', 4);
+      g.fillStyle = '#7fe0b5';
+      g.fillRect(6, wy + 70, W - 12, 20);
+      // garázskapu
+      box(g, W / 2 - 34, wy + 30, 68, 62, '#5a6470', 3, 3);
+      g.strokeStyle = '#3a4048';
+      g.lineWidth = 2;
+      for (let i = 1; i < 6; i++) {
+        g.beginPath();
+        g.moveTo(W / 2 - 32, wy + 30 + i * 10);
+        g.lineTo(W / 2 + 32, wy + 30 + i * 10);
+        g.stroke();
+      }
+      windowPane(g, 16, wy + 30, 40, 30, false);
+      windowPane(g, W - 56, wy + 30, 40, 30, false);
+      sign(g, W / 2 - 80, wy + 4, 160, 24, 'MENTA GYÁR', '#2a9d8f', '#ffffff', 16);
+    },
     hive(g, W, H) {
       const wy = H - 128;
       g.beginPath();
@@ -350,7 +393,7 @@
     },
   };
 
-  const EXTRA_TOP = { house: 66, shop: 52, comics: 36, pizza: 46, dome: 150, tower: 180, hive: 70, vault: 62 };
+  const EXTRA_TOP = { house: 66, shop: 52, comics: 36, pizza: 46, dome: 150, tower: 180, hive: 70, vault: 62, factory: 80 };
   const EXTRA_SIDE = { tower: 50 };
 
   B.sprite = function (b) {

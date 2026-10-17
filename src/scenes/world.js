@@ -518,6 +518,13 @@
         case 'comics':
           this.comicsMenu();
           break;
+        case 'factory':
+          if (!TT.cupDone('east')) {
+            TT.ui.say([{ who: 'mintguard', text: 'BEEP. A Menta Gyár zárva. Belépés csak a Kelet Kupa győztesének.' }]);
+            return;
+          }
+          TT.go('factory', { back });
+          break;
         case 'hive':
           TT.ui.say(s.beaten.blood ? [{ who: 'kid_hive', text: 'Az Akadémia ma zárva. Az igazgató úr… figurázik.' }] :
             [{ who: 'kid_hive', text: 'Csak az léphet be, aki legyőzi Brother Bloodot. Ott áll az ajtó mellett.' }]);
