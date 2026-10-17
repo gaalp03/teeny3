@@ -79,7 +79,10 @@
       TT.audio.music(this.inHive() ? 'hive' : 'town');
       s.pos = { x: this.pl.x / TS, y: this.pl.y / TS };
       this.okCooldown = 0.45;
+      this.initPatrols();
       if (p.event) this.runEvent(p.event);
+      TT.dailyReward();
+      TT.checkAch();
     },
 
     exit() {
@@ -87,6 +90,104 @@
         TT.save.pos = { x: this.pl.x / W.TS, y: this.pl.y / W.TS };
         TT.store.write();
       }
+    },
+
+    // ---------- Menta-járőrök ----------
+    initPatrols() {
+      const TS = W.TS;
+      TT.patrolState = TT.patrolState || {};
+      this.patrols = W.patrols.map((p) => {
+        let st = TT.patrolState[p.id];
+        if (!st) {
+          st = TT.patrolState[p.id] = { x: p.path[0][0] * TS, y: p.path[0][1] * TS, wp: 1, walk: 0, face: 1, cdUntil: 0 };
+        }
+        st.def = p;
+        st.chase = false;
+        st.stuck = 0;
+        return st;
+      });
+      this.patrolGrace = 2.5;
+    },
+
+    updatePatrols(dt) {
+      const TS = W.TS;
+      const pl = this.pl;
+      const active = TT.cupDone('rookie');
+      const busy = TT.ui.overlayActive() || TT.isFading();
+      this.patrolGrace -= dt;
+      for (const pt of this.patrols) {
+        pt.visible = active && TT.rtime > (pt.cdUntil || 0);
+        if (!pt.visible || busy) continue;
+        const d = U.dist(pt.x, pt.y, pl.x, pl.y);
+        pt.chase = d < 150 && this.patrolGrace <= 0;
+        let tx, ty, sp;
+        if (pt.chase) {
+          tx = pl.x;
+          ty = pl.y;
+          sp = 118;
+        } else {
+          const w = pt.def.path[pt.wp];
+          tx = w[0] * TS;
+          ty = w[1] * TS;
+          sp = 70;
+          if (U.dist(pt.x, pt.y, tx, ty) < 4) pt.wp = (pt.wp + 1) % pt.def.path.length;
+        }
+        const dx = tx - pt.x, dy = ty - pt.y, dd = Math.hypot(dx, dy) || 1;
+        const mx = (dx / dd) * sp * dt, my = (dy / dd) * sp * dt;
+        const ox = pt.x, oy = pt.y;
+        if (!this.blocked(pt.x + mx, pt.y)) pt.x += mx;
+        if (!this.blocked(pt.x, pt.y + my)) pt.y += my;
+        const moved = Math.hypot(pt.x - ox, pt.y - oy);
+        pt.stuck = moved < sp * dt * 0.3 ? pt.stuck + dt : 0;
+        if (pt.stuck > 1.5 && !pt.chase) {
+          // beragadt: vissza az útvonalra
+          const w = pt.def.path[pt.wp];
+          pt.x = w[0] * TS;
+          pt.y = w[1] * TS;
+          pt.stuck = 0;
+        }
+        if (Math.abs(dx) > 1) pt.face = dx > 0 ? 1 : -1;
+        pt.walk += dt * 9;
+        if (d < 26 && this.patrolGrace <= 0) {
+          this.patrolBattle(pt);
+          return;
+        }
+      }
+    },
+
+    patrolBattle(pt) {
+      const s = TT.save;
+      const TS = W.TS;
+      const lvl = U.clamp(this.teamLvl() - 1, 2, TT.MAX_LVL);
+      const team = [
+        { id: 'mintguard', lvl },
+        { id: U.pick(['boxbot', 'mintguard', 'gizmo']), lvl },
+        { id: U.pick(['boxbot', 'seemore', 'mammoth', 'billy', 'drlight']), lvl },
+      ];
+      const lines = [
+        'BEEP. Bontott figura észlelve. Azonnali becsomagolás!',
+        'MR. MINT PARANCSA: MINDEN FIGURÁT A DOBOZBA.',
+        'ÁLLJ! Ellenőrzés. Ez a figura… KI VAN BONTVA!',
+        'BOOP. Járőrözés közben ellenfél. Harc protokoll indul.',
+      ];
+      pt.cdUntil = TT.rtime + 150;
+      pt.chase = false;
+      const back = { x: this.pl.x / TS, y: this.pl.y / TS };
+      const dir = this.pl.dir;
+      TT.audio.sfx('error');
+      TT.go('battle', {
+        enemy: {
+          name: 'Menta-járőr', who: 'mintguard', team, bg: U.pick(['street', 'park']),
+          ai: Math.min(0.66, 0.28 + lvl * 0.02), coins: 50 + lvl * 10,
+          intro: [{ who: 'mintguard', text: U.pick(lines) }],
+        },
+        after: (won) => {
+          if (won) s.stats.patrols = (s.stats.patrols || 0) + 1;
+          else pt.cdUntil = TT.rtime + 40;
+          TT.store.write();
+          TT.go('world', { pos: back, dir });
+        },
+      });
     },
 
     inHive() {
@@ -177,7 +278,9 @@
       const dx = this.pl.x - n.x * TS, dy = this.pl.y - n.y * TS;
       this.npcState[n.id].face = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up';
       if (n.talk) {
-        TT.ui.say(TT.TALKS[n.talk]());
+        const lines = TT.TALKS[n.talk]();
+        if (lines) TT.ui.say(lines);
+        else if (n.talk === 'silkie') this.silkieReward();
         return;
       }
       if (n.trainer) {
@@ -369,6 +472,36 @@
       TT.ui.say(lines);
     },
 
+    silkieReward() {
+      const s = TT.save;
+      s.flags.silkieDone = true;
+      s.coins += 400;
+      const info = TT.grantFigure('silkie_gold');
+      TT.store.write();
+      TT.ui.say([
+        { who: 'silkie', text: '*NAGYON boldog Silkie hangok*' },
+        { who: 'starfire', text: 'Megvan mind a hat! Silkie annyira hálás, hogy neked adja a legféltettebb kincsét…' },
+        { who: 'starfire', text: '…egy színarany Silkie figurát! És 400 érmét a mosolyáért!' },
+      ], () => TT.ui.reveal('silkie_gold', info, () => TT.checkAch()));
+    },
+
+    collectToy(t) {
+      const s = TT.save;
+      s.toys = s.toys || {};
+      s.toys[t.id] = true;
+      TT.store.write();
+      const n = W.toys.filter((x) => s.toys[x.id]).length;
+      TT.audio.sfx('found');
+      TT.ui.toast(`Silkie játéka: ${t.name} (${n}/${W.toys.length})`, { color: '#ff9ecd' });
+      TT.fx.burst(t.x * W.TS - this.cam.x, t.y * W.TS - this.cam.y - 10, 14, { color: '#ff9ecd', shape: 'star', speed: 180, size: 6, life: 0.6, layer: 1 });
+      if (n === W.toys.length) setTimeout(() => TT.ui.toast('Mind megvan! Vidd vissza Silkie-nek a Toronyhoz!', { color: '#ff9ecd', dur: 4 }), 900);
+    },
+
+    toyActive(t) {
+      const s = TT.save;
+      return s.flags.silkieQuest && !s.flags.silkieDone && !(s.toys && s.toys[t.id]);
+    },
+
     collect(h) {
       const s = TT.save;
       s.found[h.id] = true;
@@ -376,12 +509,13 @@
         const info = TT.grantFigure(h.fig);
         TT.store.write();
         TT.audio.sfx('found');
-        TT.ui.reveal(h.fig, info);
+        TT.ui.reveal(h.fig, info, () => TT.checkAch());
       } else {
         s.coins += h.coins;
         TT.store.write();
         TT.audio.sfx('coin');
         TT.ui.toast(`+${h.coins} érme!`);
+        TT.checkAch();
         TT.fx.burst(h.x * W.TS - this.cam.x, h.y * W.TS - this.cam.y - 10, 12, { color: '#ffd23f', shape: 'star', speed: 180, size: 6, life: 0.6, layer: 1 });
       }
     },
@@ -444,6 +578,7 @@
         options: [
           { label: 'Csapat és gyűjtemény', value: 'team' },
           { label: 'Térkép', value: 'map' },
+          { label: 'Teljesítmények', value: 'ach' },
           { label: 'Mentés', value: 'save' },
           { label: 'Beállítások', value: 'settings' },
           { label: 'Súgó', value: 'help' },
@@ -457,6 +592,7 @@
           TT.ui.toast('Játék elmentve!');
         } else if (v === 'settings') TT.openSettings();
         else if (v === 'help') TT.ui.say(HELP);
+        else if (v === 'ach') TT.openAchievements();
         else if (v === 'title') {
           TT.store.write();
           TT.go('title');
@@ -565,6 +701,9 @@
             }
           }
         }
+        for (const t of W.toys) {
+          if (this.toyActive(t) && U.dist(pl.x, pl.y, t.x * TS, t.y * TS) < 22) this.collectToy(t);
+        }
         // rejtett tárgyak automatikus felvétele
         for (const h of W.hidden) {
           if (!s.found[h.id] && U.dist(pl.x, pl.y, h.x * TS, h.y * TS) < 20) {
@@ -574,6 +713,8 @@
         }
       }
       this.gateMsgT -= dt;
+      this.updatePatrols(dt);
+      if (TT.isFading()) return;
 
       // interakció
       this.prompt = this.nearest();
@@ -634,6 +775,18 @@
         if (hx < -40 || hx > TT.W + 40 || hy < -40 || hy > TT.H + 40) continue;
         items.push({ y: h.y * TS, draw: () => this.drawHidden(ctx, h, hx, hy) });
       }
+      for (const t of W.toys) {
+        if (!this.toyActive(t)) continue;
+        const tx = t.x * TS - cx, ty = t.y * TS - cy;
+        if (tx < -40 || tx > TT.W + 40 || ty < -40 || ty > TT.H + 40) continue;
+        items.push({ y: t.y * TS, draw: () => this.drawToy(ctx, t, tx, ty) });
+      }
+      for (const pt of this.patrols) {
+        if (!pt.visible) continue;
+        const px = pt.x - cx, py = pt.y - cy;
+        if (px < -60 || px > TT.W + 60 || py < -100 || py > TT.H + 60) continue;
+        items.push({ y: pt.y, draw: () => this.drawPatrol(ctx, pt, px, py) });
+      }
       for (const n of W.npcs) {
         if (!this.npcVisible(n)) continue;
         const nx = n.x * TS - cx, ny = n.y * TS - cy;
@@ -693,6 +846,44 @@
         const b = Math.sin(TT.time * 5 + n.x) * 3;
         D.panel(ctx, x - 11, y - 96 + b, 22, 26, { fill: '#ff4f4f', r: 8, lw: 2.5, shadow: false });
         D.text(ctx, '!', x, y - 82 + b, { size: 20, align: 'center' });
+      }
+    },
+
+    drawToy(ctx, t, x, y) {
+      const b = Math.sin(TT.time * 4 + t.x) * 3;
+      ctx.save();
+      ctx.globalAlpha = 0.35 + Math.sin(TT.time * 5) * 0.15;
+      ctx.beginPath();
+      ctx.arc(x, y - 8, 16, 0, Math.PI * 2);
+      ctx.fillStyle = '#ff9ecd';
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.translate(x, y - 10 + b);
+      ctx.beginPath();
+      ctx.moveTo(0, 8);
+      ctx.bezierCurveTo(-13, -1, -7, -12, 0, -4);
+      ctx.bezierCurveTo(7, -12, 13, -1, 0, 8);
+      ctx.fillStyle = '#ff4fa3';
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#1d1433';
+      ctx.stroke();
+      ctx.restore();
+    },
+
+    drawPatrol(ctx, pt, x, y) {
+      ctx.save();
+      ctx.globalAlpha = 0.25;
+      ctx.beginPath();
+      ctx.ellipse(x, y + 2, 15, 6, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#000';
+      ctx.fill();
+      ctx.restore();
+      TT.art.drawFigure(ctx, TT.FIG.mintguard, x, y + 2, 0.6, { pedestal: false, pose: 'walk', walk: pt.walk, facing: pt.face, noCustom: true });
+      if (pt.chase) {
+        const b = Math.sin(TT.time * 12) * 2;
+        D.panel(ctx, x - 11, y - 92 + b, 22, 26, { fill: '#ff4f4f', r: 8, lw: 2.5, shadow: false });
+        D.text(ctx, '!', x, y - 78 + b, { size: 20, align: 'center' });
       }
     },
 
@@ -844,6 +1035,13 @@
         ctx.fillStyle = '#ff4f4f';
         ctx.fill();
       }
+      for (const t of W.toys) {
+        if (!this.toyActive(t)) continue;
+        ctx.beginPath();
+        ctx.arc(x + t.x * TS * k, y + t.y * TS * k, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#ff9ecd';
+        ctx.fill();
+      }
       const px = x + this.pl.x * k, py = y + this.pl.y * k;
       ctx.beginPath();
       ctx.arc(px, py, 6 + Math.sin(TT.time * 6) * 1.5, 0, Math.PI * 2);
@@ -852,7 +1050,7 @@
       ctx.lineWidth = 2;
       ctx.strokeStyle = '#1d1433';
       ctx.stroke();
-      D.text(ctx, 'Piros pont: edző · Sárga: te vagy · M: bezár', TT.W / 2, y + mh + 2, { size: 13, align: 'center', color: '#c8b8f0', lw: 3 });
+      D.text(ctx, 'Piros: edző · Rózsaszín: Silkie játéka · Sárga: te · M: bezár', TT.W / 2, y + mh + 2, { size: 13, align: 'center', color: '#c8b8f0', lw: 3 });
     },
   };
 

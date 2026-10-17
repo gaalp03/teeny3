@@ -167,6 +167,25 @@
     { id: 'c10', x: 72, y: 60, coins: 150 },
   ];
 
+  // Silkie elveszett játékai (mellékküldetés)
+  const TOYS = [
+    { id: 't_duck', x: 11, y: 41.5, name: 'gumikacsa' },
+    { id: 't_ball', x: 62, y: 59, name: 'labda' },
+    { id: 't_sock', x: 53.5, y: 21.5, name: 'zokni' },
+    { id: 't_bone', x: 92, y: 56, name: 'rágócsont' },
+    { id: 't_bear', x: 45, y: 67, name: 'plüssmaci' },
+    { id: 't_yarn', x: 24, y: 53, name: 'gombolyag' },
+  ];
+
+  // Menta-járőrök útvonalai (az Újonc Kupa után jelennek meg)
+  const PATROLS = [
+    { id: 'p1', path: [[8, 29.5], [52, 29.5]] },
+    { id: 'p2', path: [[60, 45.5], [92, 45.5]] },
+    { id: 'p3', path: [[56.5, 22], [56.5, 54]] },
+    { id: 'p4', path: [[29.5, 33], [29.5, 54]] },
+    { id: 'p5', path: [[12, 58.5], [36, 58.5]] },
+  ];
+
   // NPC kinézetek (nem gyűjthető karakterek)
   const kid = (top, bottom, hair, hairColor, skin, extra) => Object.assign({
     skin: skin || '#f6cba8', top, bottom, boots: '#3a3a52', hair, hairColor, eyes: 'dot', mouth: 'smile',
@@ -201,7 +220,24 @@
       { who: 'raven', text: 'A blokkolás nem gyávaság. Ha pont a találat előtt tartod a pajzsot, TÖKÉLETES blokk lesz.' },
       { who: 'raven', text: 'Akkor nulla sebzést kapsz, és a támadó egy pillanatra megszédül. …Ne nézz így rám. Olvastam róla.' },
     ],
-    silkie: () => [{ who: 'silkie', text: '*boldog Silkie hangok*' }],
+    silkie: () => {
+      const s = TT.save;
+      s.toys = s.toys || {};
+      const n = TOYS.filter((t) => s.toys[t.id]).length;
+      if (!s.flags.tutorial) return [{ who: 'silkie', text: '*álmos Silkie hangok*' }];
+      if (!s.flags.silkieQuest) {
+        s.flags.silkieQuest = true;
+        TT.store.write();
+        return [
+          { who: 'silkie', text: '*szomorú Silkie hangok*' },
+          { who: 'starfire', text: 'Ó, nem! Silkie elveszítette hat kedvenc játékát a városban!' },
+          { who: 'starfire', text: 'Rózsaszín szívecskék jelzik, hol vannak. Megkeresed őket? Silkie nagyon hálás lesz!' },
+        ];
+      }
+      if (s.flags.silkieDone) return [{ who: 'silkie', text: '*boldog Silkie hangok*' }, { who: 'starfire', text: 'Silkie azóta is a gumikacsájával alszik. Köszönjük!' }];
+      if (n < TOYS.length) return [{ who: 'silkie', text: '*reménykedő Silkie hangok*' }, { who: 'starfire', text: `Még ${TOYS.length - n} játék hiányzik! A térképen (M) is keresd a rózsaszín pontokat.` }];
+      return null; // a jutalmat a világ jelenet adja
+    },
     announcer: () => [
       { who: 'kid_bela', text: 'Üdv a Csatakupolában! Itt zajlik a Teeny Titans 3 Világliga!' },
       { who: 'kid_bela', text: 'Minden kupában három meccs és egy főellenség vár. Nyerj, és a város új részei nyílnak meg!' },
@@ -231,7 +267,7 @@
     }
     for (const p of PROPS) for (let j = -1; j <= (p.h || 1); j++) for (let i = -1; i <= (p.w || 1); i++) res(p.x + i, p.y + j);
     for (const n of NPCS) for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) res(n.x + i, n.y + j);
-    for (const h of HIDDEN) for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) res(h.x + i, h.y + j);
+    for (const h of HIDDEN.concat(TOYS)) for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) res(h.x + i, h.y + j);
     for (const g of GATES) for (let j = -1; j <= g.h; j++) for (let i = -1; i <= g.w; i++) res(g.x + i, g.y + j);
     for (let j = 5; j <= 16; j++) for (let i = 79; i <= 90; i++) res(i, j);
     const nearRoad = (x, y) => {
@@ -270,7 +306,7 @@
     TS, MW, MH, T, SOLID,
     map: W.map,
     tile: W.get,
-    buildings: BUILDINGS, props: PROPS, gates: GATES, npcs: NPCS, hidden: HIDDEN,
+    buildings: BUILDINGS, props: PROPS, gates: GATES, npcs: NPCS, hidden: HIDDEN, toys: TOYS, patrols: PATROLS,
     start: { x: 84.5, y: 12 },
   };
 })(window.TT);

@@ -1,18 +1,15 @@
 'use strict';
 // Offline gyorsítótár: a játék internet nélkül is fut, ha egyszer betöltötted.
-const CACHE = 'tt3-v1';
+const CACHE = 'tt3-28f7d0f838';
 const FILES = [
   "./",
-  "assets/fonts/LilitaOne-latin-ext.woff2",
-  "assets/fonts/LilitaOne-latin.woff2",
-  "assets/icons/icon-192.png",
-  "assets/icons/icon-512.png",
   "index.html",
   "manifest.webmanifest",
   "src/art/backdrops.js",
   "src/art/buildings.js",
   "src/art/figure.js",
   "src/art/tiles.js",
+  "src/data/achievements.js",
   "src/data/figures.js",
   "src/data/moves.js",
   "src/data/progress.js",
@@ -34,7 +31,11 @@ const FILES = [
   "src/scenes/dome.js",
   "src/scenes/shop.js",
   "src/scenes/title.js",
-  "src/scenes/world.js"
+  "src/scenes/world.js",
+  "assets/fonts/LilitaOne-latin-ext.woff2",
+  "assets/fonts/LilitaOne-latin.woff2",
+  "assets/icons/icon-192.png",
+  "assets/icons/icon-512.png"
 ];
 
 self.addEventListener('install', (e) => {

@@ -63,6 +63,7 @@
       const ups = TT.addXp(id, 100);
       TT.store.write();
       TT.audio.sfx(ups ? 'levelup' : 'buy');
+      if (ups) TT.checkAch();
       TT.fx.text(760, 200, ups ? 'SZINTLÉPÉS!' : '+100 XP', { color: ups ? '#7bff6b' : '#c8b8f0', tsize: 26, layer: 1 });
     },
     trainCost(id) {
@@ -176,6 +177,8 @@
       if (own) {
         D.text(ctx, f.short, b.x + b.w / 2, b.y + b.h - 10, { size: 12, align: 'center', maxWidth: b.w - 6, lw: 3 });
         D.text(ctx, String(own.lvl), b.x + 6, b.y + 12, { size: 13, color: '#ffd23f', lw: 3 });
+        const st = TT.starsOf(id);
+        if (st > 0) D.text(ctx, '★' + st, b.x + b.w - 5, b.y + 30, { size: 12, align: 'right', color: '#ffd23f', lw: 3 });
         if (inTeam) {
           D.star(ctx, b.x + b.w - 11, b.y + 11, 8, 3.5, 5);
           ctx.fillStyle = '#ff6b35';
@@ -200,8 +203,10 @@
       D.panel(ctx, 400 + 6, 66, 170, 40, { fill: '#2b1e5c', r: 12, lw: 2.5, shadow: false });
       D.coin(ctx, 428, 86, 12);
       D.text(ctx, U.fmt(s.coins), 448, 87, { size: 20, color: '#ffd23f' });
-      D.text(ctx, 'Válassz helyet, majd figurát.', 404, 128, { size: 14, color: '#c8b8f0', stroke: false });
-      D.text(ctx, 'Dupla koppintás: csapatba', 404, 148, { size: 14, color: '#c8b8f0', stroke: false });
+      D.text(ctx, 'Válassz helyet, majd figurát.', 404, 124, { size: 14, color: '#c8b8f0', stroke: false });
+      const syn = TT.synergy(s.team);
+      if (syn) D.text(ctx, `Bónusz: ${TT.TEAM_NAMES[syn.team]} ×${syn.n} +${Math.round(syn.bonus * 100)}%`, 404, 146, { size: 14, color: '#ffe066', lw: 3, maxWidth: 172 });
+      else D.text(ctx, 'Azonos csapat: bónusz!', 404, 146, { size: 14, color: '#c8b8f0', stroke: false });
 
       // rács kivágva
       ctx.save();
@@ -265,7 +270,16 @@
         return;
       }
       const lvl = own.lvl;
-      const st = TT.statsFor(f, lvl);
+      const stars = TT.starsOf(id);
+      const st = TT.statsFor(f, lvl, stars);
+      for (let i = 0; i < TT.MAX_STARS; i++) {
+        D.star(ctx, x + 22 + i * 15, y + 24, 6.5, 2.8, 5);
+        ctx.fillStyle = i < stars ? '#ffd23f' : 'rgba(255,255,255,0.18)';
+        ctx.fill();
+        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = '#120a2c';
+        ctx.stroke();
+      }
       D.text(ctx, 'Szint ' + lvl, tx, y + 130, { size: 18, color: '#ffd23f' });
       if (lvl < TT.MAX_LVL) {
         D.bar(ctx, tx + 70, y + 122, w - 242, 14, own.xp / TT.xpToNext(lvl), { color: '#c06bff' });

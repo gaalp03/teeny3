@@ -5,9 +5,14 @@ on:
     paths-ignore: ['**.md']
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   apk:
     runs-on: ubuntu-latest
+    env:
+      APP_VERSION_CODE: ${{ github.run_number }}
     steps:
       - uses: actions/checkout@v4
 
@@ -23,18 +28,44 @@ jobs:
       - name: Függőségek
         run: npm ci --no-audit --no-fund
 
+      - name: Saját textúrák (ha van feltöltött APK az apk-forras ágon)
+        run: |
+          if git fetch --depth 1 origin apk-forras 2>/dev/null; then
+            git checkout FETCH_HEAD -- apk 2>/dev/null || true
+            if [ -f apk/map.json ] && ls apk/*.apk >/dev/null 2>&1; then
+              pip install --quiet UnityPy
+              python3 tools/extract_apk.py extract apk/*.apk
+              python3 tools/extract_apk.py map apk/map.json
+            fi
+            rm -rf apk
+          fi
+
       - name: Android projekt előkészítése
         run: npm run android
 
       - name: APK fordítása
         working-directory: android
         run: |
+          mkdir -p ~/.android
+          cp ../android-signing/debug.keystore ~/.android/debug.keystore
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon --stacktrace
+          cp app/build/outputs/apk/debug/app-debug.apk ../TeenyTitans3.apk
 
-      - name: APK feltöltése
+      - name: APK feltöltése (artifact)
         uses: actions/upload-artifact@v4
         with:
           name: teeny-titans-3-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: TeenyTitans3.apk
           if-no-files-found: error
+
+      - name: Legújabb kiadás frissítése (közvetlen letöltés telefonra)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete legujabb --cleanup-tag -y || true
+          gh release create legujabb TeenyTitans3.apk \
+            --prerelease \
+            --target "$GITHUB_SHA" \
+            --title "Teeny Titans 3 – legújabb (1.${{ github.run_number }})" \
+            --notes "Automatikus build a(z) ${GITHUB_REF_NAME} ágról. Telefonon: töltsd le a TeenyTitans3.apk-t és telepítsd. A frissítés megtartja a mentést."

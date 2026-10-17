@@ -323,7 +323,7 @@
         D.rarityStars(ctx, fig.rarity, TT.W / 2, 438, 22, 'center');
         D.text(ctx, R.name + ' · ' + TT.TYPES[fig.type].name, TT.W / 2, 468, { size: 20, align: 'center', color: R.color });
         if (info && info.isNew === false) {
-          D.text(ctx, '+' + info.xp + ' XP' + (info.lvlUps ? '  ·  SZINTLÉPÉS!' : ''), TT.W / 2, 500, { size: 22, align: 'center', color: '#c8b8f0' });
+          D.text(ctx, '+' + info.xp + ' XP' + (info.lvlUps ? '  ·  SZINTLÉPÉS!' : '') + (info.starUp ? `  ·  ★ ${info.stars}. csillag!` : ''), TT.W / 2, 500, { size: 22, align: 'center', color: info.starUp ? '#ffe066' : '#c8b8f0' });
         }
         if (this.t > 0.9) D.text(ctx, 'Koppints a folytatáshoz', TT.W / 2, 528, { size: 16, align: 'center', color: '#a89cd8', alpha: 0.6 + Math.sin(TT.time * 4) * 0.3 });
         ctx.restore();
@@ -345,7 +345,7 @@
       const inA = U.clamp(t.t / 0.25, 0, 1), outA = U.clamp((t.dur - t.t) / 0.4, 0, 1);
       const a = Math.min(inA, outA);
       const w = D.measure(ctx, t.text, 20) + 40;
-      const y = 14 + i * 46 - (1 - U.ease.outBack(inA)) * 30;
+      const y = 62 + i * 46 - (1 - U.ease.outBack(inA)) * 30;
       ctx.save();
       ctx.globalAlpha = a;
       D.panel(ctx, (TT.W - w) / 2, y, w, 38, { fill: '#1b1140', r: 19, stroke: t.color, lw: 3 });

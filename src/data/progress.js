@@ -154,10 +154,12 @@
       own[id] = { lvl: Math.max(1, Math.round(top * 0.75)), xp: 0, n: 1 };
       return { isNew: true, xp: 0, lvlUps: 0 };
     }
+    const before = TT.starsOf(id);
     own[id].n = (own[id].n || 1) + 1;
     const xp = TT.RARITY[TT.FIG[id].rarity].dupeXp;
     const lv = TT.addXp(id, xp);
-    return { isNew: false, xp, lvlUps: lv };
+    const stars = TT.starsOf(id);
+    return { isNew: false, xp, lvlUps: lv, stars, starUp: stars > before };
   };
 
   TT.addXp = function (id, amount) {

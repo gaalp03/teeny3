@@ -35,6 +35,7 @@
       this.sel = p.sel != null ? p.sel : Math.max(0, firstOpen);
       TT.audio.music(this.venue === 'vault' ? 'hive' : 'shop');
       this.build();
+      TT.checkAch();
       if (this.venue === 'vault' && !TT.save.flags.vaultIntro) {
         TT.save.flags.vaultIntro = true;
         setTimeout(() => TT.ui.say([

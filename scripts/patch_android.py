@@ -32,3 +32,13 @@ for d in os.listdir(res):
         if os.path.exists(target):
             shutil.copyfile(icon, target)
 print('Android projekt: ikon lecserélve')
+
+# Verziószám a CI futás sorszámából, hogy az új APK frissítésként települjön (a mentés megmarad)
+code = os.environ.get('APP_VERSION_CODE')
+if code:
+    gradle = os.path.join(root, '..', '..', 'build.gradle')
+    s = open(gradle, encoding='utf-8').read()
+    s = re.sub(r'versionCode \d+', f'versionCode {int(code)}', s)
+    s = re.sub(r'versionName "[^"]*"', f'versionName "1.{int(code)}"', s)
+    open(gradle, 'w', encoding='utf-8').write(s)
+    print(f'Android projekt: verzió 1.{code}')

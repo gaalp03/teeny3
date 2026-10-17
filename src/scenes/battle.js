@@ -8,11 +8,11 @@
   const SWAP_CD = 3.5;
 
   // ======================= LOGIKA =======================
-  function mkFighter(id, lvl, side, idx) {
+  function mkFighter(id, lvl, side, idx, stars, mult) {
     const fig = TT.FIG[id];
-    const st = TT.statsFor(fig, lvl);
+    const st = TT.statsFor(fig, lvl, stars, mult);
     return {
-      id, fig, lvl, st, side, idx,
+      id, fig, lvl, st, side, idx, stars: stars || 0,
       maxHp: st.hp, hp: st.hp, ghost: st.hp,
       moves: fig.moves.map((m, i) => ({ m: TT.MOVES[m], c: Math.random() * 0.3 + (i === 0 ? 0.45 : 0.1) })),
       sup: TT.MOVES[fig.sup],
@@ -27,11 +27,14 @@
     constructor(teamA, teamB, opts, emit) {
       opts = opts || {};
       this.emit = emit || (() => {});
-      this.sides = [teamA, teamB].map((team, s) => ({
-        idx: s,
-        fighters: team.map((t, i) => mkFighter(t.id, t.lvl, s, i)),
-        active: 0, swapCd: 0, swapAnim: 0, koWait: 0,
-      }));
+      this.sides = [teamA, teamB].map((team, s) => {
+        const syn = TT.synergy(team.map((t) => t.id));
+        return {
+          idx: s, synergy: syn,
+          fighters: team.map((t, i) => mkFighter(t.id, t.lvl, s, i, t.stars, syn && TT.FIG[t.id].team === syn.team ? 1 + syn.bonus : 1)),
+          active: 0, swapCd: 0, swapAnim: 0, koWait: 0,
+        };
+      });
       this.time = 0;
       this.started = false;
       this.winner = null;
@@ -419,7 +422,7 @@
       const en = p.enemy;
       this.en = en;
       this.bg = en.bg || 'dome';
-      const pteam = (p.playerTeam || TT.save.team).filter((id) => TT.save.owned[id]).map((id) => ({ id, lvl: TT.save.owned[id].lvl }));
+      const pteam = (p.playerTeam || TT.save.team).filter((id) => TT.save.owned[id]).map((id) => ({ id, lvl: TT.save.owned[id].lvl, stars: TT.starsOf(id) }));
       this.c = new Combat(pteam, en.team, { ai: en.ai }, (type, d) => this.onEvent(type, d));
       this.t = 0;
       this.state = 'intro';
@@ -798,8 +801,11 @@
         s.coins += coins;
         s.stats.wins++;
         for (const id of this.p.rewardFigs || []) figs.push(Object.assign({ id }, TT.grantFigure(id)));
+        const syn = c.sides[0].synergy;
+        if (syn && syn.n >= 3) s.flags.synWin = true;
       } else s.stats.losses++;
       TT.store.write();
+      TT.checkAch();
       this.results = { won, coins, rows, figs, t: 0 };
       this.state = 'results';
       this.t = 0;
@@ -1593,6 +1599,7 @@
       ctx.fillStyle = '#3fa7ff';
       ctx.fill();
       D.text(ctx, 'TITÁNOK', 60, 210, { size: 54, color: '#ffffff' });
+      this.drawSynergy(ctx, 0, 60, 250, 'left');
       ctx.restore();
       ctx.save();
       ctx.translate(TT.W * (1 - inK), 0);
@@ -1605,12 +1612,19 @@
       ctx.fillStyle = '#e84545';
       ctx.fill();
       D.text(ctx, this.en.name.toUpperCase(), TT.W - 60, 350, { size: 44, align: 'right', color: '#ffffff', maxWidth: 480 });
+      this.drawSynergy(ctx, 1, TT.W - 60, 390, 'right');
       ctx.restore();
       const vs = 0.5 + inK * 0.5 + Math.sin(TT.time * 10) * 0.03;
       ctx.translate(TT.W / 2, 280);
       ctx.scale(vs, vs);
       D.text(ctx, 'VS', 0, 0, { size: 96, align: 'center', color: '#ffd23f', lw: 14 });
       ctx.restore();
+    },
+
+    drawSynergy(ctx, s, x, y, align) {
+      const syn = this.c.sides[s].synergy;
+      if (!syn) return;
+      D.text(ctx, `Csapatbónusz: ${TT.TEAM_NAMES[syn.team]} ×${syn.n} (+${Math.round(syn.bonus * 100)}%)`, x, y, { size: 18, align, color: '#ffe066' });
     },
 
     drawFinish(ctx) {

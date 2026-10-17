@@ -42,16 +42,38 @@
 
   // Végső értékek egy figurára adott szinten.
   // A sebzés a támadó szintjével skálázódik (lvlFactor), a HP a védekezőével.
-  TT.statsFor = function (fig, lvl) {
-    const r = TT.RARITY[fig.rarity].mult;
+  // stars: duplikátumokból szerzett csillagszint (0–5), mult: egyéb szorzó (pl. csapatbónusz)
+  TT.statsFor = function (fig, lvl, stars, mult) {
+    const r = TT.RARITY[fig.rarity].mult * (1 + (stars || 0) * TT.STAR_BONUS) * (mult || 1);
     const lf = TT.lvlFactor(lvl);
     return {
       hp: Math.round(fig.hp * 2.5 * r * lf),
       atk: fig.atk * r,
-      def: fig.def * r,
+      def: fig.def * TT.RARITY[fig.rarity].mult,
       spd: fig.spd,
       lf,
     };
+  };
+
+  TT.MAX_STARS = 5;
+  TT.STAR_BONUS = 0.04;
+  TT.starsOf = function (id) {
+    const o = TT.save && TT.save.owned[id];
+    return o ? Math.min(TT.MAX_STARS, (o.n || 1) - 1) : 0;
+  };
+
+  // Csapatbónusz: azonos csapatból 2 figura +6%, 3 figura +12% (HP és támadás)
+  TT.synergy = function (ids) {
+    const count = {};
+    for (const id of ids) {
+      const t = TT.FIG[id] && TT.FIG[id].team;
+      if (t) count[t] = (count[t] || 0) + 1;
+    }
+    let best = null;
+    for (const [team, n] of Object.entries(count)) {
+      if (n >= 2 && (!best || n > best.n)) best = { team, n, bonus: n >= 3 ? 0.12 : 0.06 };
+    }
+    return best;
   };
 
   // Összesített "erő" pontszám a gyűjtemény rendezéséhez

@@ -134,6 +134,7 @@
             TT.ui.reveal(op.id, op.info, () => {
               this.opening = null;
               this.build();
+              TT.checkAch();
             });
           }, 380);
         }

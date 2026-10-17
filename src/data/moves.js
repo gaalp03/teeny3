@@ -239,6 +239,11 @@
   M('mint_box', 'Bontatlan doboz', 'shot', 40, 8.5, 'box', '#7fe0b5', { eff: [E('stun', 0.5, 1.5)] });
   M('collectors_edition', 'Gyűjtői Kiadás', 'beam', 100, 0, 'coin', '#7fe0b5', { super: true, eff: [E('stun', 1, 1.5), E('weak', 1, 5)] });
 
+  // ---------- Arany Silkie (mellékküldetés jutalma) ----------
+  M('golden_nibble', 'Arany rágcsálás', 'melee', 12, 2.0, 'claw', '#ffd23f');
+  M('golden_cocoon', 'Arany gubó', 'self', 0, 9, 'shield', '#ffd23f', { shield: 0.16, eff: [E('regen', 1, 5, { self: true })] });
+  M('golden_giant', 'Arany óriás', 'slam', 90, 0, 'rock', '#ffd23f', { super: true, eff: [E('stun', 1, 1.3)] });
+
   // Leírás generálása
   for (const m of Object.values(MOVES)) {
     const parts = [];

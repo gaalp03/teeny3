@@ -290,6 +290,11 @@
       hair: 'long', hairColor: '#2b1b3a', eyes: 'big', eyeColor: '#c06bff', mouth: 'smirk', gear: ['collar_gem'],
     }, { team: 'villain', bio: 'Starfire nővére. Mindig azt akarja, ami a húgáé.' });
 
+  F('silkie_gold', 'Arany Silkie', 'brawn', 'legendary', [120, 11, 13, 10],
+    ['golden_nibble', 'cute_look', 'golden_cocoon'], 'golden_giant',
+    { body: 'worm', skin: '#ffd23f', spots: '#ff9f1a', eyes: 'big', eyeColor: '#1d1d2b', mouth: 'smile', gold: true },
+    { team: 'titans', short: 'A. Silkie', bio: 'Silkie hálája jeléül. Csillog, puha, és meglepően erős.', noBox: true });
+
   // ---------- Teeny Titans 3: Menta-banda ----------
   F('mintguard', 'Menta Őr', 'tech', 'common', [105, 10, 12, 9],
     ['tape_shot', 'barcode_scan', 'stamp'], 'warehouse_lock',
