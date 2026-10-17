@@ -41,6 +41,7 @@
     A('patrol10', 'Járőrvadász', 'Győzz le 10 Menta-járőrt.', 300, (s) => (s.stats.patrols || 0) >= 10),
     A('silkie', 'Silkie hőse', 'Találd meg Silkie összes elveszett játékát.', 200, (s) => !!s.flags.silkieDone),
     A('rich', 'Tele zseb', 'Legyen egyszerre 5000 érméd.', 200, (s) => s.coins >= 5000),
+    A('pizza20', 'Pizzabajnok', 'Kapj el 20 pizzát egy Pizzafogó játékban.', 200, (s) => (s.flags.pizzaBest || 0) >= 20),
     A('daily7', 'Hűséges Titán', 'Gyűjtsd be a napi jutalmat 7 napon át egymás után.', 400, (s) => s.daily && s.daily.streak >= 7),
   ];
 

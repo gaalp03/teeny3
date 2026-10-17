@@ -493,7 +493,7 @@
           TT.go('dome', { back, venue: 'vault' });
           break;
         case 'tower':
-          this.towerMenu();
+          TT.go('tower', { back });
           break;
         case 'pizza':
           this.pizzaMenu();
@@ -511,62 +511,30 @@
       void TS;
     },
 
-    towerMenu() {
-      TT.ui.choose({
-        title: 'Titánok Tornya',
-        text: 'Pihenj, rendezd a csapatod, vagy mentsd a játékot.',
-        options: [
-          { label: 'Csapat és gyűjtemény', value: 'team' },
-          { label: 'Mentés', value: 'save' },
-          { label: 'Beszélgetés a Titánokkal', value: 'chat' },
-          { label: 'Mégse', value: null },
-        ],
-      }, (v) => {
-        if (v === 'team') TT.go('collection', { from: 'world' });
-        else if (v === 'save') {
-          TT.store.write();
-          TT.audio.sfx('select');
-          TT.ui.toast('Játék elmentve!');
-        } else if (v === 'chat') {
-          TT.ui.say(this.towerChat());
-        }
-      });
-    },
-
-    towerChat() {
-      const n = TT.cupsDone();
-      const lines = [
-        [{ who: 'beastboy', text: 'Szerintem az Újonc Kupa simán megy. Kivéve, ha Control Freak megint a hátoldali kódokról magyaráz.' },
-          { who: 'raven', text: 'Akkor majd én beszélek. Röviden.' }],
-        [{ who: 'cyborg', text: 'A Kelet Kupában Kid Flash nagyon gyors. Blokkolj korán, vagy cserélj!' },
-          { who: 'starfire', text: 'És ne feledd: a Misztikus legyőzi a Gyorsaságot! Raven a barátunk!' }],
-        [{ who: 'robin', text: 'Slade a Gonosz Kupa végén vár. Erő típus — Gyorsasággal kell nekimenni.' },
-          { who: 'beastboy', text: 'Vagy egy NAGYON nagy gorillával.' }],
-        [{ who: 'raven', text: 'Mr. Mint trezorja nyitva. Érzem a… bontatlan műanyag szagát.' },
-          { who: 'cyborg', text: 'Tech típusú a csapatuk nagy része. Erő figurákkal BOOYAH!' }],
-        [{ who: 'starfire', text: 'Megmentettük a figurákat! Most már bármikor játszhatunk velük. Ez a legdicsőségesebb nap!' },
-          { who: 'robin', text: 'A Végtelen Arénában még vár ránk néhány kihívás, Titánok.' }],
-      ];
-      return lines[Math.min(n, lines.length - 1)];
-    },
-
     pizzaMenu() {
       const s = TT.save;
       const price = 120;
       TT.ui.choose({
         title: 'Pizzéria',
-        text: `Pizzaparti a csapatnak: mind a 3 figura +80 XP. Ár: ${price} érme. (Neked ${U.fmt(s.coins)} van.)`,
+        text: `Pizzaparti: mind a 3 csapattag +80 XP (${price} érme). Vagy próbáld ki a Pizzafogót érméért! (Neked ${U.fmt(s.coins)} van.)`,
         options: [
+          { label: 'Pizzafogó játék', value: 'game', color: '#2ecc71' },
           { label: `Pizzaparti! (${price})`, value: 'buy', disabled: s.coins < price },
           { label: 'Csak nézelődöm', value: null },
         ],
       }, (v) => {
+        if (v === 'game') {
+          const b = W.buildings.find((x) => x.id === 'pizza');
+          TT.go('pizzagame', { back: { x: b.door[0], y: b.door[1] + 1.15 } });
+          return;
+        }
         if (v !== 'buy') return;
         s.coins -= price;
         let ups = 0;
         for (const id of s.team) ups += TT.addXp(id, 80);
         TT.store.write();
         TT.audio.sfx('buy');
+        if (ups) TT.checkAch();
         TT.ui.say([{ who: 'kid_pizza', text: 'Mamma mia! Egy pizza mindenre jó!' + (ups ? ' Valaki szintet is lépett!' : '') }]);
       });
     },

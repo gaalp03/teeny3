@@ -32,6 +32,7 @@
       const p = this.p;
       if (p.from === 'dome') TT.go('dome', { venue: p.venue, back: p.back, sel: p.sel });
       else if (p.from === 'shop') TT.go('shop', { back: p.back });
+      else if (p.from === 'tower') TT.go('tower', { back: p.back });
       else TT.go('world', { dir: 'down' });
     },
 
