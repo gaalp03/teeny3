@@ -178,6 +178,30 @@
   TT.ITEM_MAX = 9;
   TT.ITEMS_PER_BATTLE = 2;
 
+  // Csapatkód: a csapat megosztása barátokkal (szerver nélkül)
+  TT.teamCode = function () {
+    const s = TT.save;
+    const data = {
+      n: (s.playerName || 'Titán').slice(0, 16),
+      t: s.team.map((id) => [id, s.owned[id] ? s.owned[id].lvl : 1, TT.starsOf(id), TT.paintOf(id) || '']),
+    };
+    return 'TT3-' + btoa(unescape(encodeURIComponent(JSON.stringify(data)))).replace(/=+$/, '');
+  };
+  TT.parseTeamCode = function (code) {
+    try {
+      const raw = String(code).trim().replace(/^TT3-/, '');
+      const data = JSON.parse(decodeURIComponent(escape(atob(raw))));
+      const team = (data.t || []).slice(0, 3).filter((x) => TT.FIG[x[0]]).map((x) => ({
+        id: x[0], lvl: TT.U.clamp(parseInt(x[1], 10) || 1, 1, TT.MAX_LVL), stars: TT.U.clamp(parseInt(x[2], 10) || 0, 0, TT.MAX_STARS),
+        paint: TT.PAINTS.some((p) => p.id === x[3]) ? x[3] : null,
+      }));
+      if (team.length !== 3) return null;
+      return { name: String(data.n || 'Barát').slice(0, 16), team };
+    } catch (e) {
+      return null;
+    }
+  };
+
   // Festőműhely: figurák átfestése
   TT.PAINTS = [
     { id: 'gold', name: 'Arany', price: 900 },

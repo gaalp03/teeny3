@@ -75,19 +75,20 @@
     cups() {
       if (this.venue === 'vault') return [TT.CUP.mint];
       const list = TT.CUPS.filter((c) => c.venue === 'dome');
+      list.push({ id: 'friend', name: 'Barát kihívása', color: '#ff9ecd', desc: 'Csapatkóddal megküzdhetsz egy barátod csapatával — vagy elküldheted a sajátodat.' });
       if (TT.cupDone('rookie')) list.push({ id: 'survival', name: 'Túlélő Torna', color: '#2a9d8f', desc: '5 harc egymás után, gyógyulás nélkül — a kiesett figurák kiesve maradnak. Naponta egyszer. Fődíj: 1500 érme + legendás doboz!' });
       if (TT.cupDone('mint')) list.push({ id: 'endless', name: 'Végtelen Aréna', color: '#ff6b35', desc: 'Egyre erősebb csapatok, egyre nagyobb jutalmak. Minden 5. hullám egy bajnok!' });
       return list;
     },
     unlocked(c) {
-      if (c.id === 'endless' || c.id === 'survival') return true;
+      if (c.id === 'endless' || c.id === 'survival' || c.id === 'friend') return true;
       return !c.req || TT.cupDone(c.req);
     },
 
     build() {
       const cups = this.cups();
-      const step = cups.length > 5 ? 63 : cups.length > 4 ? 76 : 92;
-      const ch = cups.length > 5 ? 58 : cups.length > 4 ? 70 : 82;
+      const step = cups.length > 6 ? 55 : cups.length > 5 ? 63 : cups.length > 4 ? 76 : 92;
+      const ch = cups.length > 6 ? 51 : cups.length > 5 ? 58 : cups.length > 4 ? 70 : 82;
       const items = cups.map((c, i) => ({
         id: 'cup' + i, x: 20, y: 70 + i * step, w: 300, h: ch, cup: c, i,
         onClick: () => {
@@ -115,6 +116,10 @@
         const sv = survivalState();
         return { m: survivalEnemy(sv.round), boss: sv.round === 4, step: sv.round };
       }
+      if (c.id === 'friend') {
+        const f = s.lastFriend;
+        return { m: f ? this.friendEnemy(f) : { name: 'Nincs még kód', who: 'robin', team: [] }, boss: false, step: 0 };
+      }
       const step = s.cupStep[c.id] || 0;
       if (step < c.matches.length) return { m: c.matches[step], boss: false, step };
       return { m: c.boss, boss: true, step };
@@ -126,6 +131,10 @@
       const { m, boss } = this.nextMatch(c);
       if (c.id === 'survival') {
         this.fightSurvival(m);
+        return;
+      }
+      if (c.id === 'friend') {
+        this.friendMenu();
         return;
       }
       const go = () => {
@@ -176,6 +185,71 @@
       if (teamAvg() < (c.minLvl || 1) - 1) {
         TT.ui.confirm(`A csapatod átlagszintje ${teamAvg().toFixed(1)}, az ajánlott ${c.minLvl}. Biztos belevágsz?`, (ok) => ok && go(), 'Harc!', 'Inkább edzek');
       } else go();
+    },
+
+    friendEnemy(f) {
+      return {
+        name: f.name + ' csapata', who: f.team[2].id, team: f.team.map((t) => ({ id: t.id, lvl: t.lvl, stars: t.stars })),
+        ai: 0.72, coins: 60, bg: 'dome', music: 'battle',
+        intro: [{ who: f.team[0].id, text: `${f.name} csapata kihívást küldött! Lássuk, ki a jobb Teeny edző!` }],
+      };
+    },
+
+    friendMenu() {
+      const s = TT.save;
+      TT.ui.choose({
+        title: 'Barát kihívása',
+        text: 'Másold ki a csapatkódod és küldd el, vagy írd be a barátodét!',
+        options: [
+          { label: 'Barát kódjának beírása', value: 'enter', color: '#ff6b35' },
+          { label: s.lastFriend ? `Visszavágó: ${s.lastFriend.name}` : 'Visszavágó (nincs még)', value: 'again', disabled: !s.lastFriend, color: '#ff4f4f' },
+          { label: 'Csapatkódom másolása', value: 'copy', color: '#2ecc71' },
+          { label: 'Nevem: ' + (s.playerName || 'Titán'), value: 'name', color: '#3fa7ff' },
+          { label: 'Mégse', value: null },
+        ],
+      }, (v) => {
+        if (v === 'copy') {
+          const code = TT.teamCode();
+          try {
+            navigator.clipboard.writeText(code).then(() => TT.ui.toast('Csapatkód a vágólapon! Küldd el a barátodnak.'), () => window.prompt('Csapatkódod (másold ki):', code));
+          } catch (e) {
+            window.prompt('Csapatkódod (másold ki):', code);
+          }
+        } else if (v === 'name') {
+          const n = window.prompt('Hogy hívjanak? (max 16 betű)', s.playerName || '');
+          if (n && n.trim()) {
+            s.playerName = n.trim().slice(0, 16);
+            TT.store.write();
+            this.friendMenu();
+          }
+        } else if (v === 'enter') {
+          const code = window.prompt('Írd be / illeszd be a barátod csapatkódját:');
+          if (!code) return;
+          const f = TT.parseTeamCode(code);
+          if (!f) {
+            TT.ui.toast('Hibás csapatkód!', { color: '#ff8a80' });
+            return;
+          }
+          s.lastFriend = f;
+          TT.store.write();
+          this.build();
+          this.fightFriend(f);
+        } else if (v === 'again' && s.lastFriend) this.fightFriend(s.lastFriend);
+      });
+    },
+
+    fightFriend(f) {
+      const s = TT.save;
+      const sel = this.sel, venue = this.venue, back = this.p.back;
+      TT.go('battle', {
+        enemy: this.friendEnemy(f), rewardFigs: [],
+        after: (won) => {
+          if (won) s.flags.friendWins = (s.flags.friendWins || 0) + 1;
+          TT.store.write();
+          TT.go('dome', { venue, back, sel });
+          if (won) setTimeout(() => TT.ui.toast(`Legyőzted ${f.name} csapatát!`), 300);
+        },
+      });
     },
 
     fightSurvival(m) {
@@ -250,6 +324,7 @@
       // kupa ikon
       ctx.save();
       ctx.translate(x + 40, b.y + b.h / 2 + 1);
+      if (b.h < 55) ctx.scale(0.78, 0.78);
       ctx.beginPath();
       ctx.moveTo(-16, -20);
       ctx.lineTo(16, -20);
@@ -265,11 +340,13 @@
       ctx.fillRect(-11, 15, 22, 6);
       ctx.strokeRect(-11, 15, 22, 6);
       ctx.restore();
-      const ly = b.h - (b.h < 80 ? 16 : 26);
-      D.text(ctx, c.name, x + 72, b.y + b.h * 0.36, { size: b.h < 60 ? 20 : 22 });
+      const ly = b.h - (b.h < 55 ? 12 : b.h < 80 ? 16 : 26);
+      D.text(ctx, c.name, x + 72, b.y + b.h * 0.36, { size: b.h < 55 ? 18 : b.h < 60 ? 20 : 22 });
       if (!unl) D.text(ctx, 'Zárva', x + 72, b.y + ly, { size: 16, color: '#a89cd8' });
       else if (c.id === 'endless') D.text(ctx, `Legjobb: ${TT.save.endless || 0}. hullám`, x + 72, b.y + ly, { size: 16, color: '#ffe9a0' });
-      else if (c.id === 'survival') {
+      else if (c.id === 'friend') {
+        D.text(ctx, TT.save.lastFriend ? 'Utolsó: ' + TT.save.lastFriend.name : 'Csapatkóddal', x + 72, b.y + ly, { size: 16, color: '#ffe9a0', maxWidth: 210 });
+      } else if (c.id === 'survival') {
         const sv = survivalState();
         D.text(ctx, sv.won ? 'Ma megnyerted!' : sv.over ? 'Ma véget ért' : `Kör: ${sv.round + 1}/5`, x + 72, b.y + ly, { size: 16, color: sv.won ? '#7bff6b' : sv.over ? '#ff8a80' : '#ffe9a0' });
       }
@@ -319,7 +396,9 @@
             D.text(ctx, sv ? (sv.won ? 'Ma megnyerted a tornát!' : 'A mai tornának vége — holnap újra!') : 'Megnyerted ezt a kupát!', px + pw / 2, py + 170, { size: 28, align: 'center', color: sv && !sv.won ? '#ff8a80' : '#7bff6b' });
             TT.art.drawFigure(ctx, TT.FIG.robin, px + pw / 2, py + 330, 1.2, { pose: 'cheer' });
           } else {
-            D.text(ctx, nm.boss ? 'FŐELLENSÉG' : c.id === 'endless' ? `${nm.step + 1}. hullám` : c.id === 'survival' ? `${nm.step + 1}/5. kör` : `${nm.step + 1}. meccs`, px + 22, py + 112, { size: 20, color: nm.boss ? '#ff4f4f' : '#ffd23f' });
+            if (c.id === 'friend' && !TT.save.lastFriend) {
+              D.text(ctx, 'Nyomd meg a HARC! gombot a kódhoz.', px + pw / 2, py + 200, { size: 22, align: 'center', color: '#ffe9a0' });
+            } else D.text(ctx, nm.boss ? 'FŐELLENSÉG' : c.id === 'endless' ? `${nm.step + 1}. hullám` : c.id === 'survival' ? `${nm.step + 1}/5. kör` : c.id === 'friend' ? 'Kihívás' : `${nm.step + 1}. meccs`, px + 22, py + 112, { size: 20, color: nm.boss ? '#ff4f4f' : '#ffd23f' });
             D.text(ctx, m.name, px + 22, py + 142, { size: 30 });
             // ellenfél csapata
             m.team.forEach((t, i) => {
