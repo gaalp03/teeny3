@@ -981,7 +981,7 @@
         const k = U.ease.outBack(U.clamp(cm.t / 0.35, 0, 1)) * (1 - U.clamp((cm.t - cm.dur + 0.3) / 0.3, 0, 1));
         const hx = cm.host.x - facing * 95, hy = cm.host.y + 6;
         const cx = U.lerp(f.x, hx, k), cy = U.lerp(f.y, hy, k) - Math.sin(Math.min(1, cm.t / 0.35) * Math.PI) * 60;
-        TT.art.drawFigure(ctx, f.fig, cx, cy, U.lerp(f.s, 1.3, k), { facing, pose: cm.t > 0.35 ? 'cast' : 'cheer', t: TT.time + f.idx, pedestal: false });
+        TT.art.drawFigure(ctx, f.fig, cx, cy, U.lerp(f.s, 1.3, k), { facing, pose: cm.t > 0.35 ? 'cast' : 'cheer', t: TT.time + f.idx, pedestal: false, paint: f.side === 0 ? TT.paintOf(f.id) : null });
         if (Math.random() < 0.5) TT.fx.spawn(cx + U.rand(-30, 30), cy - U.rand(20, 110), { vy: -90, color: '#ffd23f', shape: 'star', size: 5, life: 0.5 });
         return;
       }
@@ -1043,7 +1043,7 @@
       }
       TT.art.drawFigure(ctx, f.fig, x, y, f.s, {
         facing, pose, lean, flash: f.flashT > 0 ? 1 : 0, t: TT.time + f.idx,
-        pedestal: true,
+        pedestal: true, paint: f.side === 0 ? TT.paintOf(f.id) : null,
       });
       ctx.restore();
       if (pose === 'ko' && active && f.koT < 1.2) {
@@ -1543,7 +1543,7 @@
           ctx.save();
           ctx.globalAlpha = bf.alive ? 1 : 0.45;
           D.panel(ctx, bx, by, 122, 44, { fill: canSwap ? '#2f5aa8' : '#2b1e5c', r: 10, lw: 2.5, shadow: false });
-          const img = TT.art.figureCanvas(bf.id, 96, { pedestal: false });
+          const img = TT.art.figureCanvas(bf.id, 96, { pedestal: false, paint: s === 0 ? undefined : null });
           ctx.save();
           D.rr(ctx, bx + 3, by + 3, 38, 38, 8);
           ctx.clip();

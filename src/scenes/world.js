@@ -942,7 +942,7 @@
       ctx.fill();
       ctx.restore();
       TT.art.drawFigure(ctx, TT.FIG.robin, x, y + 2, 0.6, {
-        pedestal: false, pose: pl.moving ? 'walk' : 'idle', walk: pl.walk,
+        pedestal: false, pose: pl.moving ? 'walk' : 'idle', walk: pl.walk, paint: TT.paintOf('robin'),
         facing: pl.dir === 'left' ? -1 : 1, back: pl.dir === 'up', noCustom: true,
       });
     },

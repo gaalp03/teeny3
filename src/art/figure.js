@@ -1650,11 +1650,51 @@
     }
   }
 
+  // ---------- Festések (Festőműhely) ----------
+  const PAINT_FX = {
+    gold: (c) => U.mix(U.mix(c, '#ffc93c', 0.62), '#ffffff', 0.05),
+    silver: (c) => {
+      const [r, g, b] = U.hexToRgb(c);
+      const l = (r * 0.3 + g * 0.59 + b * 0.11) / 255;
+      return U.mix(U.rgbToHex(l * 255, l * 255, l * 255), '#dfe6ef', 0.35);
+    },
+    shadow: (c) => U.mix(c, '#241a3a', 0.62),
+    neon: (c) => {
+      const [r, g, b] = U.hexToRgb(c);
+      const l = (r + g + b) / 765;
+      return l > 0.5 ? U.mix(c, '#3dfff2', 0.55) : U.mix(c, '#ff2fd2', 0.5);
+    },
+    candy: (c) => U.mix(c, '#ffb4d8', 0.42),
+    ice: (c) => U.mix(c, '#bfefff', 0.55),
+  };
+  const HEX = /^#[0-9a-fA-F]{3,6}$/;
+  function paintValue(v, fx) {
+    if (typeof v === 'string' && HEX.test(v)) return fx(v);
+    if (v && typeof v === 'object' && !Array.isArray(v)) {
+      const o = {};
+      for (const k of Object.keys(v)) o[k] = paintValue(v[k], fx);
+      return o;
+    }
+    return v;
+  }
+  const paintCache = new Map();
+  A.paintedLook = function (fig, paint) {
+    if (!paint || !PAINT_FX[paint]) return fig.look;
+    const key = fig.id + '|' + paint;
+    let L = paintCache.get(key);
+    if (!L) {
+      L = paintValue(fig.look, PAINT_FX[paint]);
+      if (paint === 'gold' || paint === 'silver') L.gold = true;
+      paintCache.set(key, L);
+    }
+    return L;
+  };
+
   // ---------- Fő belépési pont ----------
   // fig: figura vagy {look}, x/y: talppont, s: méret, o: beállítások
   A.drawFigure = function (ctx, fig, x, y, s, o) {
     o = o || {};
-    const L = fig.look || {};
+    const L = o.paint ? A.paintedLook(fig, o.paint) : fig.look || {};
     const t = o.t != null ? o.t : TT.time;
     const facing = o.facing || 1;
     const scale = s * (L.scale || 1);
@@ -1780,14 +1820,15 @@
   A.clearCache = () => cache.clear();
   A.figureCanvas = function (id, size, o) {
     o = o || {};
-    const key = id + '|' + size + '|' + (o.silhouette ? 1 : 0) + '|' + (o.pedestal === false ? 0 : 1);
+    const paint = o.paint === undefined ? TT.paintOf(id) : o.paint;
+    const key = id + '|' + size + '|' + (o.silhouette ? 1 : 0) + '|' + (o.pedestal === false ? 0 : 1) + '|' + (paint || '');
     let c = cache.get(key);
     if (c) return c;
     const fig = TT.FIG[id];
     const s = size / 130;
     c = TT.makeCanvas(size, size);
     const g = c.getContext('2d');
-    A.drawFigure(g, fig, size / 2, size * 0.88, s, { t: 0.4, pedestal: o.pedestal, sparkle: false });
+    A.drawFigure(g, fig, size / 2, size * 0.88, s, { t: 0.4, pedestal: o.pedestal, sparkle: false, paint: o.silhouette ? null : paint });
     if (o.silhouette) {
       g.globalCompositeOperation = 'source-atop';
       g.fillStyle = '#2a1f55';

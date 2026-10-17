@@ -169,6 +169,55 @@
     return TT.U.weighted(weighted);
   };
 
+  // Festőműhely: figurák átfestése
+  TT.PAINTS = [
+    { id: 'gold', name: 'Arany', price: 900 },
+    { id: 'silver', name: 'Ezüst', price: 600 },
+    { id: 'neon', name: 'Neon', price: 700 },
+    { id: 'shadow', name: 'Árnyék', price: 500 },
+    { id: 'ice', name: 'Jég', price: 500 },
+    { id: 'candy', name: 'Cukorka', price: 400 },
+  ];
+  TT.paintOf = function (id) {
+    const p = TT.save && TT.save.paints && TT.save.paints[id];
+    return p && p.cur ? p.cur : null;
+  };
+  TT.openPaintShop = function (id, done) {
+    const s = TT.save;
+    s.paints = s.paints || {};
+    const p = s.paints[id] || { owned: [], cur: null };
+    const opts = TT.PAINTS.map((pt) => {
+      const has = p.owned.includes(pt.id);
+      return {
+        label: `${pt.name} — ${p.cur === pt.id ? 'aktív' : has ? 'felvesz' : TT.U.fmt(pt.price) + ' érme'}`,
+        value: pt.id, disabled: !has && s.coins < pt.price, color: has ? '#2ecc71' : '#ff6b35',
+        onDisabled: () => TT.ui.toast('Nincs elég érméd!', { color: '#ff8a80' }),
+      };
+    });
+    opts.push({ label: 'Eredeti szín' + (p.cur ? '' : ' (aktív)'), value: 'none', color: '#3fa7ff' });
+    opts.push({ label: 'Mégse', value: null, color: '#6c5ce7' });
+    TT.ui.choose({ title: 'Festőműhely', text: TT.FIG[id].name + ' új színekben! A megvett festés bármikor újra felvehető.', buttonH: 40, options: opts }, (v) => {
+      if (!v) return;
+      if (v === 'none') p.cur = null;
+      else {
+        const pt = TT.PAINTS.find((x) => x.id === v);
+        if (!p.owned.includes(v)) {
+          if (s.coins < pt.price) return;
+          s.coins -= pt.price;
+          p.owned.push(v);
+          s.flags.painted = true;
+          TT.audio.sfx('buy');
+        }
+        p.cur = v;
+      }
+      s.paints[id] = p;
+      TT.store.write();
+      TT.audio.sfx('select');
+      TT.checkAch();
+      if (done) done();
+    });
+  };
+
   // Napi ajánlat: minden nap egy konkrét (nem gyakori) figura megvehető a boltban
   TT.dailyOffer = function () {
     const d = new Date();

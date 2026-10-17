@@ -129,9 +129,10 @@
         items.push({ id: 'add', x: 590, y: 476, w: 168, h: 52, size: 18, label: inTeam >= 0 ? `${inTeam + 1}. helyen` : `Csapatba (${this.slot + 1}.)`, color: '#2ecc71', disabled: inTeam === this.slot, onClick: () => this.setTeam(sel) });
         const maxed = own[sel].lvl >= TT.MAX_LVL;
         items.push({ id: 'train', x: 766, y: 476, w: 178, h: 52, size: 17, label: maxed ? 'Max szint' : `Edzés ${this.trainCost(sel)}`, color: '#ffb000', disabled: maxed, onClick: () => this.train(sel) });
+        items.push({ id: 'paint', x: 598, y: 262, w: 64, h: 30, size: 13, label: 'Festés', color: '#ff4fa3', onClick: () => TT.openPaintShop(sel) });
         const hasCustom = TT.custom.figures[sel];
         items.push({
-          id: 'img', x: 600, y: 262, w: 128, h: 30, size: 13, label: hasCustom ? 'Kép törlése' : 'Saját kép', color: '#6c5ce7',
+          id: 'img', x: 666, y: 262, w: 64, h: 30, size: 13, label: hasCustom ? 'Törlés' : 'Kép', color: '#6c5ce7',
           onClick: () => {
             if (hasCustom) TT.custom.remove('fig', sel).then(() => TT.ui.toast('Saját kép törölve'));
             else TT.custom.pickFor('fig', sel, (ok) => TT.ui.toast(ok ? 'Saját kép beállítva!' : 'Hibás kép', { color: ok ? '#7bff6b' : '#ff8a80' }));
@@ -280,7 +281,7 @@
       D.rr(ctx, x + 10, y + 10, 140, 180, 12);
       ctx.clip();
       D.sunburst(ctx, x + 80, y + 110, 200, 12, U.shade(R.ring, -0.5), U.shade(R.ring, -0.35), TT.time * 0.2);
-      if (own) TT.art.drawFigure(ctx, f, x + 80, y + 172, 1.0, { t: TT.time });
+      if (own) TT.art.drawFigure(ctx, f, x + 80, y + 172, 1.0, { t: TT.time, paint: TT.paintOf(id) });
       else ctx.drawImage(TT.art.figureCanvas(id, 160, { silhouette: true }), x, y + 30, 160, 160);
       ctx.restore();
       const tx = x + 162;
