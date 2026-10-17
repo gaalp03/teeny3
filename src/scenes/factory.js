@@ -73,7 +73,11 @@
       this.p = p;
       this.t = 0;
       const s = TT.save;
-      s.factory = s.factory || { floor: 0, chests: {}, buttons: {}, beaten: {}, done: false };
+      // a gyár naponta újraindul (a robotok és ládák visszatérnek)
+      const d = new Date();
+      const today = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+      const old = s.factory || {};
+      if (old.date !== today) s.factory = { floor: 0, chests: {}, buttons: {}, beaten: {}, done: !!old.done, clears: old.clears || 0, date: today };
       this.st = s.factory;
       this.joy = null;
       this.load(p.floor != null ? p.floor : this.st.floor, p.pos);
@@ -155,13 +159,15 @@
         TT.audio.sfx('found');
         TT.ui.toast(`Láda: +${coins} érme és 2× ${TT.ITEMS[item].name}!`, { dur: 3.5 });
       } else {
-        s.coins += 800;
+        const first = !this.st.done;
+        s.coins += first ? 800 : 400;
         this.st.done = true;
-        const id = TT.rollBox(TT.BOXES[2]);
+        this.st.clears = (this.st.clears || 0) + 1;
+        const id = TT.rollBox(TT.BOXES[first ? 2 : 1]);
         const info = TT.grantFigure(id);
         TT.store.write();
         TT.audio.sfx('legend');
-        TT.ui.toast('A Gyár kincse: +800 érme és egy legendás doboz!', { dur: 4 });
+        TT.ui.toast(first ? 'A Gyár kincse: +800 érme és egy legendás doboz!' : 'A Gyár kincse: +400 érme és egy prémium doboz! (Holnap újra nyitva.)', { dur: 4 });
         TT.ui.reveal(id, info, () => {
           TT.checkAch();
           TT.ui.say([{ who: 'cyborg', text: 'Kiürítettük a Menta Gyárat! A gépek leálltak… legalábbis holnapig.' }]);
