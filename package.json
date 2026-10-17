@@ -1,0 +1,16 @@
+{
+  "name": "teeny-titans-3",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Teeny Titans 3 – rajongói böngészős/Android játék",
+  "scripts": {
+    "start": "npx --yes http-server -p 8000 -c-1 .",
+    "build:www": "node scripts/build-www.js",
+    "android": "npm run build:www && npx cap add android && python3 scripts/patch_android.py && npx cap sync android"
+  },
+  "devDependencies": {
+    "@capacitor/android": "6.2.0",
+    "@capacitor/cli": "6.2.0",
+    "@capacitor/core": "6.2.0"
+  }
+}

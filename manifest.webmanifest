@@ -1,0 +1,16 @@
+{
+  "name": "Teeny Titans 3 – rajongói kiadás",
+  "short_name": "Teeny Titans 3",
+  "description": "Gyűjtsd a Teeny figurákat, harcolj a Csatakupolában, és állítsd meg Mr. Mintet!",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0d0820",
+  "theme_color": "#1b1140",
+  "lang": "hu",
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

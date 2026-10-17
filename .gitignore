@@ -1,0 +1,8 @@
+# Saját (APK-ból kinyert) textúrák — szerzői jogvédett anyag, ne kerüljön a repóba
+assets/custom/*
+!assets/custom/README.md
+
+node_modules/
+www/
+android/
+.DS_Store

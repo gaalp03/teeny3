@@ -1,0 +1,64 @@
+'use strict';
+// Offline gyorsítótár: a játék internet nélkül is fut, ha egyszer betöltötted.
+const CACHE = 'tt3-v1';
+const FILES = [
+  "./",
+  "assets/fonts/LilitaOne-latin-ext.woff2",
+  "assets/fonts/LilitaOne-latin.woff2",
+  "assets/icons/icon-192.png",
+  "assets/icons/icon-512.png",
+  "index.html",
+  "manifest.webmanifest",
+  "src/art/backdrops.js",
+  "src/art/buildings.js",
+  "src/art/figure.js",
+  "src/art/tiles.js",
+  "src/data/figures.js",
+  "src/data/moves.js",
+  "src/data/progress.js",
+  "src/data/types.js",
+  "src/data/world.js",
+  "src/engine/audio.js",
+  "src/engine/core.js",
+  "src/engine/custom.js",
+  "src/engine/draw.js",
+  "src/engine/fx.js",
+  "src/engine/input.js",
+  "src/engine/save.js",
+  "src/engine/ui.js",
+  "src/engine/util.js",
+  "src/main.js",
+  "src/scenes/battle.js",
+  "src/scenes/collection.js",
+  "src/scenes/credits.js",
+  "src/scenes/dome.js",
+  "src/scenes/shop.js",
+  "src/scenes/title.js",
+  "src/scenes/world.js"
+];
+
+self.addEventListener('install', (e) => {
+  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
+});
+
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())
+  );
+});
+
+// Hálózat először (frissítésekhez), ha nincs net, a gyorsítótárból
+self.addEventListener('fetch', (e) => {
+  if (e.request.method !== 'GET') return;
+  e.respondWith(
+    fetch(e.request)
+      .then((res) => {
+        if (res.ok && new URL(e.request.url).origin === location.origin) {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put(e.request, copy));
+        }
+        return res;
+      })
+      .catch(() => caches.match(e.request, { ignoreSearch: true }))
+  );
+});
