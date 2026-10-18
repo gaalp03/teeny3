@@ -888,12 +888,13 @@
       TT.audio.sfx('select');
       TT.ui.choose({
         title: 'Menü',
-        buttonH: 46,
+        buttonH: 40,
         options: [
           { label: 'Csapat és gyűjtemény', value: 'team' },
           { label: 'Térkép', value: 'map' },
           { label: 'Napi küldetések', value: 'quests' },
           { label: 'Teljesítmények', value: 'ach' },
+          { label: 'Profil és rekordok', value: 'profile' },
           { label: 'Mentés', value: 'save' },
           { label: 'Beállítások', value: 'settings' },
           { label: 'Súgó', value: 'help' },
@@ -909,6 +910,7 @@
         else if (v === 'help') TT.ui.say(HELP);
         else if (v === 'ach') TT.openAchievements();
         else if (v === 'quests') TT.openQuests();
+        else if (v === 'profile') TT.openProfile();
         else if (v === 'title') {
           TT.store.write();
           TT.go('title');

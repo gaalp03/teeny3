@@ -112,6 +112,73 @@
     return coins;
   };
 
+  // Profil: statisztikák és rekordok egy helyen
+  TT.openProfile = function () {
+    const s = TT.save;
+    const st = s.stats;
+    const x = 60, y = 30, w = TT.W - 120, h = TT.H - 60;
+    const owned = Object.keys(s.owned);
+    const best = owned.slice().sort((a, b) => s.owned[b].lvl - s.owned[a].lvl || s.owned[b].xp - s.owned[a].xp)[0];
+    const games = st.wins + st.losses;
+    const cups = TT.CUPS.filter((c) => TT.cupDone(c.id)).length;
+    const pct = (a, b) => (b ? Math.round((a / b) * 100) + '%' : '—');
+    const rows = [
+      ['Játékidő', U.timeStr(s.playTime || 0)],
+      ['Figurák', `${owned.length} / ${TT.FIG_LIST.length}`],
+      ['Legendás figurák', String(owned.filter((id) => TT.FIG[id] && TT.FIG[id].rarity === 'legendary').length)],
+      ['Kupák', `${cups} / ${TT.CUPS.length}`],
+      ['Győzelem / vereség', `${st.wins} / ${st.losses} (${pct(st.wins, games)})`],
+      ['Kiütött ellenfelek', String(st.kos)],
+      ['Tökéletes blokkok', String(st.perfects)],
+      ['Szuper támadások', String(st.supers || 0)],
+      ['Legyőzött járőrök', String(st.patrols || 0)],
+      ['Kibontott dobozok', String(st.boxes)],
+      ['Végtelen Aréna rekord', s.endless ? s.endless + '. hullám' : '—'],
+      ['Túlélő Torna győzelmek', String(s.flags.survivalWins || 0)],
+      ['Pizzafogó rekord', s.flags.pizzaBest ? s.flags.pizzaBest + ' pizza' : '—'],
+      ['Memória rekord', s.flags.memBest ? s.flags.memBest + ' lépés' : '—'],
+      ['Napi küldetések', String(st.quests || 0)],
+      ['Teljesítmények', `${Object.keys(s.ach || {}).length} / ${TT.ACHIEVEMENTS.length}`],
+    ];
+    TT.ui.push({
+      update() {
+        const I = TT.input;
+        if (I.hit('back') || I.hit('ok') || I.tapIn(x + w - 54, y + 10, 44, 44)) {
+          TT.audio.sfx('back');
+          this.close();
+        }
+      },
+      draw(ctx) {
+        ctx.save();
+        ctx.fillStyle = 'rgba(10,5,25,0.6)';
+        ctx.fillRect(0, 0, TT.W, TT.H);
+        D.panel(ctx, x, y, w, h, { fill: '#2b1e5c', r: 18, lw: 4 });
+        D.text(ctx, 'Profil: ' + (s.playerName || 'Titán'), x + 24, y + 34, { size: 28, color: '#ffd23f' });
+        D.button(ctx, x + w - 54, y + 10, 44, 44, '×', { color: '#e84545', size: 26 });
+        // legerősebb figura
+        D.panel(ctx, x + 20, y + 66, 200, h - 90, { fill: '#3a2a7a', r: 14, lw: 2.5, shadow: false });
+        D.text(ctx, 'Legerősebb figurád', x + 120, y + 88, { size: 15, align: 'center', color: '#c8b8f0', lw: 3 });
+        if (best) {
+          ctx.drawImage(TT.art.figureCanvas(best, 180), x + 30, y + 104, 180, 180);
+          D.text(ctx, TT.FIG[best].name, x + 120, y + 302, { size: 19, align: 'center', maxWidth: 186 });
+          D.text(ctx, 'Szint ' + s.owned[best].lvl + (TT.starsOf(best) ? `  ·  ${TT.starsOf(best)}★` : ''), x + 120, y + 328, { size: 16, align: 'center', color: '#ffd23f' });
+        }
+        D.coin(ctx, x + 70, y + h - 52, 13);
+        D.text(ctx, U.fmt(s.coins), x + 90, y + h - 51, { size: 20, color: '#ffd23f' });
+        // statisztikák két oszlopban
+        const cx = x + 240, cw = (w - 270) / 2;
+        rows.forEach(([k, v], i) => {
+          const col = Math.floor(i / 8), row = i % 8;
+          const rx = cx + col * (cw + 10), ry = y + 66 + row * 52;
+          D.panel(ctx, rx, ry, cw, 44, { fill: row % 2 ? '#33246a' : '#3a2a7a', r: 10, lw: 2, shadow: false });
+          D.text(ctx, k, rx + 12, ry + 22, { size: 14, color: '#c8b8f0', lw: 2.5, maxWidth: cw * 0.55 });
+          D.text(ctx, v, rx + cw - 12, ry + 22, { size: 17, align: 'right', color: '#ffffff', lw: 3, maxWidth: cw * 0.45 });
+        });
+        ctx.restore();
+      },
+    });
+  };
+
   // Teljesítmények listája (görgethető ablak)
   TT.openAchievements = function () {
     const s = TT.save;
