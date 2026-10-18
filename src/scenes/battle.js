@@ -936,10 +936,17 @@
       });
       // állapotok
       const sy = my + 104;
-      const sts = Object.keys(f.status).map((k) => `${TT.STATUS[k].name} (${Math.ceil(f.status[k].t)} mp): ${TT.STATUS[k].desc}`);
-      if (f.stun > 0) sts.push(`Kábulat (${Math.ceil(f.stun)} mp): nem tud támadni.`);
+      // kábulat és rossz állapotok elöl; ha nem fér ki mind, a többi egy rövid összegző sorba kerül
+      const keys = Object.keys(f.status).sort((a, b) => (TT.STATUS[a].good ? 1 : 0) - (TT.STATUS[b].good ? 1 : 0));
+      const sts = keys.map((k) => ({ name: TT.STATUS[k].name, t: Math.ceil(f.status[k].t), desc: TT.STATUS[k].desc }));
+      if (f.stun > 0) sts.unshift({ name: 'Kábulat', t: Math.ceil(f.stun), desc: 'nem tud támadni.' });
       D.text(ctx, sts.length ? 'Állapotok:' : 'Nincs aktív állapot.', x + 22, sy + 10, { size: 15, color: '#9be7ff', lw: 3 });
-      sts.slice(0, 3).forEach((t, i) => D.text(ctx, t, x + 30, sy + 32 + i * 20, { size: 13, color: '#e8e2ff', lw: 2.5, maxWidth: w - 60 }));
+      const full = sts.length > 3 ? sts.slice(0, 2) : sts;
+      full.forEach((o, i) => D.text(ctx, `${o.name} (${o.t} mp): ${o.desc}`, x + 30, sy + 32 + i * 20, { size: 13, color: '#e8e2ff', lw: 2.5, maxWidth: w - 60 }));
+      if (sts.length > 3) {
+        const rest = sts.slice(2).map((o) => `${o.name} ${o.t} mp`).join(' · ');
+        D.text(ctx, `+${sts.length - 2}: ${rest}`, x + 30, sy + 72, { size: 13, color: '#c8b8f0', lw: 2.5, maxWidth: w - 60 });
+      }
     },
 
     pause() {

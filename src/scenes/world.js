@@ -88,6 +88,7 @@
       TT.audio.music(this.inHive() ? 'hive' : 'town');
       s.pos = { x: this.pl.x / TS, y: this.pl.y / TS };
       this.okCooldown = 0.45;
+      this.thunderK = null;
       this.initPatrols();
       this.initCars();
       this.ev = TT.activeEvent();
@@ -934,9 +935,9 @@
       // vihar: mennydörgés kicsivel a villám után
       if (TT.weatherNow() === 'storm') {
         const k = Math.floor((TT.time + 3) / TT.backdrop.THUNDER_EVERY);
-        if (this.thunderK != null && k !== this.thunderK) setTimeout(() => TT.audio.sfx('thunder'), 350);
+        if (this.thunderK != null && k !== this.thunderK) setTimeout(() => TT.scene === this && TT.audio.sfx('thunder'), 350);
         this.thunderK = k;
-      }
+      } else this.thunderK = null;
       const pl = this.pl;
       const L = this.touchLayout();
 
