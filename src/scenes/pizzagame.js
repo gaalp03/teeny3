@@ -39,8 +39,11 @@
     finish() {
       const s = TT.save;
       s.pizzaDay = s.pizzaDay && s.pizzaDay.date === today() ? s.pizzaDay : { date: today(), plays: 0 };
-      s.pizzaDay.plays++;
-      s.stats.pizzaGames = (s.stats.pizzaGames || 0) + 1;
+      // azonnali kilépés (pizza nélkül) nem számít játéknak
+      if (this.score > 0 || this.t >= DUR) {
+        s.pizzaDay.plays++;
+        s.stats.pizzaGames = (s.stats.pizzaGames || 0) + 1;
+      }
       const paid = s.pizzaDay.plays <= DAILY_PAID;
       const coins = paid ? Math.min(180, this.score * 4) : Math.min(40, this.score);
       s.coins += coins;

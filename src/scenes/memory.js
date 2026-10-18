@@ -106,8 +106,11 @@
       if (this.state === 'end') return;
       const s = TT.save;
       s.memDay = s.memDay && s.memDay.date === today() ? s.memDay : { date: today(), plays: 0 };
-      s.memDay.plays++;
-      s.stats.memGames = (s.stats.memGames || 0) + 1;
+      // azonnali kilépés (egy lépés nélkül) nem számít játéknak
+      if (this.moves > 0) {
+        s.memDay.plays++;
+        s.stats.memGames = (s.stats.memGames || 0) + 1;
+      }
       const paid = s.memDay.plays <= DAILY_PAID;
       // tökéletes játék (10 lépés) 200 érme, minden fölösleges lépés 4-gyel kevesebb
       const full = cleared ? 100 + Math.max(0, 25 - (this.moves - PAIRS)) * 4 : this.pairs * 8;
@@ -200,11 +203,11 @@
         D.text(ctx, 'T', 0, 2, { size: 26, align: 'center', color: '#ffffff' });
       }
       ctx.restore();
-      if (focus && !c.done) {
+      if (focus) {
         ctx.save();
         D.rr(ctx, c.x - 4, c.y - 4, CW + 8, CH + 8, 13);
         ctx.lineWidth = 4;
-        ctx.strokeStyle = '#ffd23f';
+        ctx.strokeStyle = c.done ? 'rgba(123,255,107,0.8)' : '#ffd23f';
         ctx.stroke();
         ctx.restore();
       }
@@ -248,7 +251,7 @@
         D.text(ctx, line, TT.W / 2, 220, { size: 30, align: 'center', color: this.newBest ? '#7bff6b' : '#ffffff' });
         D.coin(ctx, TT.W / 2 - 70, 278, 16);
         D.text(ctx, '+' + this.result.coins + ' érme', TT.W / 2 - 46, 279, { size: 28, color: '#ffd23f' });
-        const tip = this.cleared && this.moves > BEST_GOAL ? `Tipp: ${BEST_GOAL} lépésen belül teljesítményt kapsz!` : '';
+        const tip = this.cleared && this.moves > BEST_GOAL && !(TT.save.ach || {}).memory ? `Tipp: ${BEST_GOAL} lépésen belül teljesítményt kapsz!` : '';
         D.text(ctx, this.result.paid ? `Ma még ${this.result.left} teljes jutalmú játék van hátra.` : 'Mára elfogytak a teljes jutalmak (holnap újra!).', TT.W / 2, 330, { size: 17, align: 'center', color: '#c8b8f0', stroke: false });
         if (tip) D.text(ctx, tip, TT.W / 2, 356, { size: 15, align: 'center', color: '#ffe066', stroke: false });
         if (this.t > 0.6) this.menu.draw(ctx);
