@@ -151,6 +151,7 @@
     { id: 'tourist', who: 'kid_tourist', x: 64, y: 57, talk: 'tourist' },
     { id: 'redx', who: 'red_x', x: 38, y: 66.6, trainer: 'redx', dir: 'right' },
     { id: 'madmod', who: 'mad_mod', x: 47.5, y: 33, trainer: 'madmod', dir: 'down' },
+    { id: 'trigon', who: 'trigon', x: 80.5, y: 7.6, trainer: 'trigon', dir: 'right' },
   ];
 
   // Rejtett figurák és érmék
@@ -219,10 +220,22 @@
       { who: 'beastboy', text: 'Dude! A Játékboltban dobozokat lehet venni, bennük véletlenszerű figurákkal!' },
       { who: 'beastboy', text: 'Ha duplát kapsz, az se baj: a figura tapasztalatot kap tőle. A rejtett figurákat meg csillogás jelzi a térképen!' },
     ],
-    raven: () => [
-      { who: 'raven', text: 'A blokkolás nem gyávaság. Ha pont a találat előtt tartod a pajzsot, TÖKÉLETES blokk lesz.' },
-      { who: 'raven', text: 'Akkor nulla sebzést kapsz, és a támadó egy pillanatra megszédül. …Ne nézz így rám. Olvastam róla.' },
-    ],
+    raven: () => {
+      const s = TT.save;
+      if (s.beaten.trigon) {
+        return [{ who: 'raven', text: 'Apa elment. Azarath fénye most már velem van… és veletek. Köszönöm, Titánok.' }];
+      }
+      if (s.beaten.redx && TT.cupDone('brotherhood')) {
+        return [
+          { who: 'raven', text: 'Érzem… valami szörnyű közeleg. Apám, Trigon. A Torony szigetén nyílik meg a kapuja.' },
+          { who: 'raven', text: 'Ő a legerősebb ellenfél, akivel valaha harcoltunk. Csak a legerősebb csapattal menj!' },
+        ];
+      }
+      return [
+        { who: 'raven', text: 'A blokkolás nem gyávaság. Ha pont a találat előtt tartod a pajzsot, TÖKÉLETES blokk lesz.' },
+        { who: 'raven', text: 'Akkor nulla sebzést kapsz, és a támadó egy pillanatra megszédül. …Ne nézz így rám. Olvastam róla.' },
+      ];
+    },
     silkie: () => {
       const s = TT.save;
       s.toys = s.toys || {};

@@ -218,6 +218,12 @@
   M('black_nova', 'Fekete nova', 'beam', 44, 8, 'star', '#8e3fd6', { eff: [E('burn', 0.4, 3)] });
   M('queen_tamaran', 'Tamaran királynője', 'multi', 86, 0, 'star', '#c06bff', { super: true, hits: 6 });
 
+  // ---------- Azarath Ravenje ----------
+  M('soul_bird', 'Lélekmadár', 'shot', 13, 2.3, 'magic', '#c06bff', { eff: [E('mark', 0.25, 4)] });
+  M('azarath_veil', 'Azarath fátyla', 'self', 0, 8.5, 'shield', '#ffd23f', { shield: 0.16, eff: [E('regen', 1, 5, { self: true })] });
+  M('azarath_storm', 'Azarath vihara', 'multi', 42, 8.4, 'magic', '#ffd23f', { hits: 3, eff: [E('weak', 0.4, 4)] });
+  M('metrion_zinthos', 'Metrion Zinthos!', 'beam', 104, 0, 'magic', '#ffe066', { super: true, eff: [E('stun', 1, 1.3), E('burn', 1, 4)] });
+
   // ---------- Vendégek: Mad Mod, Killer Moth, Larry ----------
   M('mod_cane', 'Sétapálca', 'melee', 12, 2.3, 'staff', '#d62828');
   M('hypno_spiral', 'Hipnospirál', 'beam', 20, 4.6, 'hex', '#f4f4f8', { eff: [E('stun', 0.35, 1)] });

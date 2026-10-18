@@ -395,6 +395,7 @@
 
     npcVisible(n) {
       if (n.id === 'redx') return TT.cupDone('brotherhood');
+      if (n.id === 'trigon') return TT.cupDone('brotherhood') && !!TT.save.beaten.redx;
       return true;
     },
 
@@ -516,6 +517,7 @@
           if (won && first) {
             if (n.trainer === 'tutorial') ev = 'after_tutorial';
             if (n.trainer === 'blood') ev = 'after_blood';
+            if (n.trainer === 'trigon') ev = 'after_trigon';
           }
           TT.store.write();
           TT.go('world', { pos: back, dir, event: ev });
@@ -880,6 +882,13 @@
         ]);
       } else if (ev === 'after_blood') {
         TT.ui.say([{ who: 'raven', text: 'Brother Blood figurája. Nem akarom tudni, mit csinált vele eddig.' }]);
+      } else if (ev === 'after_trigon') {
+        TT.ui.say([
+          { who: 'raven', text: 'Vége. Apa kapuja bezárult… és a figurám fénye mostantól a tiétek is.' },
+          { who: 'starfire', text: 'Raven, te ragyogsz! Szó szerint! Ez a legszebb figura a gyűjteményünkben!' },
+          { who: 'beastboy', text: 'Trigont legyőzni egy figurás csatában… ezt senki nem fogja elhinni nekünk.' },
+          { who: 'robin', text: 'Titánok, ma nemcsak egy kupát nyertünk. Megvédtük Jump City összes figuráját!' },
+        ]);
       }
       void s;
     },

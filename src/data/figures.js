@@ -366,6 +366,15 @@
       hair: 'messy', hairColor: '#2c7a2c', eyes: 'dot', mouth: 'grin', gear: ['ears_pointy', 'antlers', 'red_nose', 'bandana'], bandColor: '#d62828',
     }, { short: 'R. Beast Boy', bio: 'Karácsonyi kiadás. Szánt húz, ajándékot hoz, és harcol.', noBox: true });
 
+  // ---------- Azarath Ravenje (Trigon legyőzéséért) ----------
+  F('raven_azarath', 'Azarath Ravenje', 'mystic', 'legendary', [110, 15, 12, 11],
+    ['soul_bird', 'azarath_veil', 'azarath_storm'], 'metrion_zinthos',
+    {
+      skin: '#cfc8ec', top: '#4b2e83', bottom: '#4b2e83', boots: '#ffd23f', gloves: '#cfc8ec', belt: '#ffffff',
+      cloak: '#ffd23f', hood: true, hair: 'bob', hairColor: '#5b3a9a', eyes: 'glow', eyeColor: '#ffffff', mouth: 'smile',
+      gear: ['gem', 'tiara'], shine: true,
+    }, { short: 'A. Raven', bio: 'Azarath fénye Raven minden erejével. Trigon legyőzője.', noBox: true, passive: 'regen' });
+
   // ---------- Vendégek ----------
   F('mad_mod', 'Mad Mod', 'mystic', 'epic', [105, 13, 11, 10],
     ['mod_cane', 'hypno_spiral', 'swinging_sixties'], 'mod_tv',

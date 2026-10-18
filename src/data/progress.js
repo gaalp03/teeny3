@@ -139,6 +139,13 @@
       reward: { figs: ['red_x'] },
       intro: [{ who: 'red_x', text: 'Szép kis figuragyűjtemény. Kár lenne, ha… eltűnne.' }],
       outro: [{ who: 'red_x', text: 'Nem rossz, Madárfiú. Tartsd meg a figurámat. Úgyis van még egy.' }] },
+    trigon: { name: 'Trigon', who: 'trigon', team: [T('raven_rage', 28), T('slade', 29), T('trigon', 30)], ai: 0.88, coins: 3000, bg: 'tower', music: 'boss',
+      reward: { figs: ['raven_azarath'] },
+      intro: [
+        { who: 'trigon', text: 'HALANDÓK! A lányom ereje az enyém, és vele a világ összes figurája!' },
+        { who: 'raven', text: 'Apa… ezúttal nem egyedül állok előtted. Titánok, most!' },
+      ],
+      outro: [{ who: 'trigon', text: 'NEM! Ez a fény… Azarath fénye… ELÉG!' }] },
     madmod: { name: 'Mad Mod', who: 'mad_mod', team: [T('killer_moth', 14), T('mumbo', 14), T('mad_mod', 15)], ai: 0.56, coins: 450, bg: 'street', music: 'boss',
       reward: { figs: ['mad_mod'] },
       intro: [{ who: 'mad_mod', text: 'Üdvözletem, kis divatmajmok! Mad Mod vagyok, a stílus mestere. Lássuk, a figuráitok is ilyen menők-e!' }],
@@ -310,6 +317,7 @@
     if (!TT.cupDone('mint')) return 'Irány Mr. Mint trezorja északnyugaton! Nyerd meg a Menta Kupát!';
     if (!TT.cupDone('brotherhood')) return 'Utójáték: nyerd meg a Testvériség Kupát a Csatakupolában!';
     if (!s.beaten.redx) return 'Pletykák szerint éjjelente Red X ólálkodik a kikötőben…';
+    if (!s.beaten.trigon) return 'Raven nyugtalan… Trigon kapuja a Torony szigetén nyílik. Állítsd meg!';
     return 'Győztél! Próbáld ki a Végtelen Arénát, és gyűjtsd össze mind a ' + TT.FIG_LIST.length + ' figurát!';
   };
 })(window.TT);
