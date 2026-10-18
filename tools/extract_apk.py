@@ -102,7 +102,9 @@ def export_music(obj, out):
         name = obj.peek_name() if hasattr(obj, 'peek_name') else obj.read().m_Name
     except Exception:
         return 0
-    if not name or not name.lower().startswith('music_'):
+    low = (name or '').lower()
+    # zenék és a rövid menü-/harci hangok; a szinkronhangok és a képességek hangjai kimaradnak
+    if not low.startswith('music_') and not (low.startswith('sfx_') and not re.search(r'^sfx_(vo_|abilities_)|newfigreveal_names', low)):
         return 0
     if not shutil.which('ffmpeg'):
         print(f'  ! ffmpeg nélkül a zene kimarad: {name}')
@@ -290,16 +292,18 @@ def cmd_map(args):
             shutil.rmtree(dst, ignore_errors=True)
             shutil.copytree(folder, dst)
             manifest['models'][key] = f'models/{safe_name(key)}/model.json'
-    # zenék: {"town": "music_cityloop1", ...} — a raw/hang mappából
-    dst = os.path.join(CUSTOM, 'music')
-    for key, src in (mapping.get('music') or {}).items():
-        path = os.path.join(RAW, 'hang', safe_name(src) + '.ogg')
-        if not os.path.isfile(path):
-            print(f'  ! nincs meg a zene: {src}')
-            continue
-        os.makedirs(dst, exist_ok=True)
-        shutil.copyfile(path, os.path.join(dst, safe_name(key) + '.ogg'))
-        manifest['music'][key] = f'music/{safe_name(key)}.ogg'
+    # zenék és hangeffektek: {"town": "music_cityloop1", ...}, {"select": "sfx_gui_buttonconfirm", ...}
+    manifest['sfx'] = {}
+    for kind in ('music', 'sfx'):
+        dst = os.path.join(CUSTOM, kind)
+        for key, src in (mapping.get(kind) or {}).items():
+            path = os.path.join(RAW, 'hang', safe_name(src) + '.ogg')
+            if not os.path.isfile(path):
+                print(f'  ! nincs meg a hang: {src}')
+                continue
+            os.makedirs(dst, exist_ok=True)
+            shutil.copyfile(path, os.path.join(dst, safe_name(key) + '.ogg'))
+            manifest[kind][key] = f'{kind}/{safe_name(key)}.ogg'
     for kind, folder in (('figures', 'figures'), ('backgrounds', 'bg')):
         dst = os.path.join(CUSTOM, folder)
         os.makedirs(dst, exist_ok=True)
@@ -317,7 +321,7 @@ def cmd_map(args):
             manifest[kind][key] = f'{folder}/{name}'
     with open(os.path.join(CUSTOM, 'manifest.json'), 'w', encoding='utf-8') as f:
         json.dump(manifest, f, indent=2, ensure_ascii=False)
-    print(f"Kész: {len(manifest['figures'])} figura, {len(manifest['backgrounds'])} háttér, {len(manifest['music'])} zene, {len(manifest['models'])} 3D modell → assets/custom/manifest.json")
+    print(f"Kész: {len(manifest['figures'])} figura, {len(manifest['backgrounds'])} háttér, {len(manifest['music'])} zene, {len(manifest['sfx'])} hangeffekt, {len(manifest['models'])} 3D modell → assets/custom/manifest.json")
     print('Háttér kulcsok: dome, tower, park, street, beach, hive, vault')
 
 

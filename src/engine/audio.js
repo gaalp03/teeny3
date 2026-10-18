@@ -44,6 +44,7 @@
       }
       if (A.ctx.state !== 'running') A.ctx.resume();
       A.unlocked = true;
+      A.preloadSfx();
       if (A.wanted && !A.current) A.music(A.wanted, true);
     } catch (e) {
       // Hang nélkül is megy a játék
@@ -174,8 +175,37 @@
     honk: () => { tone(392, 0.16, { type: 'square', vol: 0.05 }); tone(466, 0.16, { type: 'square', vol: 0.05 }); tone(392, 0.2, { type: 'square', vol: 0.05, delay: 0.22 }); tone(466, 0.2, { type: 'square', vol: 0.05, delay: 0.22 }); },
   };
 
+  // Saját (eredeti) hangeffektek: ha be van töltve, az szól; az első hívás csak elindítja a betöltést
+  const sfxBuf = {};
+  function customSfx(name) {
+    const url = TT.custom && TT.custom.sfx && TT.custom.sfx[name];
+    if (!url) return false;
+    if (sfxBuf[name] === undefined) {
+      sfxBuf[name] = null;
+      loadBuffer(url).then((b) => { sfxBuf[name] = b || false; });
+      return false;
+    }
+    const buf = sfxBuf[name];
+    if (!buf) return false;
+    const src = A.ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(A.sfxGain);
+    src.start();
+    return true;
+  }
+  A.preloadSfx = function () {
+    if (!A.ctx || !TT.custom || !TT.custom.sfx) return;
+    for (const name of Object.keys(TT.custom.sfx)) {
+      if (sfxBuf[name] === undefined) {
+        sfxBuf[name] = null;
+        loadBuffer(TT.custom.sfx[name]).then((b) => { sfxBuf[name] = b || false; });
+      }
+    }
+  };
+
   A.sfx = function (name) {
     if (!A.ctx || !A.unlocked || A.muted) return;
+    if (customSfx(name)) return;
     const f = SFX[name];
     if (f) {
       try { f(); } catch (e) { /* hang hiba nem állítja meg a játékot */ }

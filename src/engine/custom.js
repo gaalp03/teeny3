@@ -4,7 +4,7 @@
 //  1) assets/custom/manifest.json (a tools/extract_apk.py készíti a saját APK-dból)
 //  2) játékon belüli import (Gyűjtemény → figura → "Saját kép"), IndexedDB-ben tárolva
 (function (TT) {
-  const C = { figures: {}, bg: {}, music: {}, ready: false, count: 0 };
+  const C = { figures: {}, bg: {}, music: {}, sfx: {}, ready: false, count: 0 };
   const DB_NAME = 'tt3-custom';
   const STORE = 'tex';
 
@@ -55,6 +55,7 @@
     }
     // zenék: csak az elérési út kell, a hangmotor tölti be, amikor először szól
     for (const [id, path] of Object.entries(man.music || {})) C.music[id] = 'assets/custom/' + path;
+    for (const [id, path] of Object.entries(man.sfx || {})) C.sfx[id] = 'assets/custom/' + path;
     for (const [id, path] of Object.entries(man.backgrounds || {})) {
       jobs.push(loadImage('assets/custom/' + path).then((img) => { if (img) { C.bg[id] = img; C.count++; } }));
     }
