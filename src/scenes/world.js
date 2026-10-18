@@ -548,7 +548,7 @@
           this.pizzaMenu();
           break;
         case 'comics':
-          this.comicsMenu();
+          this.comicsMenu(back);
           break;
         case 'factory':
           if (!TT.cupDone('east')) {
@@ -625,7 +625,22 @@
       });
     },
 
-    comicsMenu() {
+    comicsMenu(back) {
+      TT.ui.choose({
+        title: 'Képregénybolt',
+        text: 'Gyűjtő Géza boltja: képregények, figurák és egy memóriajáték a pult mellett.',
+        options: [
+          { label: 'Figura-memória (minijáték)', value: 'memory', color: '#ff6b35' },
+          { label: 'Gyűjtői jutalmak', value: 'rewards', color: '#3f6fd8' },
+          { label: 'Mégse', value: null },
+        ],
+      }, (v) => {
+        if (v === 'memory') TT.go('memory', { back });
+        else if (v === 'rewards') this.collectorRewards();
+      });
+    },
+
+    collectorRewards() {
       const s = TT.save;
       const have = Object.keys(s.owned).length;
       const goals = [

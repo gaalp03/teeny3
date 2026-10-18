@@ -17,6 +17,7 @@
     Q('boxes', 'Bonts ki 1 vakdobozt', 'boxes', 1, 120),
     Q('trains', 'Végezz el 1 Blokk-edzést a Toronyban', 'trains', 1, 100),
     Q('pizza', 'Játssz 1 Pizzafogót a Pizzériában', 'pizzaGames', 1, 100),
+    Q('memory', 'Játssz 1 Figura-memóriát a Képregényboltban', 'memGames', 1, 100),
   ];
   const BONUS_COINS = 250;
   const PER_DAY = 3;

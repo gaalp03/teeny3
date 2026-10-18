@@ -272,6 +272,12 @@
         'A5:3 F5:1 A5:2 C6:4 Bb5:2 A5:4 F5:3 A5:1 D6:4 C6:2 A5:2 F5:4 D5:2 F5:2 Bb5:4 A5:2 G5:2 D5:4 E5:4 G5:4 F5:8',
       drums: 'k..hs.h.k.khs.h.', leadType: 'triangle', leadVol: 0.16,
     }),
+    comics: song({
+      bpm: 126, chords: ['G', 'Em', 'C', 'D', 'G', 'Em', 'Am', 'D'], bass: 'walk', arpVol: 0.03,
+      lead: 'G5:2 B5:2 D6:2 B5:2 G5:4 D5:4 E5:2 G5:2 B5:2 G5:2 E6:4 B5:4 C6:2 B5:2 A5:2 G5:2 E5:4 G5:4 F#5:2 A5:2 D6:4 C6:2 B5:2 A5:4 ' +
+        'B5:2 D6:2 G6:4 F#6:2 E6:2 D6:4 E6:2 D6:2 B5:2 G5:2 E5:4 G5:4 A5:2 C6:2 E6:4 D6:2 C6:2 A5:4 D6:4 C6:2 A5:2 F#5:4 r:4',
+      drums: 'k.h.s.hkk.h.s.h.', leadType: 'triangle', leadVol: 0.15,
+    }),
     hive: song({
       bpm: 120, chords: ['Em', 'C', 'Am', 'B', 'Em', 'C', 'D', 'B'], bass: 'oct', bassType: 'square', bassVol: 0.09,
       lead: 'E5:4 G5:2 B5:2 A5:4 G5:2 F#5:2 E5:4 G5:4 C6:4 B5:4 A5:4 C6:2 B5:2 A5:4 E5:4 D#5:4 F#5:4 B5:8 ' +
