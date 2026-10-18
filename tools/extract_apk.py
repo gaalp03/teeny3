@@ -91,7 +91,21 @@ def extract_unity(apk, out, tmp):
         return 0
     for m in members:
         apk.extract(m, tmp)
-    env = UnityPy.load(tmp)
+    # a nagy .assets fájlok darabolva (.split0, .split1, ...) vannak a csomagban: összefűzzük őket
+    parts = {}
+    for dirpath, _, names in os.walk(tmp):
+        for nm in names:
+            mt = re.match(r'(.+)\.split(\d+)$', nm)
+            if mt:
+                parts.setdefault(os.path.join(dirpath, mt.group(1)), []).append((int(mt.group(2)), os.path.join(dirpath, nm)))
+    for whole, lst in parts.items():
+        with open(whole, 'wb') as out_f:
+            for _, part in sorted(lst):
+                with open(part, 'rb') as in_f:
+                    shutil.copyfileobj(in_f, out_f)
+                os.remove(part)
+    files = [os.path.join(d, nm) for d, _, names in os.walk(tmp) for nm in names]
+    env = UnityPy.load(*files)
     n = 0
     for obj in env.objects:
         if obj.type.name not in ('Texture2D', 'Sprite'):

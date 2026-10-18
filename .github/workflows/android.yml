@@ -39,20 +39,18 @@ jobs:
           shopt -s nullglob
           mkdir -p apk
           BRANCH=
-          FROM_RELEASE=
           # a kiadás címkéje is "apk-forras", ezért teljes hivatkozással kérjük az ágat
           if git fetch --depth 1 origin refs/heads/apk-forras 2>/dev/null; then
             BRANCH=$(git rev-parse FETCH_HEAD)
             git checkout FETCH_HEAD -- apk 2>/dev/null || true
           fi
+          onbranch=(apk/*.apk apk/*.xapk apk/*.apks apk/*.obb)
+          # nagy fájlok (pl. a játék .obb kiegészítője): az "apk-forras" nevű kiadáshoz csatolva
+          gh release download apk-forras --dir apk --skip-existing --pattern '*.apk' --pattern '*.xapk' --pattern '*.apks' --pattern '*.obb' 2>/dev/null || true
           pkgs=(apk/*.apk apk/*.xapk apk/*.apks apk/*.obb)
-          if [ ${#pkgs[@]} -eq 0 ]; then
-            # nagy fájl: a felhasználó egy "apk-forras" nevű kiadáshoz csatolta
-            gh release download apk-forras --dir apk --pattern '*.apk' --pattern '*.xapk' --pattern '*.apks' --pattern '*.obb' 2>/dev/null || true
-            pkgs=(apk/*.apk apk/*.xapk apk/*.apks apk/*.obb)
-            if [ ${#pkgs[@]} -gt 0 ]; then FROM_RELEASE=1; fi
-          fi
           if [ ${#pkgs[@]} -gt 0 ]; then
+            SIG=$(for f in "${pkgs[@]}"; do echo "$(basename "$f") $(stat -c %s "$f")"; done)
+            echo "== Csomagok ==" && echo "$SIG"
             for f in "${pkgs[@]}"; do
               echo "== $f: a 40 legnagyobb fájl =="
               unzip -l "$f" | sort -k1 -n -r | head -40 || true
@@ -61,21 +59,22 @@ jobs:
             for f in "${pkgs[@]}"; do python3 tools/extract_apk.py extract "$f" || echo "Hiba a kinyeréskor: $f"; done
             if [ -f apk/map.json ]; then
               python3 tools/extract_apk.py map apk/map.json || echo "A párosítás nem sikerült, textúrák nélkül folytatom"
-            elif [ -n "$BRANCH" ] && [ ! -d apk/kepek ]; then
-              # első alkalom: kicsinyített előnézet az apk-forras ágra a figurák párosításához
+            elif [ -n "$BRANCH" ] && [ "$SIG" != "$(cat apk/kepek/forras.txt 2>/dev/null)" ]; then
+              # új csomag jött: kicsinyített előnézet az apk-forras ágra a figurák párosításához
               python3 tools/extract_apk.py thumbs "$RUNNER_TEMP/kepek" || true
+              mkdir -p "$RUNNER_TEMP/kepek"
+              echo "$SIG" > "$RUNNER_TEMP/kepek/forras.txt"
               # (az || miatt a set -e itt nem hatna, ezért minden lépés &&-gyel láncolva)
               git worktree add "$RUNNER_TEMP/af" "$BRANCH" \
+                && rm -rf "$RUNNER_TEMP/af/apk/kepek" \
                 && mkdir -p "$RUNNER_TEMP/af/apk" \
                 && cp -r "$RUNNER_TEMP/kepek" "$RUNNER_TEMP/af/apk/kepek" \
-                && git -C "$RUNNER_TEMP/af" add apk/kepek \
-                && if [ -n "$FROM_RELEASE" ]; then
-                  # a kiadásból jött csomag is kerüljön az ágra (100 MB alatt), hogy a kinyerést javítani lehessen
-                  for f in "${pkgs[@]}"; do
-                    sz=$(stat -c %s "$f")
-                    if [ "$sz" -lt 95000000 ]; then cp "$f" "$RUNNER_TEMP/af/apk/" && git -C "$RUNNER_TEMP/af" add "apk/$(basename "$f")"; fi
-                  done
-                fi \
+                && git -C "$RUNNER_TEMP/af" add -A apk/kepek \
+                && for f in "${pkgs[@]}"; do
+                  # a kiadásból jött kisebb csomag is kerüljön az ágra, hogy a kinyerést javítani lehessen
+                  case " ${onbranch[*]} " in *" $f "*) continue ;; esac
+                  if [ "$(stat -c %s "$f")" -lt 95000000 ]; then cp "$f" "$RUNNER_TEMP/af/apk/" && git -C "$RUNNER_TEMP/af" add "apk/$(basename "$f")"; fi
+                done \
                 && git -C "$RUNNER_TEMP/af" -c user.name="github-actions[bot]" -c user.email="41898299+github-actions[bot]@users.noreply.github.com" commit -q -m "Kinyert képek előnézete a párosításhoz" \
                 && git -C "$RUNNER_TEMP/af" push origin HEAD:refs/heads/apk-forras \
                 || echo "Az előnézet feltöltése nem sikerült"
