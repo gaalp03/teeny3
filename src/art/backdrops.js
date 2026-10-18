@@ -253,6 +253,8 @@
         }
       }
       ctx.restore();
+      const wt = TT.weatherNow ? TT.weatherNow() : 'clear';
+      if (wt !== 'clear') BD.rain(ctx, t, wt === 'storm');
     } else if (kind === 'hive' || kind === 'vault') {
       ctx.save();
       ctx.globalCompositeOperation = 'lighter';
@@ -265,6 +267,54 @@
       ctx.restore();
     }
   };
+
+  // Eső állapot nélkül, az időből számolva (város és kültéri harcok); viharban villámlással
+  BD.rain = function (ctx, t, heavy) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'multiply';
+    ctx.fillStyle = heavy ? '#a9afc8' : '#c6ccdd';
+    ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.strokeStyle = 'rgba(205,222,255,0.55)';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    const n = heavy ? 150 : 95;
+    for (let i = 0; i < n; i++) {
+      const sp = 560 + ((i * 37) % 9) * 40;
+      const len = 10 + ((i * 13) % 7) * 2;
+      const y = ((t * sp + i * 997) % (H + 60)) - 30;
+      const x = ((i * 389) % (W + 140)) - y * 0.25 + 40;
+      ctx.moveTo(x, y);
+      ctx.lineTo(x + len * 0.25, y - len);
+    }
+    ctx.stroke();
+    // csobbanások
+    ctx.lineWidth = 1.2;
+    const m = heavy ? 18 : 11;
+    for (let i = 0; i < m; i++) {
+      const cyc = t * 2.2 + i * 0.618;
+      const k = cyc - Math.floor(cyc);
+      if (k > 0.5) continue;
+      const seed = Math.floor(cyc) * 131 + i * 977;
+      const sx = (((seed * 7919) % 1000) / 1000) * W;
+      const sy = H * 0.35 + (((seed * 104729) % 1000) / 1000) * H * 0.63;
+      const r = 2 + k * 14;
+      ctx.globalAlpha = 1 - k * 2;
+      ctx.beginPath();
+      ctx.ellipse(sx, sy, r, r * 0.35, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    if (heavy) {
+      const ph = (t + 3) % BD.THUNDER_EVERY;
+      if (ph < 0.25) {
+        ctx.fillStyle = `rgba(255,255,255,${(0.25 - ph) * 2})`;
+        ctx.fillRect(0, 0, W, H);
+      }
+    }
+    ctx.restore();
+  };
+  BD.THUNDER_EVERY = 9.7;
 
   TT.backdrop = BD;
 })(window.TT);

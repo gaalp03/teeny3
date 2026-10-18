@@ -22,7 +22,7 @@ Gyűjts Teeny figurákat, harcolj 3v3 csapatcsatákban a Csatakupolában, és á
 - **Menta Gyár**: háromszintes kazamata futószalagokkal, gombokkal, robotokkal és kincsesládákkal
 - **Blokk-edzés** minijáték a Toronyban, **szezonális események** (Halloween, Karácsony)
 - **Bejárható Titánok Tornya** figuravitrinnel, **Pizzafogó** és **Figura-memória** minijáték, **Silkie-mellékküldetés**
-- **Menta-járőrök** és autók a városban, **valós napszak** (este besötétedik)
+- **Menta-járőrök** és autók a városban, **valós napszak** (este besötétedik) és **időjárás** (eső, vihar villámlással)
 - **45 teljesítmény**, **napi küldetések** (3 feladat naponta, bónusszal), napi jutalom, automatikus harc és gyorsítás (×1.6) gyakorláshoz
 - **Vakdobozok** a boltban (Alap / Prémium / Legendás), duplikátumokból tapasztalat
 - Szintlépés (max. 30), edzés, pizzaparti, gyűjtői jutalmak

@@ -29,6 +29,19 @@
     return TT.EVENTS.find((e) => inRange(d, e.from, e.to)) || null;
   };
 
+  // Időjárás: háromórás blokkonként sorsolva, mindenkinél ugyanaz ('clear' | 'rain' | 'storm')
+  TT.weatherNow = function () {
+    const st = TT.settings || {};
+    if (st.forceWeather) return st.forceWeather;
+    if (st.weather === 'off') return 'clear';
+    const ev = TT.activeEvent();
+    if (ev && ev.id === 'xmas') return 'clear';
+    const d = new Date();
+    const key = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ':' + Math.floor(d.getHours() / 3);
+    const r = TT.U.rng(TT.U.hash('weather:' + key))();
+    return r < 0.07 ? 'storm' : r < 0.24 ? 'rain' : 'clear';
+  };
+
   // Az esemény állapota az aktuális szezonra (évente újraindul)
   TT.eventState = function (ev) {
     const s = TT.save;

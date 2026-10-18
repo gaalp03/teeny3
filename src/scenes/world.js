@@ -931,6 +931,12 @@
       const s = TT.save;
       s.playTime += dt;
       const TS = W.TS;
+      // vihar: mennydörgés kicsivel a villám után
+      if (TT.weatherNow() === 'storm') {
+        const k = Math.floor((TT.time + 3) / TT.backdrop.THUNDER_EVERY);
+        if (this.thunderK != null && k !== this.thunderK) setTimeout(() => TT.audio.sfx('thunder'), 350);
+        this.thunderK = k;
+      }
       const pl = this.pl;
       const L = this.touchLayout();
 
@@ -1146,6 +1152,8 @@
       for (const it of items) it.draw();
 
       this.drawNight(ctx, cx, cy);
+      const weather = TT.weatherNow();
+      if (weather !== 'clear') TT.backdrop.rain(ctx, TT.time, weather === 'storm');
       this.drawSeason(ctx);
 
       // ajtó feliratok
@@ -1441,13 +1449,14 @@
     };
     TT.ui.choose({
       title: 'Beállítások',
-      buttonH: 42,
+      buttonH: 38,
       options: [
         { label: 'Zene: ' + pct(st.music), value: 'music' },
         { label: 'Hangeffektek: ' + pct(st.sfx), value: 'sfx' },
         { label: 'Képernyőrázás: ' + (st.shake ? 'Be' : 'Ki'), value: 'shake' },
         { label: 'Nehézség: ' + ({ easy: 'Könnyű', normal: 'Normál', hard: 'Nehéz' }[st.difficulty || 'normal']), value: 'diff' },
         { label: 'Napszak: ' + (st.dayNight === 'day' ? 'mindig nappal' : 'valós idő'), value: 'daynight' },
+        { label: 'Időjárás: ' + (st.weather === 'off' ? 'mindig derült' : 'változó (eső, vihar)'), value: 'weather' },
         { label: 'Teljes képernyő', value: 'fs' },
         { label: 'Mentés exportálása', value: 'export' },
         { label: 'Kész', value: null, color: '#6c5ce7' },
@@ -1458,6 +1467,7 @@
       if (v === 'sfx') st.sfx = cycle(st.sfx);
       if (v === 'shake') st.shake = !st.shake;
       if (v === 'daynight') st.dayNight = st.dayNight === 'day' ? 'real' : 'day';
+      if (v === 'weather') st.weather = st.weather === 'off' ? 'auto' : 'off';
       if (v === 'diff') st.difficulty = { easy: 'normal', normal: 'hard', hard: 'easy' }[st.difficulty || 'normal'];
       if (v === 'fs') {
         try {

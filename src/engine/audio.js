@@ -143,6 +143,7 @@
     block: () => { tone(320, 0.06, { vol: 0.14 }); noise(0.07, { vol: 0.2, filter: 'bandpass', freq: 3200, q: 4 }); },
     perfect: () => { arp(['C6', 'E6', 'G6', 'C7'], 0.045, { type: 'triangle', vol: 0.16 }); noise(0.3, { vol: 0.08, filter: 'highpass', freq: 6000 }); },
     guardbreak: () => { noise(0.35, { vol: 0.35, filter: 'bandpass', freq: 900, q: 2 }); tone(500, 0.35, { type: 'sawtooth', vol: 0.12, slide: 90 }); },
+    thunder: () => { noise(1.6, { vol: 0.32, freq: 420, slide: 60 }); noise(0.45, { vol: 0.22, freq: 1500, slide: 200, delay: 0.04 }); tone(55, 1.3, { type: 'sine', vol: 0.22, slide: 30 }); },
     ko: () => { tone(620, 0.7, { type: 'sawtooth', vol: 0.14, slide: 70 }); noise(0.5, { vol: 0.15, freq: 800, slide: 100 }); },
     coin: () => { tone(988, 0.07, { vol: 0.1 }); tone(1319, 0.18, { vol: 0.1, delay: 0.07 }); },
     box: () => { noise(0.08, { vol: 0.12, freq: 1200 }); tone(200 + Math.random() * 80, 0.05, { vol: 0.06, type: 'triangle' }); },
