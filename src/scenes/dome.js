@@ -17,7 +17,8 @@
     const lvl = Math.min(TT.MAX_LVL, 17 + wave);
     for (let i = 0; i < 3; i++) team.push({ id: pool[Math.floor(rnd() * pool.length)], lvl });
     const boss = wave % 5 === 0;
-    if (boss) team[2] = { id: U.pick(['slade', 'trigon', 'mrmint', 'robin_ultra', 'cyborg_3000']), lvl: Math.min(TT.MAX_LVL, lvl + 2) };
+    const bosses = ['slade', 'trigon', 'mrmint', 'robin_ultra', 'cyborg_3000'];
+    if (boss) team[2] = { id: bosses[Math.floor(rnd() * bosses.length)], lvl: Math.min(TT.MAX_LVL, lvl + 2) };
     return {
       name: boss ? `Aréna Bajnok – ${wave}. hullám` : `Aréna – ${wave}. hullám`, who: TT.FIG[team[2].id].id,
       team, ai: Math.min(0.9, 0.55 + wave * 0.02), coins: 220 + wave * 30, bg: 'dome', music: boss ? 'boss' : 'battle',
@@ -37,7 +38,11 @@
   function survivalEnemy(round) {
     const rnd = U.rng(U.hash(todayKey() + ':' + round));
     const pool = TT.FIG_LIST.filter((f) => f.rarity !== 'legendary').map((f) => f.id);
-    const lvl = U.clamp(Math.round(teamAvg() + round * 0.6), 2, TT.MAX_LVL);
+    // az első kör után a rögzített csapat szintje számít (csapatcserével ne lehessen gyengíteni az ellenfelet)
+    const s = TT.save, sv = survivalState();
+    const ids = sv.round > 0 && sv.team ? sv.team : s.team;
+    const avg = ids.reduce((a, id) => a + (s.owned[id] ? s.owned[id].lvl : 1), 0) / ids.length;
+    const lvl = U.clamp(Math.round(avg + round * 0.6), 2, TT.MAX_LVL);
     const team = [0, 1, 2].map(() => ({ id: pool[Math.floor(rnd() * pool.length)], lvl }));
     const boss = round === 4;
     if (boss) {
@@ -265,7 +270,7 @@
       // első kör: a csapat rögzül
       if (sv.round === 0) sv.team = s.team.slice();
       TT.go('battle', {
-        enemy: m, rewardFigs: [], playerTeam: sv.team.filter((id) => sv.hp[id] == null || sv.hp[id] > 0), hpFrac: sv.hp,
+        enemy: m, rewardFigs: [], playerTeam: sv.team.filter((id) => sv.hp[id] == null || sv.hp[id] > 0), hpFrac: sv.hp, noRetry: true,
         after: (won, sc) => {
           if (!won) {
             sv.over = true;

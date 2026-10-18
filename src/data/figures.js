@@ -382,7 +382,7 @@
     {
       skin: SKIN, top: '#b8e0f0', bottom: '#8fc7e0', boots: '#5aa0c0', gloves: '#b8e0f0', shine: true,
       hair: 'ponytail', hairColor: '#4fd6a8', eyes: 'cat', eyeColor: '#2a9d8f', mouth: 'smirk',
-    }, { team: 'mint', bio: 'Mr. Mint jobbkeze. Bárkit lefóliáz — örökre.', noBox: true });
+    }, { team: 'mint', bio: 'Mr. Mint jobbkeze. Bárkit lefóliáz — örökre.' });
 
   F('mrmint', 'Mr. Mint', 'tech', 'legendary', [150, 15, 14, 10],
     ['price_tag', 'appraisal', 'mint_box'], 'collectors_edition',

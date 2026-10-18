@@ -4,6 +4,7 @@
   const U = TT.U;
   const D = TT.D;
   const TS = 32, OY = 60;
+  const EXIT = { x: 416, y: 12, w: 88, h: 36 };
 
   // # fal · . padló · > < ^ v futószalag · B gomb · D ajtó · C láda · E lépcső · S kezdés
   // H vízszintes robot · V függőleges robot · X gyárvezető
@@ -203,7 +204,7 @@
       this.t += dt;
       const I = TT.input;
       const pl = this.pl;
-      if (I.hit('back')) {
+      if (I.hit('back') || I.tapIn(EXIT.x, EXIT.y, EXIT.w, EXIT.h)) {
         TT.ui.confirm('Elhagyod a Menta Gyárat? (A haladásod megmarad.)', (ok) => ok && this.leave(), 'Kilépés', 'Maradok');
         return;
       }
@@ -219,7 +220,7 @@
         mx = I.stick.x;
         my = I.stick.y;
       }
-      for (const tp of I.taps) if (!this.joy) this.joy = { id: tp.id, ox: tp.x, oy: tp.y };
+      for (const tp of I.taps) if (!this.joy && tp.y > OY) this.joy = { id: tp.id, ox: tp.x, oy: tp.y };
       if (this.joy) {
         const ptr = I.pointers.get(this.joy.id);
         if (!ptr) this.joy = null;
@@ -419,6 +420,7 @@
       D.coin(ctx, TT.W - 158, 30, 12);
       D.text(ctx, U.fmt(TT.save.coins), TT.W - 138, 31, { size: 20, color: '#ffd23f' });
       D.text(ctx, this.doorsOpen() ? 'Ajtók: nyitva' : 'Ajtók: zárva (keresd a piros gombokat)', TT.W - 200, 31, { size: 15, align: 'right', color: this.doorsOpen() ? '#7bff6b' : '#ff8a80' });
+      D.button(ctx, EXIT.x, EXIT.y, EXIT.w, EXIT.h, 'Kilépés', { color: '#6c5ce7', size: 15 });
       if (this.joy && this.joy.x != null) {
         ctx.save();
         ctx.globalAlpha = 0.3;

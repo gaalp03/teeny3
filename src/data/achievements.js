@@ -98,7 +98,7 @@
     const today = dayKey(now);
     s.daily = s.daily || { last: null, streak: 0 };
     if (s.daily.last === today) return null;
-    const y = new Date(now.getTime() - 86400000);
+    const y = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
     s.daily.streak = s.daily.last === dayKey(y) ? s.daily.streak + 1 : 1;
     s.daily.last = today;
     const coins = 80 + 40 * Math.min(7, s.daily.streak);

@@ -24,6 +24,7 @@
   const scene = {
     enter() {
       this.t = 0;
+      this.leaving = false;
       TT.audio.music('title');
       this.parade = TT.FIG_LIST.map((f) => f.id);
     },

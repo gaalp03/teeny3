@@ -67,6 +67,12 @@
       const pos = p.pos || s.pos || W.start;
       this.pl = { x: pos.x * TS, y: pos.y * TS, dir: p.dir || 'down', walk: 0, moving: false };
       this.unstick();
+      // régi mentés a kikötőben, a (megkerülhető) régi kapu mögött: vissza a kapu elé
+      const dg = W.gates.find((g) => g.id === 'dockgate');
+      if (dg && this.gateLocked(dg) && this.pl.y / TS >= dg.y + dg.h && Math.abs(this.pl.x / TS - (dg.x + dg.w / 2)) < 10) {
+        this.pl.x = (dg.x + dg.w / 2) * TS;
+        this.pl.y = (dg.y - 1.5) * TS;
+      }
       this.cam = { x: 0, y: 0 };
       this.snapCam();
       this.t = 0;
@@ -492,18 +498,21 @@
       const dir = this.pl.dir;
       const rewardFigs = first && tr.reward && tr.reward.figs ? tr.reward.figs : [];
       TT.go('battle', {
-        enemy: Object.assign({ bg: tr.bg || 'street' }, tr),
+        // a búcsúszöveg (pl. „itt a figurám”) csak az első győzelemhez illik
+        enemy: Object.assign({ bg: tr.bg || 'street' }, tr, first ? {} : { outro: null }),
         tutorial: !!tr.tutorial && first,
         noForfeit: !!tr.tutorial && first,
         rewardFigs,
+        // a haladás a jutalommal együtt mentődik (ha az eredményképernyőn bezárják a játékot)
+        onResult: (won) => {
+          if (!won || !first) return;
+          s.beaten[n.trainer] = true;
+          if (n.trainer === 'tutorial') s.flags.tutorial = true;
+        },
         after: (won) => {
           let ev = null;
           if (won && first) {
-            s.beaten[n.trainer] = true;
-            if (n.trainer === 'tutorial') {
-              s.flags.tutorial = true;
-              ev = 'after_tutorial';
-            }
+            if (n.trainer === 'tutorial') ev = 'after_tutorial';
             if (n.trainer === 'blood') ev = 'after_blood';
           }
           TT.store.write();

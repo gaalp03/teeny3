@@ -247,7 +247,7 @@
         'A5:2 G5:2 F5:2 A5:2 C6:4 A5:2 F5:2 G5:6 F5:2 E5:2 D5:2 B4:4 ' +
         'G4:2 C5:2 E5:2 G5:2 C6:4 B5:2 A5:2 G5:2 E5:2 C5:4 E5:2 A5:2 G5:4 ' +
         'F5:2 E5:2 D5:2 F5:2 A5:4 G5:2 F5:2 D5:4 G5:4 B5:4 r:4',
-      drums: 'k.h.s.h.k.hkh.s.h',
+      drums: 'k.h.s.h.k.hks.h.',
       leadType: 'square', leadVol: 0.1,
     }),
     battle: song({

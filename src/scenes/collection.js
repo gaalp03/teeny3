@@ -113,8 +113,11 @@
         const col = k % COLS, row = Math.floor(k / COLS);
         const x = GX + col * CW, y = GY + row * CH - this.scroll;
         const vis = y > GY - CH + 10 && y < GY + GH - 10;
+        // billentyűvel/kontrollerrel a következő (még nem látható) sor is elérhető, odagörget
+        const kb = TT.input.lastDevice === 'keyboard' || TT.input.lastDevice === 'pad';
+        const nav = vis || (kb && y > GY - 2 * CH + 10 && y < GY + GH + CH - 10);
         items.push({
-          id: 'fig_' + id, x, y, w: CW - 6, h: CH - 6, skip: !vis, hidden: !vis, silent: true,
+          id: 'fig_' + id, x, y, w: CW - 6, h: CH - 6, skip: !nav, hidden: !vis, silent: true,
           onClick: () => {
             if (this.sel === id && own[id]) this.setTeam(id);
             else TT.audio.sfx('move');
@@ -259,13 +262,16 @@
         ctx.fill();
       }
       // gombok (rács nélkül)
-      this.menu.items.forEach((b, i) => {
-        if (b.id.startsWith('fig_')) return;
+      // a Festés / Kép gombok a részletek paneljén vannak, ezért azok után rajzolódnak
+      const btn = (b, i) => {
         const focus = this.menu.showFocus() && i === this.menu.focus;
         if (b.draw) b.draw(ctx, b, focus);
         else D.button(ctx, b.x, b.y, b.w, b.h, b.label, { color: b.color, disabled: b.disabled, focus, size: b.size });
-      });
+      };
+      const onDetail = (b) => b.id === 'paint' || b.id === 'img';
+      this.menu.items.forEach((b, i) => !b.id.startsWith('fig_') && !onDetail(b) && btn(b, i));
       this.drawDetail(ctx);
+      this.menu.items.forEach((b, i) => onDetail(b) && btn(b, i));
       TT.fx.draw(ctx, 1);
     },
 

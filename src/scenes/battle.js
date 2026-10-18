@@ -238,9 +238,6 @@
           if (Math.random() < p) this.applyStatus(def, e.s, e.d * (att.passive === 'burnplus' ? 1.4 : 1), e.v, 'hit');
         }
       }
-      if (hitIdx === a.hits.length - 1) {
-        for (const e of move.eff) if (e.self) this.applyStatus(att, e.s, e.d, e.v, 'self');
-      }
     }
 
     // Kellék használata az aktív figurán
@@ -294,6 +291,10 @@
       while (f.action === a && a.hi < a.hits.length && a.t >= a.hits[a.hi]) {
         if (a.kind !== 'self') this.resolveHit(f, a, a.hi);
         a.hi++;
+        // saját erősítés az utolsó ütés után akkor is, ha az ellenfél már kiesett vagy kitért
+        if (a.hi === a.hits.length && a.kind !== 'self' && f.alive) {
+          for (const e of a.move.eff) if (e.self) this.applyStatus(f, e.s, e.d, e.v, 'self');
+        }
       }
       if (f.action === a && a.t >= a.end) f.action = null;
     }
@@ -494,6 +495,7 @@
         }
       }
       this.itemsUsed = 0;
+      this.forfeit = false;
       this.t = 0;
       this.state = 'intro';
       this.projectiles = [];
@@ -947,7 +949,7 @@
       const avgLvl = en.team.reduce((a, t) => a + t.lvl, 0) / en.team.length;
       const xpBase = Math.round((30 + avgLvl * 18) * (this.diff ? this.diff.xp : 1));
       const rows = c.sides[0].fighters.map((f) => {
-        const xp = won ? (f.alive ? xpBase : Math.round(xpBase * 0.65)) : Math.round(xpBase * 0.3);
+        const xp = won ? (f.alive ? xpBase : Math.round(xpBase * 0.65)) : this.forfeit ? 0 : Math.round(xpBase * 0.3);
         const o = s.owned[f.id];
         const before = { lvl: o.lvl, xp: o.xp };
         const ups = TT.addXp(f.id, xp);
@@ -963,6 +965,7 @@
         const syn = c.sides[0].synergy;
         if (syn && syn.n >= 3) s.flags.synWin = true;
       } else s.stats.losses++;
+      if (this.p.onResult) this.p.onResult(won, this);
       TT.store.write();
       TT.checkAch();
       this.results = { won, coins, rows, figs, t: 0 };
@@ -974,6 +977,8 @@
       const bw = 220;
       if (won) {
         items.push({ id: 'cont', x: TT.W / 2 - bw / 2, y: 452, w: bw, h: 56, label: 'Tovább', color: '#2ecc71', onClick: () => this.finish(true) });
+      } else if (this.p.noRetry) {
+        items.push({ id: 'back', x: TT.W / 2 - bw / 2, y: 452, w: bw, h: 56, label: 'Vissza', color: '#6c5ce7', onClick: () => this.finish(false) });
       } else {
         items.push({ id: 'retry', x: TT.W / 2 - bw - 10, y: 452, w: bw, h: 56, label: 'Újra', color: '#ff6b35', onClick: () => this.retry() });
         items.push({ id: 'back', x: TT.W / 2 + 10, y: 452, w: bw, h: 56, label: 'Vissza', color: '#6c5ce7', onClick: () => this.finish(false) });
@@ -988,8 +993,13 @@
       TT.go('battle', this.p);
     },
     finish(won) {
-      if (this.p.after) this.p.after(won, this);
-      else TT.go('world');
+      const go = () => {
+        if (this.p.after) this.p.after(won, this);
+        else TT.go('world');
+      };
+      const outro = this.en.outro;
+      if (won && outro && outro.length) TT.ui.say(outro, go);
+      else go();
     },
 
     // ======================= RAJZOLÁS =======================

@@ -71,9 +71,10 @@
     if (!qs.bonus && qs.list.every((e) => e.done)) {
       qs.bonus = true;
       s.coins += BONUS_COINS;
-      const item = U.pick(Object.keys(TT.ITEMS));
+      const free = Object.keys(TT.ITEMS).filter((k) => (s.items[k] || 0) < TT.ITEM_MAX);
+      const item = free.length ? U.pick(free) : null;
       let extra = '';
-      if ((s.items[item] || 0) < TT.ITEM_MAX) {
+      if (item) {
         s.items[item] = (s.items[item] || 0) + 1;
         extra = ' és 1 ' + TT.ITEMS[item].name;
       }
