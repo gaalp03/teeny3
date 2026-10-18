@@ -208,6 +208,20 @@ def cmd_extract(args):
     print('Javaslatok: assets/custom/map.example.json  →  másold map.json-ra és javítsd ki.')
 
 
+def trim_copy(src, dst):
+    # a figura a talpán áll a játékban (alulra igazítva), ezért az átlátszó szegélyt levágjuk
+    try:
+        from PIL import Image
+    except ImportError:
+        shutil.copyfile(src, dst)
+        return
+    im = Image.open(src).convert('RGBA')
+    box = im.getchannel('A').point(lambda a: 255 if a > 8 else 0).getbbox()
+    if box:
+        im = im.crop(box)
+    im.save(dst, optimize=True)
+
+
 def cmd_map(args):
     with open(args.map, encoding='utf-8') as f:
         mapping = json.load(f)
@@ -221,7 +235,11 @@ def cmd_map(args):
                 print(f'  ! nincs meg: {src}')
                 continue
             name = safe_name(key) + os.path.splitext(path)[1].lower()
-            shutil.copyfile(path, os.path.join(dst, name))
+            if kind == 'figures':
+                name = safe_name(key) + '.png'
+                trim_copy(path, os.path.join(dst, name))
+            else:
+                shutil.copyfile(path, os.path.join(dst, name))
             manifest[kind][key] = f'{folder}/{name}'
     with open(os.path.join(CUSTOM, 'manifest.json'), 'w', encoding='utf-8') as f:
         json.dump(manifest, f, indent=2, ensure_ascii=False)
