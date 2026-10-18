@@ -89,6 +89,8 @@
     await fromManifest();
     await fromDb();
     C.ready = true;
+    // ha a betöltés lassabb volt az indításnál kivárt időnél, a már elkészült figuraképek elavultak
+    if (C.count && TT.art) TT.art.clearCache();
   };
 
   // Fájlválasztó megnyitása és a kép eltárolása egy figurához
