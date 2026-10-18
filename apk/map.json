@@ -27,5 +27,20 @@
     "mallah": "render__monsieurmallah_shop.png",
     "killer_moth": "render__killermoth_shop.png"
   },
-  "backgrounds": {}
+  "backgrounds": {},
+  "music": {
+    "title": "music_title",
+    "town": "music_cityloop1",
+    "town_night": "music_night1",
+    "hive": "music_cityloop_shadydistrict",
+    "battle": "music_battle1",
+    "boss": "music_battle-tournament",
+    "shop": "music_shoploop1",
+    "tower": "music_towerloop1",
+    "comics": "music_uptown1",
+    "pizza": "music_beach1",
+    "vault": "music_arkham",
+    "dome": "music_tournament1",
+    "victory": "music_resultsupgrades"
+  }
 }
