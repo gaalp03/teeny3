@@ -21,6 +21,32 @@
     return { opts, answer: opts.indexOf(right) };
   }
 
+  // Sziluettek összehasonlítása: a két körvonal eltérő pixeleinek aránya az együttes területhez
+  const SIL = 64, SIL_MIN = 0.08;
+  const masks = {};
+  function mask(id) {
+    if (masks[id]) return masks[id];
+    const m = new Uint8Array(SIL * SIL);
+    try {
+      const d = TT.art.figureCanvas(id, SIL, { pedestal: false, silhouette: true, paint: null }).getContext('2d').getImageData(0, 0, SIL, SIL).data;
+      for (let i = 0; i < m.length; i++) m[i] = d[i * 4 + 3] > 128 ? 1 : 0;
+    } catch (e) {
+      m.fill(2); // nem olvasható kép: mindenki „különbözőnek” számít
+    }
+    masks[id] = m;
+    return m;
+  }
+  function silDiff(a, b) {
+    const x = mask(a), y = mask(b);
+    if (x[0] === 2 || y[0] === 2) return 1;
+    let diff = 0, union = 0;
+    for (let i = 0; i < x.length; i++) {
+      if (x[i] !== y[i]) diff++;
+      if (x[i] || y[i]) union++;
+    }
+    return union ? diff / union : 0;
+  }
+
   const article = (w) => (/^[aáeéiíoóöőuúüű]/i.test(w) ? 'az' : 'a');
 
   // Kérdéstípusok: mindegyik egy kérdést ad vissza, vagy null-t, ha épp nem tud jót csinálni
@@ -29,7 +55,8 @@
   const GEN = {
     who() {
       const f = U.pick(figs());
-      const same = figs().filter((x) => x.id !== f.id && TT.baseOf(x.id) !== TT.baseOf(f.id));
+      // a rossz válaszok közt ne legyen a változata, se szinte ugyanolyan körvonalú figura
+      const same = figs().filter((x) => x.id !== f.id && TT.baseOf(x.id) !== TT.baseOf(f.id) && silDiff(f.id, x.id) > SIL_MIN);
       return Object.assign({ text: 'Ki ez a figura?', fig: f.id, sil: true }, options(f.name, names(U.shuffle(same))));
     },
     type() {
@@ -69,14 +96,14 @@
     strongest() {
       const four = U.shuffle(figs().filter((f) => !f.noBox)).slice(0, 4);
       const key = U.pick(['hp', 'atk', 'spd']);
-      // 1. szinten, a ritkasággal együtt (ahogy a Gyűjtemény is mutatja)
+      // 1. szinten, csillagok nélkül, a ritkasággal együtt (a Gyűjtemény egy 1. szintű figuránál ugyanezt mutatja)
       const val = (f) => Math.round(TT.statsFor(f, 1)[key] * 10);
       const top = four.slice().sort((x, y) => val(y) - val(x));
       if (val(top[0]) === val(top[1])) return null;
       const opts = four.map((f) => f.name);
       const text = {
-        hp: 'Melyik figurának van a legtöbb életereje (HP)?',
-        atk: 'Melyik figurának a legnagyobb a támadóereje?',
+        hp: 'Melyik figurának van a legtöbb életereje (HP) 1. szinten?',
+        atk: 'Melyik figurának a legnagyobb a támadóereje 1. szinten?',
         spd: 'Melyik figura a leggyorsabb?',
       }[key];
       return { text, opts, answer: opts.indexOf(top[0].name) };
