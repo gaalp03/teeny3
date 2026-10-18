@@ -56,28 +56,42 @@ def _children(tr):
     return out
 
 
+def _shader_name(mat):
+    try:
+        sh = mat.m_Shader.read()
+        form = getattr(sh, 'm_ParsedForm', None)
+        return (form.m_Name if form else getattr(sh, 'm_Name', '')) or ''
+    except Exception:
+        return ''
+
+
 def _main_texture(renderer, sub):
+    """(textúra, átlátszó-e) — a „Cutout/Transparent” shaderű részek (pl. arc-matricák) átlátszó pixelei kimaradnak,
+    a többi (Toon/Basic Tint) átlátszatlan, és a játékhoz hasonlóan csak az elülső lapjuk látszik."""
     mats = renderer.m_Materials
     if not mats:
-        return None
+        return None, False
     try:
         mat = mats[min(sub, len(mats) - 1)].read()
     except Exception:
-        return None
+        return None, False
+    cutout = bool(re.search(r'cutout|transparent', _shader_name(mat), re.I))
     for key, env in mat.m_SavedProperties.m_TexEnvs:
         if key in ('_MainTex', '_basetexture', '_BaseMap') and env.m_Texture and env.m_Texture.path_id:
             try:
-                return np.asarray(env.m_Texture.read().image.convert('RGBA'))
+                return np.asarray(env.m_Texture.read().image.convert('RGBA')), cutout
             except Exception:
-                return None
-    return None
+                return None, cutout
+    return None, cutout
 
 
 def _mesh_parts(root_tr):
     """A *_shop objektum alatti összes látható háló, a gyökérhez viszonyított mátrixszal."""
     from UnityPy.helpers.MeshHelper import MeshHandler
     parts = []
-    stack = [(t, np.eye(4)) for t in _children(root_tr)]
+    # a *_shop objektum saját forgatása is számít (pl. Aqualadnál a talapzat ezzel áll vízszintesen)
+    root = _matrix(root_tr)
+    stack = [(t, root) for t in _children(root_tr)]
     while stack:
         tr, parent = stack.pop()
         m = parent @ _matrix(tr)
@@ -107,9 +121,11 @@ def _mesh_parts(root_tr):
         v = np.array(h.m_Vertices, float)[:, :3]
         v = (np.c_[v, np.ones(len(v))] @ m.T)[:, :3]
         uv = np.array(h.m_UV0, float) if h.m_UV0 else None
+        mirrored = np.linalg.det(m[:3, :3]) < 0  # tükrözött transzformnál a körüljárás megfordul
         for sub, tris in enumerate(h.get_triangles()):
             if tris:
-                parts.append((v, uv, np.array(tris, int), _main_texture(rend, sub)))
+                tex, cutout = _main_texture(rend, sub)
+                parts.append((v, uv, np.array(tris, int), tex, cutout, mirrored))
     return parts
 
 
@@ -125,7 +141,7 @@ def _rasterize(parts):
     img = np.zeros((S2, S2, 4), np.float32)
     zb = np.full((S2, S2), -np.inf)
     light = np.array(LIGHT) / np.linalg.norm(LIGHT)
-    for v, uv, tris, tex in parts:
+    for v, uv, tris, tex, cutout, mirrored in parts:
         # elölnézet: a néző a +Z felől néz, ezért az X tükrözve kerül a képre
         X = -(v[:, 0] - cx) * sc + S2 / 2
         Y = S2 - ((v[:, 1] - mn[1]) * sc + S2 * 0.04)
@@ -138,6 +154,10 @@ def _rasterize(parts):
                 continue
             den = (ys[1] - ys[2]) * (xs[0] - xs[2]) + (xs[2] - xs[1]) * (ys[0] - ys[2])
             if abs(den) < 1e-9:
+                continue
+            # hátsó lapok elhagyása (Cull Back), mint a játék Toon shaderében; ebben a tükrözött, lefelé
+            # növekvő Y-ú vetítésben a pozitív den az elülső lap
+            if not cutout and (den < 0) != mirrored:
                 continue
             gx, gy = np.meshgrid(np.arange(x0, x1 + 1) + 0.5, np.arange(y0, y1 + 1) + 0.5)
             a = ((ys[1] - ys[2]) * (gx - xs[2]) + (xs[2] - xs[1]) * (gy - ys[2])) / den
@@ -159,9 +179,10 @@ def _rasterize(parts):
                 px = np.clip(((u % 1.0) * tw).astype(int), 0, tw - 1)
                 py = np.clip(((1 - (w % 1.0)) * th).astype(int), 0, th - 1)
                 col = tex[py, px].astype(np.float32)
-                inside &= col[..., 3] > 100  # átlátszó részek (pl. arc-matricák széle) kimaradnak
-                if not inside.any():
-                    continue
+                if cutout:
+                    inside &= col[..., 3] > 100  # az arc-matricák átlátszó része kimarad
+                    if not inside.any():
+                        continue
             else:
                 col = np.empty(inside.shape + (4,), np.float32)
                 col[...] = (200, 200, 200, 255)
