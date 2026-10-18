@@ -172,8 +172,13 @@
           const col = Math.floor(i / 8), row = i % 8;
           const rx = cx + col * (cw + 10), ry = y + 66 + row * 52;
           D.panel(ctx, rx, ry, cw, 44, { fill: row % 2 ? '#33246a' : '#3a2a7a', r: 10, lw: 2, shadow: false });
-          D.text(ctx, k, rx + 12, ry + 22, { size: 14, color: '#c8b8f0', lw: 2.5, maxWidth: cw * 0.55 });
-          D.text(ctx, v, rx + cw - 12, ry + 22, { size: 17, align: 'right', color: '#ffffff', lw: 3, maxWidth: cw * 0.45 });
+          const kw = Math.min(D.measure(ctx, k, 14), cw * 0.6);
+          D.text(ctx, k, rx + 12, ry + 22, { size: 14, color: '#c8b8f0', lw: 2.5, maxWidth: cw * 0.6 });
+          // az érték a maradék helyre fér: szükség esetén kisebb betűvel
+          const avail = cw - 32 - kw;
+          let vs = 17;
+          while (vs > 11 && D.measure(ctx, v, vs) > avail) vs--;
+          D.text(ctx, v, rx + cw - 12, ry + 22, { size: vs, align: 'right', color: '#ffffff', lw: 3, maxWidth: avail });
         });
         ctx.restore();
       },

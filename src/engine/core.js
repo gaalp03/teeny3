@@ -121,6 +121,8 @@
     }
 
     if (TT.scene && TT.scene.update) TT.scene.update(dt);
+    // játékidő minden jelenetben (a címképernyőn kívül), valós időben
+    if (TT.save && TT.sceneName && TT.sceneName !== 'title') TT.save.playTime = (TT.save.playTime || 0) + rdt;
     TT.fx.update(dt);
 
     if (fade.state === 'out') {

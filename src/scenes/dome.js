@@ -97,12 +97,17 @@
     const lvl = U.clamp(Math.round(avg + step * 0.8), 2, TT.MAX_LVL);
     let pool = TT.FIG_LIST.filter((f) => rule.ok(f) && f.rarity !== 'legendary').map((f) => f.id);
     if (pool.length < 3) pool = TT.FIG_LIST.filter((f) => f.rarity !== 'legendary').map((f) => f.id);
-    const ids = [0, 1, 2].map(() => ({ id: pool[Math.floor(rnd() * pool.length)], lvl }));
     const boss = step === 2;
+    // a főellenség előbb sorsolódik, és nem szerepelhet még egyszer a csapatban (különben kettő kapna 2. fázist)
+    let bossId = null;
     if (boss) {
       const top = TT.FIG_LIST.filter((f) => rule.ok(f) && (f.rarity === 'legendary' || f.rarity === 'epic')).map((f) => f.id);
-      if (top.length) ids[2] = { id: top[Math.floor(rnd() * top.length)], lvl: Math.min(TT.MAX_LVL, lvl + 1) };
+      const from = top.length ? top : pool;
+      bossId = from[Math.floor(rnd() * from.length)];
+      pool = pool.filter((id) => id !== bossId);
     }
+    const ids = [0, 1, 2].map(() => ({ id: pool[Math.floor(rnd() * pool.length)], lvl }));
+    if (bossId) ids[2] = { id: bossId, lvl: Math.min(TT.MAX_LVL, lvl + 1) };
     return {
       name: boss ? 'Heti bajnok' : `Heti kihívás – ${step + 1}. meccs`, who: ids[2].id, team: ids,
       ai: Math.min(0.85, 0.45 + step * 0.12), coins: 150 + step * 75, bg: 'dome', music: boss ? 'boss' : 'battle',
@@ -528,15 +533,18 @@
               const wt = weeklyTeam();
               D.text(ctx, wt.length ? 'Csapatod ehhez: ' + wt.map((id) => TT.FIG[id].short).join(', ') : 'Nincs a szabálynak megfelelő figurád!', px + 22, py + 370, { size: 15, color: wt.length ? '#9be7ff' : '#ff8a80', lw: 3, maxWidth: pw - 44 });
             }
-            // ajánlott szint
-            const avg = teamAvg();
+            // ajánlott szint (a heti kihívásnál a ténylegesen harcoló csapaté)
+            const wt = wk ? weeklyTeam() : null;
+            const avg = wt && wt.length ? wt.reduce((a, id) => a + TT.save.owned[id].lvl, 0) / wt.length : teamAvg();
             const rec = c.minLvl || Math.round(m.team.reduce((a, t) => a + t.lvl, 0) / 3);
             D.text(ctx, `Csapatod átlagszintje: ${avg.toFixed(1)}  ·  Ajánlott: ${rec}+`, px + pw - 22, py + 112, { size: 15, align: 'right', color: avg + 1 >= rec ? '#7bff6b' : '#ff8a80' });
           }
         }
       }
-      // saját csapat kicsiben
-      TT.save.team.forEach((id, i) => {
+      // saját csapat kicsiben (heti kihívásnál a szabály szerinti csapat)
+      const cur = this.cups()[this.sel];
+      const shown = cur && cur.id === 'weekly' && weeklyTeam().length ? weeklyTeam() : TT.save.team;
+      shown.forEach((id, i) => {
         ctx.drawImage(TT.art.figureCanvas(id, 96), 196 + i * 48, 466, 48, 48);
       });
       this.menu.draw(ctx);

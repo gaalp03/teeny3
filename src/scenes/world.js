@@ -932,7 +932,6 @@
       this.t += dt;
       const I = TT.input;
       const s = TT.save;
-      s.playTime += dt;
       const TS = W.TS;
       // vihar: mennydörgés kicsivel a villám után
       if (TT.weatherNow() === 'storm') {
