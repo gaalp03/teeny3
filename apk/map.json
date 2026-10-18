@@ -42,5 +42,25 @@
     "vault": "music_arkham",
     "dome": "music_tournament1",
     "victory": "music_resultsupgrades"
+  },
+  "sfx": {
+    "select": "sfx_gui_buttonconfirm",
+    "back": "sfx_gui_buttonback",
+    "hit": "sfx_battle_charhurt",
+    "ko": "sfx_battle_death",
+    "coin": "sfx_menus_results_coinsadd",
+    "buy": "sfx_shop_figuretocart",
+    "reveal": "sfx_menus_iapshop_tapandreveal_newfig",
+    "legend": "sfx_menus_newfigreveal_firstfigappear",
+    "levelup": "sfx_menus_results_levelup",
+    "countdown": "sfx_menus_prebattle_countdown",
+    "found": "sfx_achievement",
+    "door": "sfx_stage_dooropen",
+    "box": "sfx_menus_newfigreveal_boxjiggle1",
+    "error": "sfx_battle_abilitynotready",
+    "ready": "sfx_batte_abilityavailable",
+    "super": "sfx_battle_abilityused",
+    "block": "sfx_battle_dodge",
+    "swap": "sfx_gui_partybar_open"
   }
 }
