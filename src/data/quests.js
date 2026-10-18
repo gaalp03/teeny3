@@ -5,12 +5,12 @@
   const D = TT.D;
 
   // stat: melyik TT.save.stats mezőt figyeli, goal: mennyit kell növelni rajta
-  const Q = (id, text, stat, goal, coins) => ({ id, text, stat, goal, coins });
+  const Q = (id, text, stat, goal, coins, can) => ({ id, text, stat, goal, coins, can });
   TT.QUESTS = [
     Q('wins', 'Nyerj meg 3 harcot', 'wins', 3, 150),
     Q('perfects', 'Hajts végre 6 tökéletes blokkot', 'perfects', 6, 150),
     Q('kos', 'Üss ki 10 ellenfél figurát', 'kos', 10, 120),
-    Q('patrols', 'Győzz le 2 Menta-járőrt', 'patrols', 2, 140),
+    Q('patrols', 'Győzz le 2 Menta-járőrt', 'patrols', 2, 140, () => TT.cupDone('rookie')),
     Q('supers', 'Használj 4 szuper támadást', 'supers', 4, 120),
     Q('swaps', 'Cserélj figurát harc közben 5-ször', 'swaps', 5, 100),
     Q('items', 'Használj 2 harci kelléket', 'items', 2, 100),
@@ -33,7 +33,8 @@
     const today = dayKey(new Date());
     if (s.quests && s.quests.date === today) return s.quests;
     const rnd = U.rng(U.hash(today + ':' + (s.created || 0)));
-    const ids = U.shuffle(TT.QUESTS.map((q) => q.id), rnd).slice(0, PER_DAY);
+    const pool = TT.QUESTS.filter((q) => !q.can || q.can(s));
+    const ids = U.shuffle(pool.map((q) => q.id), rnd).slice(0, PER_DAY);
     s.quests = {
       date: today,
       bonus: false,

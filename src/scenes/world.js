@@ -66,6 +66,7 @@
       const TS = W.TS;
       const pos = p.pos || s.pos || W.start;
       this.pl = { x: pos.x * TS, y: pos.y * TS, dir: p.dir || 'down', walk: 0, moving: false };
+      this.unstick();
       this.cam = { x: 0, y: 0 };
       this.snapCam();
       this.t = 0;
@@ -95,6 +96,26 @@
       if (p.event) this.runEvent(p.event);
       TT.dailyReward();
       TT.checkAch();
+    },
+
+    // Ha a mentett hely azóta tömör lett (pl. új épület vagy fa), keressük a legközelebbi szabad mezőt
+    unstick() {
+      const TS = W.TS, pl = this.pl;
+      if (!this.blocked(pl.x, pl.y)) return;
+      const tx = Math.floor(pl.x / TS), ty = Math.floor(pl.y / TS);
+      for (let r = 1; r <= 12; r++) {
+        for (let j = -r; j <= r; j++) for (let i = -r; i <= r; i++) {
+          if (Math.max(Math.abs(i), Math.abs(j)) !== r) continue;
+          const x = (tx + i + 0.5) * TS, y = (ty + j + 0.5) * TS;
+          if (!this.blocked(x, y)) {
+            pl.x = x;
+            pl.y = y;
+            return;
+          }
+        }
+      }
+      pl.x = W.start.x * TS;
+      pl.y = W.start.y * TS;
     },
 
     exit() {
@@ -1342,13 +1363,18 @@
       ctx.drawImage(minimap, x, y, mw, mh);
       ctx.restore();
       const k = mw / (W.MW * TS);
+      const placed = [];
       for (const b of W.buildings) {
         if (!b.name) continue;
         const bx = x + b.door[0] * TS * k, by = y + b.door[1] * TS * k;
-        D.text(ctx, b.name, bx, by - 14, { size: 12, align: 'center', color: '#fff', lw: 3 });
+        const lw = D.measure(ctx, b.name, 12) + 6;
+        const hit = (ly) => placed.some((r) => Math.abs(r.x - bx) < (r.w + lw) / 2 && Math.abs(r.y - ly) < 14);
+        const ly = !hit(by - 14) ? by - 14 : by + 10;
+        placed.push({ x: bx, y: ly, w: lw });
+        D.text(ctx, b.name, bx, ly, { size: 12, align: 'center', color: '#fff', lw: 3 });
       }
       for (const n of W.npcs) {
-        if (!n.trainer || TT.save.beaten[n.trainer]) continue;
+        if (!n.trainer || TT.save.beaten[n.trainer] || !this.npcVisible(n)) continue;
         ctx.beginPath();
         ctx.arc(x + n.x * TS * k, y + n.y * TS * k, 3.5, 0, Math.PI * 2);
         ctx.fillStyle = '#ff4f4f';
@@ -1416,11 +1442,11 @@
       }
       if (v === 'export') {
         const code = TT.store.exportString();
+        const manual = () => window.prompt('Mentéskód (másold ki):', code);
         try {
-          navigator.clipboard.writeText(code);
-          TT.ui.toast('Mentéskód a vágólapra másolva!');
+          navigator.clipboard.writeText(code).then(() => TT.ui.toast('Mentéskód a vágólapra másolva!'), manual);
         } catch (e) {
-          window.prompt('Mentéskód (másold ki):', code);
+          manual();
         }
       }
       TT.store.writeSettings();

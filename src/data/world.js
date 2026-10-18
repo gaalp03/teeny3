@@ -124,7 +124,7 @@
   // Útzárak — feloldódnak a kupák után
   const GATES = [
     { id: 'hivegate', x: 86, y: 51, w: 1, h: 2, req: 'rookie', text: 'Zárva! Előbb nyerd meg az Újonc Kupát.' },
-    { id: 'dockgate', x: 40, y: 59, w: 3, h: 1, req: 'east', text: 'A kikötő zárva. Nyerd meg a Kelet Kupát!' },
+    { id: 'dockgate', x: 40, y: 62, w: 3, h: 1, req: 'east', text: 'A kikötő zárva. Nyerd meg a Kelet Kupát!' },
     { id: 'vaultgate', x: 15, y: 17, w: 2, h: 1, req: 'villain', text: 'A trezor hídja zárva. Nyerd meg a Gonosz Kupát!' },
   ];
 
@@ -184,7 +184,7 @@
     { id: 'p2', path: [[60, 45.5], [92, 45.5]] },
     { id: 'p3', path: [[56.5, 22], [56.5, 54]] },
     { id: 'p4', path: [[29.5, 33], [29.5, 54]] },
-    { id: 'p5', path: [[12, 58.5], [36, 58.5]] },
+    { id: 'p5', path: [[12, 59.5], [36, 59.5]] },
   ];
 
   // NPC kinézetek (nem gyűjthető karakterek)
