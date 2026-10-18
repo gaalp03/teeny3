@@ -1807,7 +1807,19 @@
     if (o.flash > 0 && 'filter' in ctx) ctx.filter = `brightness(${1 + o.flash * 2.2})`;
 
     const img = TT.custom && fig.id && TT.custom.figures[fig.id];
-    if (img && !o.noCustom) {
+    const m3 = !o.noCustom && fig.id && TT.model3d && TT.settings.fig3d !== false && TT.model3d.has(fig.id);
+    const r3 = m3 && A.pose3d(pose, t, P.seed, o);
+    if (r3 && facing < 0) r3.yaw = -r3.yaw;
+    const c3 = r3 && TT.model3d.render(fig.id, r3);
+    if (c3) {
+      // valódi 3D figura: a közös WebGL vászonról másolva (a figura 1 egység = 104 képpont magas)
+      const M3 = TT.model3d;
+      const u = 104;
+      ctx.translate(0, P.bob);
+      // a 3D figura valóban megfordul, nem tükröződik (pl. Slade maszkja a helyén marad)
+      if (facing < 0) ctx.scale(-1, 1);
+      ctx.drawImage(c3, (-u * M3.SPAN) / 2, -u * (M3.SPAN - M3.FOOT), u * M3.SPAN, u * M3.SPAN);
+    } else if (img && !o.noCustom) {
       const h = 104;
       const w = (img.width / img.height) * h;
       ctx.translate(0, P.bob);
@@ -1834,6 +1846,25 @@
       }
     }
     ctx.restore();
+  };
+
+  // A 3D figura elfordítása pózonként (a 2D tükrözés a bal oldaliakat a másik irányba fordítja)
+  A.pose3d = function (pose, t, seed, o) {
+    const sway = Math.sin(t * 1.3 + seed) * 0.1;
+    const side = o.facing != null ? 0.55 : 0.3;
+    const pitch = 0.14;
+    switch (pose) {
+      case 'windup': return { yaw: side - 0.35, pitch: pitch - 0.08 };
+      case 'attack': return { yaw: side + 0.45, pitch: pitch + 0.1 };
+      case 'cast': return { yaw: 0.05 + sway, pitch };
+      case 'hurt': return { yaw: side - 0.6, pitch: pitch - 0.12, roll: -0.12 };
+      case 'block': return { yaw: side + 0.25, pitch: pitch + 0.05 };
+      case 'cheer': return { yaw: (t * 5) % (Math.PI * 2), pitch };
+      case 'stun': return { yaw: side + Math.sin(t * 5) * 0.35, pitch, roll: Math.sin(t * 5) * 0.08 };
+      case 'ko': return { yaw: side, pitch: pitch + 0.2 };
+      case 'walk': return { yaw: side + Math.sin((o.walk || 0)) * 0.08, pitch };
+      default: return { yaw: side + sway, pitch };
+    }
   };
 
   // Figura magassága (talptól a fejtetőig) képpontban adott méretnél

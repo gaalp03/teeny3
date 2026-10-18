@@ -1559,9 +1559,10 @@
       const i = steps.findIndex((s) => Math.abs(s - v) < 0.01);
       return steps[(i + 1) % steps.length];
     };
+    const has3d = !!(TT.model3d && Object.keys(TT.model3d.models).length);
     TT.ui.choose({
       title: 'Beállítások',
-      buttonH: 38,
+      buttonH: has3d ? 34 : 38,
       options: [
         { label: 'Zene: ' + pct(st.music), value: 'music' },
         { label: 'Hangeffektek: ' + pct(st.sfx), value: 'sfx' },
@@ -1569,6 +1570,7 @@
         { label: 'Nehézség: ' + ({ easy: 'Könnyű', normal: 'Normál', hard: 'Nehéz' }[st.difficulty || 'normal']), value: 'diff' },
         { label: 'Napszak: ' + (st.dayNight === 'day' ? 'mindig nappal' : 'valós idő'), value: 'daynight' },
         { label: 'Időjárás: ' + (st.weather === 'off' ? 'mindig derült' : 'változó (eső, vihar)'), value: 'weather' },
+        ...(has3d ? [{ label: '3D figurák: ' + (st.fig3d === false ? 'Ki (képek)' : 'Be'), value: 'fig3d' }] : []),
         { label: 'Teljes képernyő', value: 'fs' },
         { label: 'Mentés exportálása', value: 'export' },
         { label: 'Kész', value: null, color: '#6c5ce7' },
@@ -1578,6 +1580,10 @@
       if (v === 'music') st.music = cycle(st.music);
       if (v === 'sfx') st.sfx = cycle(st.sfx);
       if (v === 'shake') st.shake = !st.shake;
+      if (v === 'fig3d') {
+        st.fig3d = st.fig3d === false;
+        TT.art.clearCache();
+      }
       if (v === 'daynight') st.dayNight = st.dayNight === 'day' ? 'real' : 'day';
       if (v === 'weather') st.weather = st.weather === 'off' ? 'auto' : 'off';
       if (v === 'diff') st.difficulty = { easy: 'normal', normal: 'hard', hard: 'easy' }[st.difficulty || 'normal'];

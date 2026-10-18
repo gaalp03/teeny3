@@ -180,7 +180,14 @@ def extract_unity(apk, out, tmp):
     except ImportError:
         render3d = None
     if render3d:
-        r = render3d.render_shop_models(env, lambda name, im: im.save(unique_path(out, f'render__{safe_name(name)}.png')))
+        def save_model(name, data, textures):
+            folder = os.path.join(out, 'modell', safe_name(name))
+            os.makedirs(folder, exist_ok=True)
+            with open(os.path.join(folder, 'model.json'), 'w', encoding='utf-8') as f:
+                f.write(data)
+            for fname, im in textures.items():
+                im.save(os.path.join(folder, fname), optimize=True)
+        r = render3d.render_shop_models(env, lambda name, im: im.save(unique_path(out, f'render__{safe_name(name)}.png')), save_model=save_model)
         if r:
             print(f'  {r} 3D figura lerajzolva')
         n += r
@@ -273,7 +280,16 @@ def trim_copy(src, dst):
 def cmd_map(args):
     with open(args.map, encoding='utf-8') as f:
         mapping = json.load(f)
-    manifest = {'figures': {}, 'backgrounds': {}, 'music': {}}
+    manifest = {'figures': {}, 'backgrounds': {}, 'music': {}, 'models': {}}
+    # 3D hálók: a render__X.png figurákhoz tartozó modell (raw/modell/X) automatikusan jön
+    for key, src in (mapping.get('figures') or {}).items():
+        m = re.match(r'render__(.+)\.png$', src)
+        folder = m and os.path.join(RAW, 'modell', m.group(1))
+        if folder and os.path.isfile(os.path.join(folder, 'model.json')):
+            dst = os.path.join(CUSTOM, 'models', safe_name(key))
+            shutil.rmtree(dst, ignore_errors=True)
+            shutil.copytree(folder, dst)
+            manifest['models'][key] = f'models/{safe_name(key)}/model.json'
     # zenék: {"town": "music_cityloop1", ...} — a raw/hang mappából
     dst = os.path.join(CUSTOM, 'music')
     for key, src in (mapping.get('music') or {}).items():
@@ -301,7 +317,7 @@ def cmd_map(args):
             manifest[kind][key] = f'{folder}/{name}'
     with open(os.path.join(CUSTOM, 'manifest.json'), 'w', encoding='utf-8') as f:
         json.dump(manifest, f, indent=2, ensure_ascii=False)
-    print(f"Kész: {len(manifest['figures'])} figura, {len(manifest['backgrounds'])} háttér, {len(manifest['music'])} zene → assets/custom/manifest.json")
+    print(f"Kész: {len(manifest['figures'])} figura, {len(manifest['backgrounds'])} háttér, {len(manifest['music'])} zene, {len(manifest['models'])} 3D modell → assets/custom/manifest.json")
     print('Háttér kulcsok: dome, tower, park, street, beach, hive, vault')
 
 

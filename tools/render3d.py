@@ -4,6 +4,9 @@ A Teeny Titans 2 figurái 3D modellek; a boltban kiállított változatuk (`*_sh
 a gyűjthető figura pózában áll. Ezeket rajzoljuk le a saját színtérképükkel egy egyszerű,
 szoftveres raszterizálóval (numpy), enyhe megvilágítással és a játék stílusához illő körvonallal.
 """
+import base64
+import hashlib
+import json
 import math
 import re
 
@@ -212,8 +215,61 @@ def render_parts(parts):
     return outline
 
 
-def render_shop_models(env, save, only=None):
-    """Minden *_shop objektum lerajzolása; save(név, kép) menti. A sikeres renderek számát adja."""
+TEX_MAX = 512  # a játékba kerülő modell-textúrák legnagyobb mérete
+
+
+def _b64(arr):
+    return base64.b64encode(np.ascontiguousarray(arr).tobytes()).decode('ascii')
+
+
+def export_model(parts):
+    """A háló a játék saját 3D rajzolójának (src/engine/model3d.js): JSON + PNG textúrák.
+    Méretarány: a figura 1 egység magas, a talpa y=0-n, vízszintesen középen."""
+    from PIL import Image
+    allv = np.concatenate([p[0] for p in parts])
+    mn, mx = allv.min(0), allv.max(0)
+    height = mx[1] - mn[1]
+    if height <= 0:
+        return None, {}
+    center = np.array([(mn[0] + mx[0]) / 2, mn[1], (mn[2] + mx[2]) / 2])
+    textures, out = {}, []
+    for v, uv, tris, tex, cutout, mirrored in parts:
+        used = np.unique(tris)
+        remap = np.full(len(v), -1, int)
+        remap[used] = np.arange(len(used))
+        t = remap[tris]
+        if mirrored:
+            t = t[:, [0, 2, 1]]  # tükrözött résznél a körüljárás visszafordítva
+        pos = ((v[used] - center) / height).astype(np.float32)
+        # simított csúcsnormálisok (a körvonalhoz és a fényhez)
+        nrm = np.zeros_like(pos)
+        fn = np.cross(pos[t[:, 1]] - pos[t[:, 0]], pos[t[:, 2]] - pos[t[:, 0]])
+        for k in range(3):
+            np.add.at(nrm, t[:, k], fn)
+        ln = np.linalg.norm(nrm, axis=1, keepdims=True)
+        nrm = (nrm / np.where(ln > 0, ln, 1)).astype(np.float32)
+        part = {'cutout': bool(cutout), 'pos': _b64(pos), 'nrm': _b64(nrm)}
+        if uv is not None and len(uv) == len(v):
+            part['uv'] = _b64(uv[used].astype(np.float32))
+        if tex is not None:
+            key = hashlib.md5(tex.tobytes()).hexdigest()[:12] + '.png'
+            if key not in textures:
+                im = Image.fromarray(tex, 'RGBA')
+                if max(im.size) > TEX_MAX:
+                    im.thumbnail((TEX_MAX, TEX_MAX), Image.LANCZOS)
+                textures[key] = im
+            part['tex'] = key
+        big = len(used) > 65535
+        part['idx'] = _b64(t.astype(np.uint32 if big else np.uint16).ravel())
+        part['i32'] = big
+        out.append(part)
+    model = {'v': 1, 'width': float((mx[0] - mn[0]) / height), 'depth': float((mx[2] - mn[2]) / height), 'parts': out}
+    return json.dumps(model, separators=(',', ':')), textures
+
+
+def render_shop_models(env, save, only=None, save_model=None):
+    """Minden *_shop objektum lerajzolása; save(név, kép) menti, save_model(név, json, textúrák)
+    a 3D hálót. A sikeres renderek számát adja."""
     if np is None:
         print('  ! numpy nélkül a 3D figurák kimaradnak (pip install numpy)')
         return 0
@@ -244,5 +300,12 @@ def render_shop_models(env, save, only=None):
             continue
         seen.add(name.lower())
         save(name, im)
+        if save_model:
+            try:
+                data, textures = export_model(parts)
+                if data:
+                    save_model(name, data, textures)
+            except Exception as e:
+                print(f'  ! 3D háló kimentése nem sikerült ({name}): {e}')
         n += 1
     return n

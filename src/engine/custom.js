@@ -46,6 +46,13 @@
     for (const [id, path] of Object.entries(man.figures || {})) {
       jobs.push(loadImage('assets/custom/' + path).then((img) => { if (img) { C.figures[id] = img; C.count++; } }));
     }
+    // 3D hálók: a háttérben töltődnek, addig a figura képe látszik
+    const models = Object.entries(man.models || {});
+    if (models.length && TT.model3d) {
+      Promise.all(models.map(([id, path]) => TT.model3d.load(id, 'assets/custom/' + path))).then(() => {
+        if (TT.art) TT.art.clearCache();
+      });
+    }
     // zenék: csak az elérési út kell, a hangmotor tölti be, amikor először szól
     for (const [id, path] of Object.entries(man.music || {})) C.music[id] = 'assets/custom/' + path;
     for (const [id, path] of Object.entries(man.backgrounds || {})) {
