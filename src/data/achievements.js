@@ -31,6 +31,7 @@
     A('star5', 'Ötcsillagos', 'Fejlessz egy figurát 5 csillagra.', 600, (s) => maxStars(s) >= 5),
     A('combo1', 'Barátság ereje', 'Használj egy kombó szuper támadást.', 150, (s) => !!s.flags.comboUsed),
     A('paint1', 'Művész', 'Fess át egy figurát a Festőműhelyben.', 100, (s) => !!s.flags.painted),
+    A('weekly1', 'Heti bajnok', 'Teljesíts egy Heti kihívást a Csatakupolában.', 400, (s) => (s.flags.weeklyWins || 0) >= 1),
     A('survival1', 'Túlélő', 'Nyerd meg a Túlélő Tornát.', 600, (s) => (s.flags.survivalWins || 0) >= 1),
     A('event1', 'Ünnepi gyűjtő', 'Teljesíts egy szezonális eseményt (Halloween vagy Karácsony).', 300, (s) => Object.values(s.events || {}).some((e) => e.done)),
     A('train15', 'Hibátlan edzés', 'Blokk-edzésen mind a 15 támadást tökéletesen blokkold.', 500, (s) => !!s.flags.trainPerfect),

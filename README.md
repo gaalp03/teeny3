@@ -17,13 +17,14 @@ Gyűjts Teeny figurákat, harcolj 3v3 csapatcsatákban a Csatakupolában, és á
 - **Bejárható Jump City**: Titánok Tornya, Teeny Játékbolt, Csatakupola, Pizzéria, Képregénybolt,
   park, strand, kikötő, H.I.V.E. negyed és Mr. Mint trezorja — edzőkkel, rejtett figurákkal, érmékkel
 - **4 kupa + utójáték (Testvériség Kupa, Végtelen Aréna, éjszakai Red X)**, történet, stáblista
-- **Túlélő Torna** (naponta 5 harc gyógyulás nélkül), főellenségek **2. fázissal**
+- **Túlélő Torna** (naponta 5 harc gyógyulás nélkül), **Heti kihívás** (hetente új szabály, pl. csak Misztikus
+  figurák vagy kellékek nélkül), főellenségek **2. fázissal**
 - **Harci kellékek** (pizzaszelet, energiaital, tisztító spray), **Festőműhely** (arany, neon… figurák)
 - **Menta Gyár**: háromszintes kazamata futószalagokkal, gombokkal, robotokkal és kincsesládákkal
 - **Blokk-edzés** minijáték a Toronyban, **szezonális események** (Halloween, Karácsony)
 - **Bejárható Titánok Tornya** figuravitrinnel, **Pizzafogó** és **Figura-memória** minijáték, **Silkie-mellékküldetés**
 - **Menta-járőrök** és autók a városban, **valós napszak** (este besötétedik) és **időjárás** (eső, vihar villámlással)
-- **45 teljesítmény**, **profil és rekordok**, **napi küldetések** (3 feladat naponta, bónusszal), napi jutalom, automatikus harc és gyorsítás (×1.6) gyakorláshoz
+- **46 teljesítmény**, **profil és rekordok**, **napi küldetések** (3 feladat naponta, bónusszal), napi jutalom, automatikus harc és gyorsítás (×1.6) gyakorláshoz
 - **Vakdobozok** a boltban (Alap / Prémium / Legendás), duplikátumokból tapasztalat
 - Szintlépés (max. 30), edzés, pizzaparti, gyűjtői jutalmak
 - Szintetizált zene és hangok, magyar felület, mentés automatikusan, 3 nehézségi szint

@@ -55,6 +55,60 @@
     };
   }
 
+  // Heti kihívás: hetente más szabály, 3 meccs, a végén prémium doboz
+  const WEEKLY_RULES = [
+    { id: 'brawn', text: 'Csak Erő típusú figurák', ok: (f) => f.type === 'brawn' },
+    { id: 'tech', text: 'Csak Tech típusú figurák', ok: (f) => f.type === 'tech' },
+    { id: 'mystic', text: 'Csak Misztikus figurák', ok: (f) => f.type === 'mystic' },
+    { id: 'speed', text: 'Csak Gyorsaság típusú figurák', ok: (f) => f.type === 'speed' },
+    { id: 'titans', text: 'Csak Titánok és Titánok Kelet', ok: (f) => f.team === 'titans' || f.team === 'east' },
+    { id: 'villains', text: 'Csak gonoszok', ok: (f) => f.team !== 'titans' && f.team !== 'east' },
+    { id: 'small', text: 'Csak közönséges és ritka figurák', ok: (f) => f.rarity === 'common' || f.rarity === 'rare' },
+    { id: 'noitems', text: 'Bármilyen csapat, de kellékek nélkül', ok: () => true, noItems: true },
+  ];
+  const WEEKLY_PRIZE = 600;
+  function weekKey() {
+    const d = new Date();
+    const m = new Date(d.getFullYear(), d.getMonth(), d.getDate() - ((d.getDay() + 6) % 7));
+    return m.getFullYear() + '-' + (m.getMonth() + 1) + '-' + m.getDate();
+  }
+  function weeklyRule() {
+    return WEEKLY_RULES[Math.floor(U.rng(U.hash('weekly:' + weekKey()))() * WEEKLY_RULES.length)];
+  }
+  function weeklyState() {
+    const s = TT.save;
+    if (!s.weekly || s.weekly.week !== weekKey()) s.weekly = { week: weekKey(), step: 0, done: false };
+    return s.weekly;
+  }
+  // a szabálynak megfelelő csapat: előbb a saját csapatból, aztán a legerősebb megfelelő figurák
+  function weeklyTeam() {
+    const s = TT.save, rule = weeklyRule();
+    const fits = (id) => s.owned[id] && TT.FIG[id] && rule.ok(TT.FIG[id]);
+    const team = s.team.filter(fits);
+    const rest = Object.keys(s.owned).filter((id) => fits(id) && team.indexOf(id) < 0).sort((a, b) => s.owned[b].lvl - s.owned[a].lvl);
+    return team.concat(rest).slice(0, 3);
+  }
+  function weeklyEnemy(step) {
+    const rule = weeklyRule();
+    const rnd = U.rng(U.hash('weekly:' + weekKey() + ':' + step));
+    const team = weeklyTeam();
+    const s = TT.save;
+    const avg = team.length ? team.reduce((a, id) => a + s.owned[id].lvl, 0) / team.length : teamAvg();
+    const lvl = U.clamp(Math.round(avg + step * 0.8), 2, TT.MAX_LVL);
+    let pool = TT.FIG_LIST.filter((f) => rule.ok(f) && f.rarity !== 'legendary').map((f) => f.id);
+    if (pool.length < 3) pool = TT.FIG_LIST.filter((f) => f.rarity !== 'legendary').map((f) => f.id);
+    const ids = [0, 1, 2].map(() => ({ id: pool[Math.floor(rnd() * pool.length)], lvl }));
+    const boss = step === 2;
+    if (boss) {
+      const top = TT.FIG_LIST.filter((f) => rule.ok(f) && (f.rarity === 'legendary' || f.rarity === 'epic')).map((f) => f.id);
+      if (top.length) ids[2] = { id: top[Math.floor(rnd() * top.length)], lvl: Math.min(TT.MAX_LVL, lvl + 1) };
+    }
+    return {
+      name: boss ? 'Heti bajnok' : `Heti kihívás – ${step + 1}. meccs`, who: ids[2].id, team: ids,
+      ai: Math.min(0.85, 0.45 + step * 0.12), coins: 150 + step * 75, bg: 'dome', music: boss ? 'boss' : 'battle',
+    };
+  }
+
   const scene = {
     enter(p) {
       this.p = p;
@@ -81,19 +135,20 @@
       if (this.venue === 'vault') return [TT.CUP.mint];
       const list = TT.CUPS.filter((c) => c.venue === 'dome');
       list.push({ id: 'friend', name: 'Barát kihívása', color: '#ff9ecd', desc: 'Csapatkóddal megküzdhetsz egy barátod csapatával — vagy elküldheted a sajátodat.' });
+      if (TT.cupDone('rookie')) list.push({ id: 'weekly', name: 'Heti kihívás', color: '#c06bff', desc: `E heti szabály: ${weeklyRule().text}. 3 meccs; a végén ${WEEKLY_PRIZE} érme és egy prémium doboz figura. Hétfőnként új szabály!` });
       if (TT.cupDone('rookie')) list.push({ id: 'survival', name: 'Túlélő Torna', color: '#2a9d8f', desc: '5 harc egymás után, gyógyulás nélkül — a kiesett figurák kiesve maradnak. Naponta egyszer. Fődíj: 1500 érme + legendás doboz!' });
       if (TT.cupDone('mint')) list.push({ id: 'endless', name: 'Végtelen Aréna', color: '#ff6b35', desc: 'Egyre erősebb csapatok, egyre nagyobb jutalmak. Minden 5. hullám egy bajnok!' });
       return list;
     },
     unlocked(c) {
-      if (c.id === 'endless' || c.id === 'survival' || c.id === 'friend') return true;
+      if (c.id === 'endless' || c.id === 'survival' || c.id === 'friend' || c.id === 'weekly') return true;
       return !c.req || TT.cupDone(c.req);
     },
 
     build() {
       const cups = this.cups();
-      const step = cups.length > 6 ? 55 : cups.length > 5 ? 63 : cups.length > 4 ? 76 : 92;
-      const ch = cups.length > 6 ? 51 : cups.length > 5 ? 58 : cups.length > 4 ? 70 : 82;
+      const step = cups.length > 7 ? 48 : cups.length > 6 ? 55 : cups.length > 5 ? 63 : cups.length > 4 ? 76 : 92;
+      const ch = cups.length > 7 ? 44 : cups.length > 6 ? 51 : cups.length > 5 ? 58 : cups.length > 4 ? 70 : 82;
       const items = cups.map((c, i) => ({
         id: 'cup' + i, x: 20, y: 70 + i * step, w: 300, h: ch, cup: c, i,
         onClick: () => {
@@ -104,10 +159,11 @@
       }));
       const c = cups[this.sel];
       const sv = c && c.id === 'survival' ? survivalState() : null;
-      const ok = c && this.unlocked(c) && (c.id === 'endless' || (sv ? !sv.over : !TT.cupDone(c.id)));
-      const label = sv ? (sv.over ? 'Holnap újra!' : 'HARC!') : c && TT.cupDone(c.id) && c.id !== 'endless' ? 'Megnyerve!' : 'HARC!';
+      const wk = c && c.id === 'weekly' ? weeklyState() : null;
+      const ok = c && this.unlocked(c) && (c.id === 'endless' || (sv ? !sv.over : wk ? !wk.done : !TT.cupDone(c.id)));
+      const label = sv ? (sv.over ? 'Holnap újra!' : 'HARC!') : wk ? (wk.done ? 'Jövő héten!' : 'HARC!') : c && TT.cupDone(c.id) && c.id !== 'endless' ? 'Megnyerve!' : 'HARC!';
       items.push({ id: 'fight', x: 600, y: 456, w: 330, h: 64, label, color: '#ff4f4f', size: 30, disabled: !ok,
-        onDisabled: () => TT.ui.toast(sv ? 'A mai tornának vége. Holnap újra próbálhatod!' : c && TT.cupDone(c.id) ? 'Ezt a kupát már megnyerted!' : 'Ez a kupa még zárva van.', { color: '#ff8a80' }),
+        onDisabled: () => TT.ui.toast(sv ? 'A mai tornának vége. Holnap újra próbálhatod!' : wk ? 'Az e heti kihívást már teljesítetted. Hétfőn új jön!' : c && TT.cupDone(c.id) ? 'Ezt a kupát már megnyerted!' : 'Ez a kupa még zárva van.', { color: '#ff8a80' }),
         onClick: () => this.fight(), glow: ok });
       items.push({ id: 'team', x: 350, y: 456, w: 230, h: 64, label: 'Csapat', color: '#3fa7ff', onClick: () => TT.go('collection', { from: 'dome', venue: this.venue, back: this.p.back, sel: this.sel }) });
       items.push({ id: 'back', x: 20, y: 470, w: 160, h: 52, label: 'Vissza', color: '#6c5ce7', sfx: 'back', onClick: () => TT.go('world', { pos: this.p.back, dir: 'down' }) });
@@ -125,6 +181,11 @@
         const f = s.lastFriend;
         return { m: f ? this.friendEnemy(f) : { name: 'Nincs még kód', who: 'robin', team: [] }, boss: false, step: 0 };
       }
+      if (c.id === 'weekly') {
+        const wk = weeklyState();
+        const st = Math.min(2, wk.step);
+        return { m: weeklyEnemy(st), boss: st === 2, step: st };
+      }
       const step = s.cupStep[c.id] || 0;
       if (step < c.matches.length) return { m: c.matches[step], boss: false, step };
       return { m: c.boss, boss: true, step };
@@ -140,6 +201,10 @@
       }
       if (c.id === 'friend') {
         this.friendMenu();
+        return;
+      }
+      if (c.id === 'weekly') {
+        this.fightWeekly(m);
         return;
       }
       const go = () => {
@@ -257,6 +322,44 @@
       });
     },
 
+    fightWeekly(m) {
+      const s = TT.save;
+      const wk = weeklyState();
+      const rule = weeklyRule();
+      const team = weeklyTeam();
+      if (!team.length) {
+        TT.ui.toast('Nincs a szabálynak megfelelő figurád. Szerezz egyet a Játékboltban!', { color: '#ff8a80', dur: 3.5 });
+        return;
+      }
+      const sel = this.sel, venue = this.venue, back = this.p.back;
+      TT.go('battle', {
+        enemy: m, rewardFigs: [], playerTeam: team, noItems: !!rule.noItems,
+        after: (won) => {
+          if (!won) {
+            TT.go('dome', { venue, back, sel });
+            return;
+          }
+          wk.step++;
+          if (wk.step >= 3) {
+            wk.done = true;
+            s.coins += WEEKLY_PRIZE;
+            s.flags.weeklyWins = (s.flags.weeklyWins || 0) + 1;
+            const id = TT.rollBox(TT.BOXES[1]);
+            const info = TT.grantFigure(id);
+            TT.store.write();
+            TT.go('dome', { venue, back, sel });
+            setTimeout(() => {
+              TT.ui.toast(`Heti kihívás teljesítve! +${WEEKLY_PRIZE} érme`, { dur: 4 });
+              TT.ui.reveal(id, info, () => TT.checkAch());
+            }, 300);
+            return;
+          }
+          TT.store.write();
+          TT.go('dome', { venue, back, sel });
+        },
+      });
+    },
+
     fightSurvival(m) {
       const s = TT.save;
       const sv = survivalState();
@@ -354,6 +457,9 @@
       } else if (c.id === 'survival') {
         const sv = survivalState();
         D.text(ctx, sv.won ? 'Ma megnyerted!' : sv.over ? 'Ma véget ért' : `Kör: ${sv.round + 1}/5`, x + 72, b.y + ly, { size: 16, color: sv.won ? '#7bff6b' : sv.over ? '#ff8a80' : '#ffe9a0' });
+      } else if (c.id === 'weekly') {
+        const wk = weeklyState();
+        D.text(ctx, wk.done ? 'E héten kész!' : `Meccs: ${wk.step + 1}/3`, x + 72, b.y + ly, { size: 16, color: wk.done ? '#7bff6b' : '#ffe9a0' });
       }
       else {
         const step = TT.save.cupStep[c.id] || 0;
@@ -395,15 +501,16 @@
         } else {
           const nm = this.nextMatch(c);
           const sv = c.id === 'survival' ? survivalState() : null;
-          const done = sv ? sv.over : c.id !== 'endless' && TT.cupDone(c.id);
+          const wk = c.id === 'weekly' ? weeklyState() : null;
+          const done = sv ? sv.over : wk ? wk.done : c.id !== 'endless' && TT.cupDone(c.id);
           const m = nm.m;
           if (done) {
-            D.text(ctx, sv ? (sv.won ? 'Ma megnyerted a tornát!' : 'A mai tornának vége — holnap újra!') : 'Megnyerted ezt a kupát!', px + pw / 2, py + 170, { size: 28, align: 'center', color: sv && !sv.won ? '#ff8a80' : '#7bff6b' });
+            D.text(ctx, sv ? (sv.won ? 'Ma megnyerted a tornát!' : 'A mai tornának vége — holnap újra!') : wk ? 'E heti kihívás teljesítve!' : 'Megnyerted ezt a kupát!', px + pw / 2, py + 170, { size: 28, align: 'center', color: sv && !sv.won ? '#ff8a80' : '#7bff6b' });
             TT.art.drawFigure(ctx, TT.FIG.robin, px + pw / 2, py + 330, 1.2, { pose: 'cheer' });
           } else {
             if (c.id === 'friend' && !TT.save.lastFriend) {
               D.text(ctx, 'Nyomd meg a HARC! gombot a kódhoz.', px + pw / 2, py + 200, { size: 22, align: 'center', color: '#ffe9a0' });
-            } else D.text(ctx, nm.boss ? 'FŐELLENSÉG' : c.id === 'endless' ? `${nm.step + 1}. hullám` : c.id === 'survival' ? `${nm.step + 1}/5. kör` : c.id === 'friend' ? 'Kihívás' : `${nm.step + 1}. meccs`, px + 22, py + 112, { size: 20, color: nm.boss ? '#ff4f4f' : '#ffd23f' });
+            } else D.text(ctx, nm.boss ? 'FŐELLENSÉG' : c.id === 'endless' ? `${nm.step + 1}. hullám` : c.id === 'survival' ? `${nm.step + 1}/5. kör` : c.id === 'friend' ? 'Kihívás' : c.id === 'weekly' ? `${nm.step + 1}/3. meccs` : `${nm.step + 1}. meccs`, px + 22, py + 112, { size: 20, color: nm.boss ? '#ff4f4f' : '#ffd23f' });
             D.text(ctx, m.name, px + 22, py + 142, { size: 30 });
             // ellenfél csapata
             m.team.forEach((t, i) => {
@@ -416,6 +523,11 @@
               D.text(ctx, 'Szint ' + t.lvl, fx, fy - 140, { size: 15, align: 'center', color: '#ffd23f' });
               D.typeIcon(ctx, TT.FIG[t.id].type, fx + 44, fy - 140, 10);
             });
+            // heti kihívás: ki harcol a szabály szerint
+            if (wk) {
+              const wt = weeklyTeam();
+              D.text(ctx, wt.length ? 'Csapatod ehhez: ' + wt.map((id) => TT.FIG[id].short).join(', ') : 'Nincs a szabálynak megfelelő figurád!', px + 22, py + 370, { size: 15, color: wt.length ? '#9be7ff' : '#ff8a80', lw: 3, maxWidth: pw - 44 });
+            }
             // ajánlott szint
             const avg = teamAvg();
             const rec = c.minLvl || Math.round(m.team.reduce((a, t) => a + t.lvl, 0) / 3);

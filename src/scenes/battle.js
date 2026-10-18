@@ -495,6 +495,7 @@
         }
       }
       this.itemsUsed = 0;
+      this.itemLimit = p.noItems ? 0 : TT.ITEMS_PER_BATTLE;
       this.forfeit = false;
       this.t = 0;
       this.state = 'intro';
@@ -831,10 +832,10 @@
     openItems() {
       const s = TT.save;
       s.items = s.items || {};
-      const left = TT.ITEMS_PER_BATTLE - this.itemsUsed;
+      const left = this.itemLimit - this.itemsUsed;
       if (left <= 0) {
         TT.audio.sfx('error');
-        TT.ui.toast('Ebben a harcban már nem használhatsz több kelléket.', { color: '#ff8a80' });
+        TT.ui.toast(this.itemLimit ? 'Ebben a harcban már nem használhatsz több kelléket.' : 'Ebben a kihívásban nem használhatsz kelléket.', { color: '#ff8a80' });
         return;
       }
       TT.audio.sfx('select');
@@ -1833,7 +1834,7 @@
       // kellék
       if (!this.p.tutorial) {
         const it = L.item;
-        const left = TT.ITEMS_PER_BATTLE - this.itemsUsed;
+        const left = this.itemLimit - this.itemsUsed;
         const total = Object.values(TT.save.items || {}).reduce((a, b) => a + b, 0);
         D.button(ctx, it.x, it.y, it.w, it.h, '', { color: left > 0 && total > 0 ? '#2a9d8f' : '#4a4460' });
         // pizzaszelet ikon
@@ -1855,7 +1856,7 @@
         ctx.arc(4, 6, 2.5, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
-        D.text(ctx, `KELLÉK ${left}/${TT.ITEMS_PER_BATTLE}`, it.x + it.w / 2, it.y + 62, { size: 15, align: 'center' });
+        D.text(ctx, this.itemLimit ? `KELLÉK ${left}/${this.itemLimit}` : 'NINCS KELLÉK', it.x + it.w / 2, it.y + 62, { size: 15, align: 'center' });
         D.keycap(ctx, 'F', it.x + it.w - 14, it.y + 14, { size: 11 });
       }
       // blokk
