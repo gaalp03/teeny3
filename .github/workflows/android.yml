@@ -79,6 +79,22 @@ jobs:
                 && git -C "$RUNNER_TEMP/af" push origin HEAD:refs/heads/apk-forras \
                 || echo "Az előnézet feltöltése nem sikerült"
             fi
+            # a nagy csomagok (pl. .obb) egyszer darabolva egy külön ágra, hogy a 3D figurák renderelése helyben is fejleszthető legyen
+            big=()
+            for f in "${pkgs[@]}"; do if [ "$(stat -c %s "$f")" -ge 95000000 ]; then big+=("$f"); fi; done
+            if [ ${#big[@]} -gt 0 ] && [ -n "$BRANCH" ] && [ ! -f apk/nyers-kesz ] && ! git ls-remote --exit-code origin refs/heads/apk-nyers >/dev/null 2>&1; then
+              NY="$RUNNER_TEMP/ny"
+              git worktree add --detach "$NY" \
+                && git -C "$NY" checkout -q --orphan apk-nyers \
+                && git -C "$NY" rm -rq --cached . \
+                && find "$NY" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} + \
+                && mkdir -p "$NY/apk" \
+                && for f in "${big[@]}"; do split -b 90m -d "$f" "$NY/apk/$(basename "$f").part"; done \
+                && git -C "$NY" add apk \
+                && git -C "$NY" -c user.name="github-actions[bot]" -c user.email="41898299+github-actions[bot]@users.noreply.github.com" commit -q -m "Nagy csomagok darabolva (ideiglenes)" \
+                && git -C "$NY" push origin HEAD:refs/heads/apk-nyers \
+                || echo "A darabolt feltöltés nem sikerült"
+            fi
           fi
           # a nyers kinyert képek ne kerüljenek az APK-ba, csak a párosítottak
           rm -rf apk assets/custom/raw assets/custom/_tmp assets/custom/map.example.json
