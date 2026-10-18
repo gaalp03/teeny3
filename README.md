@@ -71,6 +71,7 @@ cd android && ./gradlew assembleDebug
 | Blokk | Szóköz (tartsd) | BLOKK gomb (tartsd) |
 | Csere | Q / E | bal felső kis portrék |
 | Auto harc / gyorsítás | T / G | AUTO és ×1 gombok fent |
+| Figura-adatlap (harcban) | C | koppintás a felső névpanelre |
 
 Tipp: a bejövő támadásnál zsugorodó kör jelenik meg a figurád körül. Ha akkor kezded a blokkot,
 amikor **zöld**, tökéletes blokk lesz: nulla sebzés, a közelharcos támadó pedig megszédül.

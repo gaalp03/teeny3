@@ -53,6 +53,7 @@
     { who: 'robin', text: 'Harcban a kártyák maguktól töltődnek. 1, 2, 3 (vagy koppintás) = támadás, R = szuper, Szóköz tartva = blokk, Q/E = csere.' },
     { who: 'raven', text: 'Amikor az ellenfél támad, kör zsugorodik a figurád körül. Ha zöld, amikor blokkolni kezdesz: tökéletes blokk, nulla sebzés.' },
     { who: 'cyborg', text: 'Típusok: Erő > Tech > Misztikus > Gyorsaság > Erő. Az erős típus 30%-kal többet sebez.' },
+    { who: 'cyborg', text: 'Harc közben koppints a felső névpanelre (vagy nyomd meg a C-t): megmutatja a figura típusát, passzív képességét, támadásait és állapotait.' },
     { who: 'beastboy', text: 'Érmét harcokból, rejtett helyekről és kupákból kapsz. A Játékboltban dobozt vehetsz, a Toronyban és a Gyűjteményben csapatot rendezhetsz.' },
     { who: 'starfire', text: 'Minden nap 3 napi küldetést kapsz (bal felső sarok, vagy a Q gomb). Ha mindhármat teljesíted, bónusz jár!' },
   ];

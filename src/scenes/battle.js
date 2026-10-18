@@ -774,6 +774,14 @@
         this.pause();
         return;
       }
+      if (I.pressed('KeyC') || I.tapIn(12, 10, 300, 80)) {
+        this.showInfo(0);
+        return;
+      }
+      if (I.tapIn(TT.W - 312, 10, 300, 80)) {
+        this.showInfo(1);
+        return;
+      }
       if (!this.p.tutorial && (I.pressed('KeyT') || I.tapIn(L.auto.x, L.auto.y, L.auto.w, L.auto.h))) this.setAuto(!this.auto);
       if (I.pressed('KeyG') || I.tapIn(L.speed.x, L.speed.y, L.speed.w, L.speed.h)) {
         this.speed = this.speed > 1 ? 1 : 1.6;
@@ -855,6 +863,83 @@
       TT.settings.autoBattle = on;
       TT.store.writeSettings();
       TT.audio.sfx('select');
+    },
+
+    // Figura-adatlap harc közben (a harc addig szünetel)
+    showInfo(side) {
+      TT.audio.sfx('select');
+      const scene = this;
+      const x = 120, y = 34, w = 720, h = 472;
+      const tabs = [{ x: x + 24, y: y + 14, w: 200, h: 38 }, { x: x + 236, y: y + 14, w: 200, h: 38 }];
+      const close = { x: TT.W / 2 - 110, y: y + h - 58, w: 220, h: 46 };
+      let s = side;
+      TT.ui.push({
+        update() {
+          const I = TT.input;
+          if (I.hit('back') || I.hit('ok') || I.pressed('KeyC') || I.tapIn(close.x, close.y, close.w, close.h)) {
+            TT.audio.sfx('back');
+            this.close();
+            return;
+          }
+          if (I.hit('left') || I.hit('right') || I.hit('swapL') || I.hit('swapR')) s = 1 - s;
+          tabs.forEach((t, i) => {
+            if (I.tapIn(t.x, t.y, t.w, t.h)) s = i;
+          });
+        },
+        draw(ctx) {
+          ctx.fillStyle = 'rgba(10,5,25,0.6)';
+          ctx.fillRect(0, 0, TT.W, TT.H);
+          D.panel(ctx, x, y, w, h, { fill: '#2b1e5c', r: 18, lw: 4 });
+          tabs.forEach((t, i) => {
+            const fi = scene.c.act(i);
+            D.button(ctx, t.x, t.y, t.w, t.h, (i === 0 ? 'Te: ' : 'Ellenfél: ') + fi.fig.short, { color: i === s ? (i === 0 ? '#3f6fd8' : '#c0392b') : '#4a3a7a', size: 15 });
+          });
+          scene.drawInfo(ctx, s, x, y + 60, w);
+          D.button(ctx, close.x, close.y, close.w, close.h, 'Vissza a harcba', { color: '#2ecc71', size: 18 });
+        },
+      });
+    },
+
+    drawInfo(ctx, s, x, y, w) {
+      const c = this.c;
+      const f = c.act(s), opp = c.act(1 - s);
+      const fig = f.fig, T = TT.TYPES[fig.type];
+      // figura
+      ctx.drawImage(TT.art.figureCanvas(f.id, 150, { pedestal: false, paint: s === 0 ? undefined : null }), x + 18, y + 4, 150, 150);
+      const tx = x + 182;
+      D.text(ctx, fig.name, tx, y + 18, { size: 24, color: '#ffffff', maxWidth: w - 200 });
+      D.rarityStars(ctx, fig.rarity, tx + 8, y + 44, 15);
+      D.text(ctx, `Szint ${f.lvl}` + (f.stars ? `  ·  ${f.stars}★` : ''), tx + 8 + TT.RARITY[fig.rarity].stars * 16 + 8, y + 45, { size: 15, color: '#ffd23f', lw: 3 });
+      D.typeIcon(ctx, fig.type, tx + 10, y + 72, 11);
+      const weakTo = Object.keys(TT.TYPES).find((k) => TT.TYPES[k].beats === fig.type);
+      D.text(ctx, `${T.name}  ·  Erős: ${TT.TYPES[T.beats].name} ellen  ·  Gyenge: ${TT.TYPES[weakTo].name} ellen`, tx + 28, y + 73, { size: 14, color: '#e8e2ff', lw: 3, maxWidth: w - 220 });
+      const m = TT.typeMult(fig.type, opp.fig.type);
+      const vs = m > 1 ? `+${Math.round((m - 1) * 100)}% sebzés` : m < 1 ? `−${Math.round((1 - m) * 100)}% sebzés` : 'normál sebzés';
+      D.text(ctx, `${opp.fig.short} ellen: ${vs}`, tx, y + 98, { size: 15, color: m > 1 ? '#7bff6b' : m < 1 ? '#ff8a80' : '#c8b8f0', lw: 3 });
+      D.text(ctx, `HP ${Math.ceil(f.hp)}/${f.maxHp}   Támadás ${Math.round(f.st.atk)}   Védekezés ${Math.round(f.st.def)}`, tx, y + 122, { size: 14, color: '#ffffff', lw: 3 });
+      const P = TT.PASSIVES[f.passive];
+      if (P) {
+        D.text(ctx, 'Passzív: ' + P.name, tx, y + 146, { size: 15, color: '#ffe066', lw: 3 });
+        D.text(ctx, P.desc, tx + 8 + D.measure(ctx, 'Passzív: ' + P.name, 15) + 4, y + 146, { size: 13, color: '#e8e2ff', lw: 2.5, maxWidth: w - 200 - D.measure(ctx, 'Passzív: ' + P.name, 15) });
+      }
+      // támadások
+      const my = y + 166;
+      const list = f.moves.map((mv) => mv.m).concat([f.sup]);
+      list.forEach((mv, i) => {
+        const col = i % 2, row = Math.floor(i / 2);
+        const bx = x + 18 + col * ((w - 48) / 2 + 12), by = my + row * 50, bw = (w - 48) / 2;
+        const sup = i === list.length - 1;
+        D.panel(ctx, bx, by, bw, 44, { fill: sup ? '#5a4a1a' : '#3a2a7a', r: 10, lw: 2, shadow: false });
+        D.text(ctx, (sup ? '★ ' : '') + mv.name, bx + 10, by + 14, { size: 14, color: sup ? '#ffd23f' : '#ffffff', lw: 3, maxWidth: bw - 70 });
+        if (!sup) D.text(ctx, mv.charge + ' mp', bx + bw - 10, by + 14, { size: 12, align: 'right', color: '#a89cd8', lw: 2.5 });
+        D.text(ctx, mv.desc || '', bx + 10, by + 32, { size: 12, color: '#c8b8f0', lw: 2.5, maxWidth: bw - 20 });
+      });
+      // állapotok
+      const sy = my + 104;
+      const sts = Object.keys(f.status).map((k) => `${TT.STATUS[k].name} (${Math.ceil(f.status[k].t)} mp): ${TT.STATUS[k].desc}`);
+      if (f.stun > 0) sts.push(`Kábulat (${Math.ceil(f.stun)} mp): nem tud támadni.`);
+      D.text(ctx, sts.length ? 'Állapotok:' : 'Nincs aktív állapot.', x + 22, sy + 10, { size: 15, color: '#9be7ff', lw: 3 });
+      sts.slice(0, 3).forEach((t, i) => D.text(ctx, t, x + 30, sy + 32 + i * 20, { size: 13, color: '#e8e2ff', lw: 2.5, maxWidth: w - 60 }));
     },
 
     pause() {
@@ -1592,6 +1677,18 @@
         const right = s === 1;
         const x = right ? TT.W - 312 : 12, y = 10, w = 300, h = 80;
         D.panel(ctx, x, y, w, h, { fill: right ? '#5a2140' : '#1f3a7a', r: 14, lw: 3 });
+        // adatlap jelző (koppintásra / C gombra)
+        if (this.state === 'fight') {
+          const bx = right ? x + 2 : x + w - 2, by = y + h - 2;
+          ctx.beginPath();
+          ctx.arc(bx, by, 9, 0, Math.PI * 2);
+          ctx.fillStyle = '#ffd23f';
+          ctx.fill();
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = '#1d1433';
+          ctx.stroke();
+          D.text(ctx, 'i', bx, by + 1, { size: 13, align: 'center', color: '#1d1433', stroke: false });
+        }
         const ix = right ? x + w - 28 : x + 28;
         D.typeIcon(ctx, f.fig.type, ix, y + 24, 13);
         const nx = right ? x + w - 50 : x + 50;
