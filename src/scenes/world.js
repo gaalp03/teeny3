@@ -1049,6 +1049,7 @@
       this.gateMsgT -= dt;
       this.updatePatrols(dt);
       this.updateCars(dt);
+      this.updateNpcs(dt);
       if (TT.isFading()) return;
 
       // interakció
@@ -1190,6 +1191,28 @@
       });
     },
 
+    // NPC-k: körülnéznek, a közeli játékos felé fordulnak, néha gondolatbuborékot mutatnak
+    updateNpcs(dt) {
+      const TS = W.TS, pl = this.pl;
+      const night = this.darkness() > 0.6;
+      for (const n of W.npcs) {
+        const st = this.npcState[n.id];
+        if (st.t == null) st.t = U.rand(1, 6);
+        st.t -= dt;
+        const dx = pl.x - n.x * TS, dy = pl.y - n.y * TS;
+        if (Math.hypot(dx, dy) < 110) {
+          st.face = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up';
+        } else if (st.t <= 0) {
+          st.t = U.rand(3, 7);
+          st.face = n.dir || U.pick(['left', 'right', 'down', 'down']);
+          if (!(n.trainer && !TT.save.beaten[n.trainer]) && Math.random() < 0.4) {
+            st.emote = { e: night && Math.random() < 0.5 ? 'zzZ' : U.pick(['♪', '…', '?', '♥', '♪']), t: 0 };
+          }
+        }
+        if (st.emote && (st.emote.t += dt) > 2.4) st.emote = null;
+      }
+    },
+
     drawNpc(ctx, n, x, y) {
       const st = this.npcState[n.id];
       const look = TT.FIG[n.who] || TT.NPC_LOOKS[n.who];
@@ -1207,6 +1230,15 @@
         const b = Math.sin(TT.time * 5 + n.x) * 3;
         D.panel(ctx, x - 11, y - 96 + b, 22, 26, { fill: '#ff4f4f', r: 8, lw: 2.5, shadow: false });
         D.text(ctx, '!', x, y - 82 + b, { size: 20, align: 'center' });
+      } else if (st.emote) {
+        const t = st.emote.t;
+        const a = Math.min(1, t / 0.2, (2.4 - t) / 0.3);
+        const bw = Math.max(26, D.measure(ctx, st.emote.e, 16) + 14);
+        ctx.save();
+        ctx.globalAlpha = U.clamp(a, 0, 1);
+        D.panel(ctx, x - bw / 2 + 8, y - 98 - t * 3, bw, 24, { fill: '#ffffff', r: 10, lw: 2, shadow: false });
+        D.text(ctx, st.emote.e, x + 8, y - 85 - t * 3, { size: 16, align: 'center', color: '#2b1e5c', stroke: false });
+        ctx.restore();
       }
     },
 
