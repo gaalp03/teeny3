@@ -155,6 +155,7 @@
         this.leave();
         return;
       }
+      this.spin3d(dt);
       // görgetés
       const rows = Math.ceil(this.list.length / COLS);
       const maxScroll = Math.max(0, rows * CH - GH + 10);
@@ -277,6 +278,31 @@
       TT.fx.draw(ctx, 1);
     },
 
+    // 3D figura az adatlapon: lassan forog, húzással körbe forgatható, koppintásra táncol
+    spin3d(dt) {
+      const I = TT.input;
+      const ax = 594, ay = 76, aw = 140, ah = 180;
+      this.yaw = this.yaw == null ? 0.3 : this.yaw;
+      this.dance = Math.max(0, (this.dance || 0) - dt);
+      this.spinDrag = this.spinDrag || {};
+      let held = false;
+      for (const p of I.pointers.values()) {
+        if (p.sx < ax || p.sx > ax + aw || p.sy < ay || p.sy > ay + ah) continue;
+        held = true;
+        const last = this.spinDrag[p.id];
+        if (last != null) this.yaw += (p.x - last) * 0.03;
+        this.spinDrag[p.id] = p.x;
+      }
+      for (const r of I.releases) {
+        delete this.spinDrag[r.id];
+        if (r.sx >= ax && r.sx <= ax + aw && r.sy >= ay && r.sy <= ay + ah && Math.hypot(r.x - r.sx, r.y - r.sy) < 8 && TT.model3d && TT.model3d.has(this.sel)) {
+          this.dance = 2.6;
+          TT.audio.sfx('select');
+        }
+      }
+      if (!held) this.yaw += dt * 0.5;
+    },
+
     drawDetail(ctx) {
       const id = this.sel;
       if (!id) return;
@@ -290,7 +316,12 @@
       D.rr(ctx, x + 10, y + 10, 140, 180, 12);
       ctx.clip();
       D.sunburst(ctx, x + 80, y + 110, 200, 12, U.shade(R.ring, -0.5), U.shade(R.ring, -0.35), TT.time * 0.2);
-      if (own) TT.art.drawFigure(ctx, f, x + 80, y + 172, 1.0, { t: TT.time, paint: TT.paintOf(id) });
+      if (own) {
+        TT.art.drawFigure(ctx, f, x + 80, y + 172, 1.0, {
+          t: TT.time, paint: TT.paintOf(id), yaw3d: this.yaw,
+          anim3d: this.dance > 0 ? { name: 'cheer', t: 2.6 - this.dance } : null,
+        });
+      }
       else ctx.drawImage(TT.art.figureCanvas(id, 160, { silhouette: true }), x, y + 30, 160, 160);
       ctx.restore();
       const tx = x + 162;

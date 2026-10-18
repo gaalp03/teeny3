@@ -1813,8 +1813,9 @@
       // saját TT2-es animáció: a mozdulatot az szolgáltatja, a figura csak oldalra fordul
       // (a TT2 harci modelljei alapból 45°-kal el vannak fordítva a kamerától)
       const turn = (o.facing != null ? 0.55 : 0.3) * (facing < 0 ? -1 : 1);
-      r3 = { yaw: -turn - Math.PI / 4, pitch: 0.14, anim: o.anim3d || A.anim3dOf(pose, t) };
-    } else if (r3 && facing < 0) r3.yaw = -r3.yaw;
+      r3 = { yaw: (o.yaw3d != null ? o.yaw3d : -turn) - Math.PI / 4, pitch: 0.14, anim: o.anim3d || A.anim3dOf(pose, t) };
+    } else if (r3 && o.yaw3d != null) r3.yaw = o.yaw3d;
+    else if (r3 && facing < 0) r3.yaw = -r3.yaw;
     const c3 = r3 && TT.model3d.render(fig.id, r3);
     if (c3) {
       // valódi 3D figura: a közös WebGL vászonról másolva (a figura 1 egység = 104 képpont magas)
