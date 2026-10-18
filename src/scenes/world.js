@@ -102,6 +102,7 @@
         }
       }
       if (p.event) this.runEvent(p.event);
+      else if (TT.newsPending()) setTimeout(() => TT.scene === this && TT.newsPending() && TT.showNews(), 1200);
       TT.dailyReward();
       TT.checkAch();
     },
