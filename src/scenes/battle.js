@@ -1863,7 +1863,9 @@
         const shown = Math.floor(r.coins * U.clamp((r.t - 0.3) / 0.8, 0, 1));
         D.text(ctx, '+' + shown, TT.W / 2 - 38, y + 83, { size: 26, color: '#ffd23f' });
       } else {
-        D.text(ctx, 'A figurák kevés tapasztalatot kaptak. Próbáld újra!', TT.W / 2, y + 82, { size: 18, align: 'center', color: '#e8e2ff' });
+        const sub = this.forfeit ? 'Feladtad a harcot — ezért nem jár tapasztalat.'
+          : this.p.noRetry ? 'A figurák kevés tapasztalatot kaptak.' : 'A figurák kevés tapasztalatot kaptak. Próbáld újra!';
+        D.text(ctx, sub, TT.W / 2, y + 82, { size: 18, align: 'center', color: '#e8e2ff' });
       }
       r.rows.forEach((row, i) => {
         const ry = y + 112 + i * 72;

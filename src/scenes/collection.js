@@ -109,13 +109,15 @@
       });
       // rács
       const own = s.owned;
+      const focused = this.menu.items[this.menu.focus];
+      const fromGrid = !!(focused && focused.id.startsWith('fig_'));
       this.list.forEach((id, k) => {
         const col = k % COLS, row = Math.floor(k / COLS);
         const x = GX + col * CW, y = GY + row * CH - this.scroll;
         const vis = y > GY - CH + 10 && y < GY + GH - 10;
-        // billentyűvel/kontrollerrel a következő (még nem látható) sor is elérhető, odagörget
+        // billentyűvel/kontrollerrel a rácson belül a következő (még nem látható) sor is elérhető, odagörget
         const kb = TT.input.lastDevice === 'keyboard' || TT.input.lastDevice === 'pad';
-        const nav = vis || (kb && y > GY - 2 * CH + 10 && y < GY + GH + CH - 10);
+        const nav = vis || (kb && fromGrid && y > GY - 2 * CH + 10 && y < GY + GH + CH - 10);
         items.push({
           id: 'fig_' + id, x, y, w: CW - 6, h: CH - 6, skip: !nav, hidden: !vis, silent: true,
           onClick: () => {

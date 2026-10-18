@@ -58,7 +58,7 @@
       let clicked = null;
       // egér fókusz
       this.items.forEach((b, i) => {
-        if (inp.hover(b.x, b.y, b.w, b.h) && !b.skip) this.focus = i;
+        if (inp.hover(b.x, b.y, b.w, b.h) && !b.skip && !b.hidden) this.focus = i;
       });
       if (opts.keys !== false) {
         if (inp.hit('up')) this.nav(0, -1);
@@ -69,7 +69,7 @@
       }
       for (let i = 0; i < this.items.length; i++) {
         const b = this.items[i];
-        if (b.skip) continue;
+        if (b.skip || b.hidden) continue;
         if (inp.tapIn(b.x, b.y, b.w, b.h)) {
           this.focus = i;
           clicked = b;
