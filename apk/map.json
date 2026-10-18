@@ -1,0 +1,31 @@
+{
+  "figures": {
+    "robin": "render__robin_shop.png",
+    "raven": "render__raven_shop.png",
+    "beastboy": "render__beastboy_shop.png",
+    "cyborg": "render__cyborg_shop.png",
+    "starfire": "render__starfire_shop.png",
+    "aqualad": "render__aqualad_shop.png",
+    "speedy": "render__speedy_shop.png",
+    "bumblebee": "render__bumbleBee_shop.png",
+    "masymenos": "render__masymenos_shop.png",
+    "kidflash": "render__kidflash_shop.png",
+    "terra": "render__terra_shop.png",
+    "gizmo": "render__gizmo_shop.png",
+    "mammoth": "render__mammoth_shop.png",
+    "seemore": "render__seemore_shop.png",
+    "jinx": "render__jinx_shop.png",
+    "billy": "render__billynumerous_shop.png",
+    "drlight": "render__dr_light_shop.png",
+    "silkie": "render__silkie_shop.png",
+    "bloodbrother": "render__brotherblood_shop.png",
+    "slade": "render__slade_shop.png",
+    "trigon": "render__trigon_shop.png",
+    "maeye": "render__mothermaeeye_shop.png",
+    "blackfire": "render__blackfire_shop.png",
+    "red_x": "render__redx_shop.png",
+    "mallah": "render__monsieurmallah_shop.png",
+    "killer_moth": "render__killermoth_shop.png"
+  },
+  "backgrounds": {}
+}
