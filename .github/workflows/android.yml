@@ -44,10 +44,10 @@ jobs:
             BRANCH=$(git rev-parse FETCH_HEAD)
             git checkout FETCH_HEAD -- apk 2>/dev/null || true
           fi
-          onbranch=(apk/*.apk apk/*.xapk apk/*.apks apk/*.obb)
-          # nagy fájlok (pl. a játék .obb kiegészítője): az "apk-forras" nevű kiadáshoz csatolva
-          gh release download apk-forras --dir apk --skip-existing --pattern '*.apk' --pattern '*.xapk' --pattern '*.apks' --pattern '*.obb' 2>/dev/null || true
-          pkgs=(apk/*.apk apk/*.xapk apk/*.apks apk/*.obb)
+          onbranch=(apk/*.apk apk/*.xapk apk/*.apks apk/*.obb apk/*.zip)
+          # nagy fájlok (pl. a játék .obb kiegészítője vagy a letöltési gyorsítótár zipben): az "apk-forras" nevű kiadáshoz csatolva
+          gh release download apk-forras --dir apk --skip-existing --pattern '*.apk' --pattern '*.xapk' --pattern '*.apks' --pattern '*.obb' --pattern '*.zip' 2>/dev/null || true
+          pkgs=(apk/*.apk apk/*.xapk apk/*.apks apk/*.obb apk/*.zip)
           if [ ${#pkgs[@]} -gt 0 ]; then
             SIG=$(for f in "${pkgs[@]}"; do echo "$(basename "$f") $(stat -c %s "$f")"; done)
             echo "== Csomagok ==" && echo "$SIG"

@@ -10,7 +10,7 @@ A kinyert fájlok az assets/custom/ mappába kerülnek, amit a .gitignore kizár
 szerzői jogvédett anyag ne kerüljön fel a repóba.
 
 Használat:
-  1) Kinyerés:   python3 tools/extract_apk.py extract teeny_titans_2.apk   (.xapk / .apks / .obb is jó)
+  1) Kinyerés:   python3 tools/extract_apk.py extract teeny_titans_2.apk   (.xapk / .apks / .obb / .zip is jó)
   2) Böngészés:  nyisd meg az assets/custom/raw/index.html-t, keresd meg a figurák képeit
   3) Párosítás:  másold a map.example.json-t map.json-ra, írd be a fájlneveket
                  python3 tools/extract_apk.py map assets/custom/map.json
@@ -79,6 +79,22 @@ def extract_plain_images(apk, out):
     return n
 
 
+UNITY_MAGIC = (b'UnityFS', b'UnityWeb', b'UnityRaw', b'UnityArchive')
+
+
+def is_unity_member(z, m):
+    # név alapján (APK/OBB) vagy tartalom alapján (pl. a játék letöltési gyorsítótárában __data nevű fájlok)
+    if m.endswith('/'):
+        return False
+    if m.startswith('assets/bin/Data/') or m.endswith(('.bundle', '.assets', '.unity3d', '.ab')):
+        return True
+    try:
+        with z.open(m) as f:
+            return f.read(16).startswith(UNITY_MAGIC)
+    except Exception:
+        return False
+
+
 def extract_unity(apk, out, tmp):
     try:
         import UnityPy  # noqa: F401
@@ -86,7 +102,7 @@ def extract_unity(apk, out, tmp):
         print('  ! A UnityPy nincs telepítve, a Unity csomagokat kihagyom (pip install UnityPy).')
         return 0
     import UnityPy
-    members = [m for m in apk.namelist() if m.startswith('assets/bin/Data/') or m.endswith(('.bundle', '.assets', '.unity3d'))]
+    members = [m for m in apk.namelist() if is_unity_member(apk, m)]
     if not members:
         return 0
     for m in members:
@@ -158,7 +174,7 @@ def process_archive(path, tmp, depth=0):
         work = os.path.join(tmp, f'unity{depth}_{len(os.listdir(tmp))}')
         os.makedirs(work)
         n2 += extract_unity(z, RAW, work)
-        inner = [m for m in z.namelist() if m.lower().endswith(('.apk', '.obb'))] if depth < 2 else []
+        inner = [m for m in z.namelist() if m.lower().endswith(('.apk', '.obb', '.zip'))] if depth < 2 else []
         for m in inner:
             print(f'  belső csomag: {m}')
             p = z.extract(m, os.path.join(tmp, f'inner{depth}'))
