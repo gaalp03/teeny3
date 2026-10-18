@@ -32,17 +32,43 @@ jobs:
       - name: Függőségek
         run: npm ci --no-audit --no-fund
 
-      - name: Saját textúrák (ha van feltöltött APK az apk-forras ágon)
+      - name: Saját textúrák (APK az apk-forras ágon vagy az apk-forras kiadásban)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          shopt -s nullglob
+          mkdir -p apk
+          BRANCH=
           if git fetch --depth 1 origin apk-forras 2>/dev/null; then
+            BRANCH=$(git rev-parse FETCH_HEAD)
             git checkout FETCH_HEAD -- apk 2>/dev/null || true
-            if [ -f apk/map.json ] && ls apk/*.apk >/dev/null 2>&1; then
-              pip install --quiet UnityPy
-              python3 tools/extract_apk.py extract apk/*.apk
-              python3 tools/extract_apk.py map apk/map.json
-            fi
-            rm -rf apk
           fi
+          pkgs=(apk/*.apk apk/*.xapk apk/*.apks apk/*.obb)
+          if [ ${#pkgs[@]} -eq 0 ]; then
+            # nagy fájl: a felhasználó egy "apk-forras" nevű kiadáshoz csatolta
+            gh release download apk-forras --dir apk --pattern '*.apk' --pattern '*.xapk' --pattern '*.apks' --pattern '*.obb' 2>/dev/null || true
+            pkgs=(apk/*.apk apk/*.xapk apk/*.apks apk/*.obb)
+          fi
+          if [ ${#pkgs[@]} -gt 0 ]; then
+            pip install --quiet UnityPy || echo "UnityPy nélkül csak a sima képek jönnek ki"
+            for f in "${pkgs[@]}"; do python3 tools/extract_apk.py extract "$f" || echo "Hiba a kinyeréskor: $f"; done
+            if [ -f apk/map.json ]; then
+              python3 tools/extract_apk.py map apk/map.json || echo "A párosítás nem sikerült, textúrák nélkül folytatom"
+            elif [ -n "$BRANCH" ] && [ ! -d apk/kepek ]; then
+              # első alkalom: kicsinyített előnézet az apk-forras ágra a figurák párosításához
+              python3 tools/extract_apk.py thumbs "$RUNNER_TEMP/kepek" || true
+              # (az || miatt a set -e itt nem hatna, ezért minden lépés &&-gyel láncolva)
+              git worktree add "$RUNNER_TEMP/af" "$BRANCH" \
+                && mkdir -p "$RUNNER_TEMP/af/apk" \
+                && cp -r "$RUNNER_TEMP/kepek" "$RUNNER_TEMP/af/apk/kepek" \
+                && git -C "$RUNNER_TEMP/af" add apk/kepek \
+                && git -C "$RUNNER_TEMP/af" -c user.name="github-actions[bot]" -c user.email="41898299+github-actions[bot]@users.noreply.github.com" commit -q -m "Kinyert képek előnézete a párosításhoz" \
+                && git -C "$RUNNER_TEMP/af" push origin HEAD:apk-forras \
+                || echo "Az előnézet feltöltése nem sikerült"
+            fi
+          fi
+          # a nyers kinyert képek ne kerüljenek az APK-ba, csak a párosítottak
+          rm -rf apk assets/custom/raw assets/custom/_tmp assets/custom/map.example.json
 
       - name: Android projekt előkészítése
         run: npm run android

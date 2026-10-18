@@ -10,7 +10,7 @@ A kinyert fájlok az assets/custom/ mappába kerülnek, amit a .gitignore kizár
 szerzői jogvédett anyag ne kerüljön fel a repóba.
 
 Használat:
-  1) Kinyerés:   python3 tools/extract_apk.py extract teeny_titans_2.apk
+  1) Kinyerés:   python3 tools/extract_apk.py extract teeny_titans_2.apk   (.xapk / .apks / .obb is jó)
   2) Böngészés:  nyisd meg az assets/custom/raw/index.html-t, keresd meg a figurák képeit
   3) Párosítás:  másold a map.example.json-t map.json-ra, írd be a fájlneveket
                  python3 tools/extract_apk.py map assets/custom/map.json
@@ -136,6 +136,28 @@ def suggest(files):
     return sug
 
 
+def process_archive(path, tmp, depth=0):
+    # Az .xapk / .apks csomag több APK-t (és .obb-t) tartalmaz: azokat is bejárjuk
+    n1 = n2 = 0
+    with zipfile.ZipFile(path) as z:
+        n1 += extract_plain_images(z, RAW)
+        work = os.path.join(tmp, f'unity{depth}_{len(os.listdir(tmp))}')
+        os.makedirs(work)
+        n2 += extract_unity(z, RAW, work)
+        inner = [m for m in z.namelist() if m.lower().endswith(('.apk', '.obb'))] if depth < 2 else []
+        for m in inner:
+            print(f'  belső csomag: {m}')
+            p = z.extract(m, os.path.join(tmp, f'inner{depth}'))
+            try:
+                a, b = process_archive(p, tmp, depth + 1)
+            except zipfile.BadZipFile:
+                print(f'  ! nem zip, kihagyva: {m}')
+                continue
+            n1 += a
+            n2 += b
+    return n1, n2
+
+
 def cmd_extract(args):
     if not os.path.isfile(args.apk):
         sys.exit(f'Nincs ilyen fájl: {args.apk}')
@@ -143,12 +165,9 @@ def cmd_extract(args):
     tmp = os.path.join(CUSTOM, '_tmp')
     shutil.rmtree(tmp, ignore_errors=True)
     os.makedirs(tmp)
-    with zipfile.ZipFile(args.apk) as apk:
-        print('Képek keresése az APK-ban…')
-        n1 = extract_plain_images(apk, RAW)
-        print(f'  {n1} sima kép')
-        n2 = extract_unity(apk, RAW, tmp)
-        print(f'  {n2} Unity textúra/sprite')
+    print(f'Képek keresése: {args.apk}')
+    n1, n2 = process_archive(args.apk, tmp)
+    print(f'  {n1} sima kép, {n2} Unity textúra/sprite')
     shutil.rmtree(tmp, ignore_errors=True)
     files = write_gallery(RAW)
     example = {'figures': suggest(files), 'backgrounds': {}}
@@ -180,6 +199,38 @@ def cmd_map(args):
     print('Háttér kulcsok: dome, tower, park, street, beach, hive, vault')
 
 
+def cmd_thumbs(args):
+    # Kicsinyített előnézet a kinyert képekből (a párosításhoz, gyorsan átnézhető)
+    try:
+        from PIL import Image
+    except ImportError:
+        Image = None
+    os.makedirs(args.out, exist_ok=True)
+    names = []
+    for f in sorted(os.listdir(RAW)):
+        if not f.lower().endswith(IMG_EXT):
+            continue
+        src = os.path.join(RAW, f)
+        if Image is None:
+            shutil.copyfile(src, os.path.join(args.out, f))
+            names.append(f)
+            continue
+        try:
+            im = Image.open(src)
+            w, h = im.size
+            if min(w, h) < 48:
+                continue
+            im.thumbnail((256, 256))
+            im.save(os.path.join(args.out, os.path.splitext(f)[0] + '.png'), optimize=True)
+            names.append(f'{f}  ({w}x{h})')
+        except Exception as e:
+            print(f'  ! kihagyva: {f}: {e}')
+    write_gallery(args.out)
+    with open(os.path.join(args.out, 'nevek.txt'), 'w', encoding='utf-8') as fh:
+        fh.write('\n'.join(names) + '\n')
+    print(f'Előnézet: {len(names)} kép → {args.out}')
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest='cmd', required=True)
@@ -189,6 +240,9 @@ def main():
     m = sub.add_parser('map', help='map.json alapján manifest készítése')
     m.add_argument('map')
     m.set_defaults(func=cmd_map)
+    t = sub.add_parser('thumbs', help='kicsinyített előnézet a kinyert képekből')
+    t.add_argument('out')
+    t.set_defaults(func=cmd_thumbs)
     args = ap.parse_args()
     args.func(args)
 

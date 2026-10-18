@@ -47,8 +47,10 @@ Minden pushnál a GitHub Actions lefordít egy APK-t, és feltölti a **Releases
 (`TeenyTitans3.apk`). Telefonon: nyisd meg a repót a böngészőben, Releases, töltsd le és telepítsd
 (engedélyezd az ismeretlen forrásból való telepítést). Az új verzió frissítésként települ, a mentés megmarad.
 
-Saját textúrákkal: tölts fel a saját APK-dat az `apk-forras` ágra az `apk/` mappába egy `apk/map.json`-nal
-(lásd lent), és a build automatikusan beépíti a képeket.
+Saját textúrákkal: a saját APK-dat (vagy `.xapk`/`.apks` fájlodat) 25 MB alatt töltsd fel az `apk-forras` ág
+`apk/` mappájába, nagyobbat csatolj egy `apk-forras` címkéjű kiadáshoz (Releases → Draft a new release).
+A build kinyeri a képeket, előnézetet tesz az `apk-forras` ágra (`apk/kepek`), és az `apk/map.json` szerinti
+párosítás után az APK már ezekkel a képekkel készül. Részletek: az `apk-forras` ág `apk/README.md` fájlja.
 
 Saját gépen (Android SDK + JDK 17 kell):
 
