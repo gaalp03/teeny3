@@ -395,7 +395,8 @@
 
     npcVisible(n) {
       if (n.id === 'redx') return TT.cupDone('brotherhood');
-      if (n.id === 'trigon') return TT.cupDone('brotherhood') && !!TT.save.beaten.redx;
+      // legyőzése után Trigon eltűnik (a történet szerint bezárult a kapuja)
+      if (n.id === 'trigon') return TT.cupDone('brotherhood') && !!TT.save.beaten.redx && !TT.save.beaten.trigon;
       return true;
     },
 
@@ -1266,7 +1267,9 @@
         } else if (st.t <= 0) {
           st.t = U.rand(3, 7);
           st.face = n.dir || U.pick(['left', 'right', 'down', 'down']);
-          if (!(n.trainer && !TT.save.beaten[n.trainer]) && Math.random() < 0.4) {
+          // ne legyen buborék, ha közvetlenül fölötte áll egy másik NPC (a buborék az ő arcára kerülne)
+          const crowded = W.npcs.some((o) => o !== n && this.npcVisible(o) && Math.abs(o.x - n.x) < 1.2 && n.y - o.y > 0 && n.y - o.y < 3);
+          if (!crowded && !(n.trainer && !TT.save.beaten[n.trainer]) && Math.random() < 0.4) {
             st.emote = { e: night && Math.random() < 0.5 ? 'zzZ' : U.pick(['♪', '…', '?', '♥', '♪']), t: 0 };
           }
         }
@@ -1295,10 +1298,11 @@
         const t = st.emote.t;
         const a = Math.min(1, t / 0.2, (2.4 - t) / 0.3);
         const bw = Math.max(26, D.measure(ctx, st.emote.e, 16) + 14);
+        const by = y + 2 - TT.art.heightOf(fig, 0.58) - 30 - t * 3;
         ctx.save();
         ctx.globalAlpha = U.clamp(a, 0, 1);
-        D.panel(ctx, x - bw / 2 + 8, y - 98 - t * 3, bw, 24, { fill: '#ffffff', r: 10, lw: 2, shadow: false });
-        D.text(ctx, st.emote.e, x + 8, y - 85 - t * 3, { size: 16, align: 'center', color: '#2b1e5c', stroke: false });
+        D.panel(ctx, x - bw / 2 + 8, by, bw, 24, { fill: '#ffffff', r: 10, lw: 2, shadow: false });
+        D.text(ctx, st.emote.e, x + 8, by + 13, { size: 16, align: 'center', color: '#2b1e5c', stroke: false });
         ctx.restore();
       }
     },
