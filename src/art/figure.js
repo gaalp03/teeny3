@@ -1808,8 +1808,13 @@
 
     const img = TT.custom && fig.id && TT.custom.figures[fig.id];
     const m3 = !o.noCustom && fig.id && TT.model3d && TT.settings.fig3d !== false && TT.model3d.has(fig.id);
-    const r3 = m3 && A.pose3d(pose, t, P.seed, o);
-    if (r3 && facing < 0) r3.yaw = -r3.yaw;
+    let r3 = m3 && A.pose3d(pose, t, P.seed, o);
+    if (r3 && TT.model3d.animated(fig.id)) {
+      // saját TT2-es animáció: a mozdulatot az szolgáltatja, a figura csak oldalra fordul
+      // (a TT2 harci modelljei alapból 45°-kal el vannak fordítva a kamerától)
+      const turn = (o.facing != null ? 0.55 : 0.3) * (facing < 0 ? -1 : 1);
+      r3 = { yaw: -turn - Math.PI / 4, pitch: 0.14, anim: o.anim3d || A.anim3dOf(pose, t) };
+    } else if (r3 && facing < 0) r3.yaw = -r3.yaw;
     const c3 = r3 && TT.model3d.render(fig.id, r3);
     if (c3) {
       // valódi 3D figura: a közös WebGL vászonról másolva (a figura 1 egység = 104 képpont magas)
@@ -1864,6 +1869,17 @@
       case 'ko': return { yaw: side, pitch: pitch + 0.2 };
       case 'walk': return { yaw: side + Math.sin((o.walk || 0)) * 0.08, pitch };
       default: return { yaw: side + sway, pitch };
+    }
+  };
+
+  // Póz → animáció, ha a hívó (pl. a harc) nem ad pontosabbat
+  A.anim3dOf = function (pose, t) {
+    switch (pose) {
+      case 'cheer': return { name: 'cheer', t };
+      case 'stun': return { name: 'stun', t };
+      case 'ko': return { name: 'ko', t: 99 };
+      case 'hurt': return { name: 'hurt', t: 0.15 };
+      default: return { name: 'idle', t };
     }
   };
 

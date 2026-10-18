@@ -71,12 +71,12 @@
         move = mv.m;
       }
       f.blocking = false;
-      this.startAction(f, move, slot === 'super');
+      this.startAction(f, move, slot === 'super', slot);
       return true;
     }
 
-    startAction(f, move, isSuper) {
-      const a = { move, t: 0, windup: move.windup, hits: [], hi: 0, launched: false, isSuper, kind: move.kind };
+    startAction(f, move, isSuper, slot) {
+      const a = { move, t: 0, windup: move.windup, hits: [], hi: 0, launched: false, isSuper, kind: move.kind, slot };
       if (isSuper) {
         const side = this.sides[f.side];
         const partner = side.fighters.find((o) => o !== f && o.alive && TT.comboOf(f.id, o.id));
@@ -1231,8 +1231,15 @@
         ctx.rotate(rot * 0.2);
         ctx.translate(-x, -y);
       }
+      // a 3D figurák saját animációja a harc állapotából
+      let anim3d = { name: 'idle', t: TT.time + f.idx };
+      if (!f.alive) anim3d = { name: 'ko', t: f.koT };
+      else if (a) anim3d = { name: 'ability', slot: a.isSuper ? 'super' : a.slot, p: a.t / Math.max(0.01, a.end) };
+      else if (f.stun > 0) anim3d = { name: 'stun', t: TT.time };
+      else if (f.hurtT > 0) anim3d = { name: 'hurt', t: 0.28 - f.hurtT };
+      else if (pose === 'cheer') anim3d = { name: 'cheer', t: TT.time };
       TT.art.drawFigure(ctx, f.fig, x, y, f.s, {
-        facing, pose, lean, flash: f.flashT > 0 ? 1 : 0, t: TT.time + f.idx,
+        facing, pose, lean, anim3d, flash: f.flashT > 0 ? 1 : 0, t: TT.time + f.idx,
         pedestal: true, paint: f.side === 0 ? TT.paintOf(f.id) : null,
       });
       ctx.restore();

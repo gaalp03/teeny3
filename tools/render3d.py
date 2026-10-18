@@ -264,7 +264,7 @@ def export_model(parts):
         part['i32'] = big
         out.append(part)
     model = {'v': 1, 'width': float((mx[0] - mn[0]) / height), 'depth': float((mx[2] - mn[2]) / height), 'parts': out}
-    return json.dumps(model, separators=(',', ':')), textures
+    return model, textures
 
 
 def render_shop_models(env, save, only=None, save_model=None):
@@ -273,7 +273,7 @@ def render_shop_models(env, save, only=None, save_model=None):
     if np is None:
         print('  ! numpy nélkül a 3D figurák kimaradnak (pip install numpy)')
         return 0
-    n = 0
+    shops = []
     seen = set()
     for obj in env.objects:
         if obj.type.name != 'GameObject':
@@ -290,6 +290,29 @@ def render_shop_models(env, save, only=None, save_model=None):
         tr = _component(go, 'Transform')
         if tr is None or not tr.m_Children:
             continue
+        seen.add(name.lower())
+        father = None
+        try:
+            if tr.m_Father and tr.m_Father.path_id:
+                father = tr.m_Father.read()
+        except Exception:
+            father = None
+        shops.append((name, tr, father))
+    # a harci (animált) figurák: a bolti modell szülőjével azonos nevű, külön prefab
+    rigs = {}
+    if save_model:
+        try:
+            import anim3d
+            names = set()
+            for _, _, f in shops:
+                if f is not None:
+                    names.add(f.m_GameObject.read().m_Name)
+            rigs = anim3d.find_rig_roots(env, names, _component)
+        except Exception as e:
+            print(f'  ! animált modellek keresése nem sikerült: {e}')
+            rigs = {}
+    n = 0
+    for name, tr, father in shops:
         try:
             parts = _mesh_parts(tr)
             im = render_parts(parts) if parts else None
@@ -298,14 +321,38 @@ def render_shop_models(env, save, only=None, save_model=None):
             continue
         if im is None:
             continue
-        seen.add(name.lower())
         save(name, im)
         if save_model:
             try:
                 data, textures = export_model(parts)
                 if data:
-                    save_model(name, data, textures)
+                    rig = _export_rig(rigs, father)
+                    if rig:
+                        data['rig'], rig_tex = rig
+                        textures.update(rig_tex)
+                    save_model(name, json.dumps(data, separators=(',', ':')), textures)
             except Exception as e:
                 print(f'  ! 3D háló kimentése nem sikerült ({name}): {e}')
         n += 1
     return n
+
+
+def _export_rig(rigs, father):
+    if father is None:
+        return None
+    import anim3d
+    try:
+        fname = father.m_GameObject.read().m_Name
+    except Exception:
+        return None
+    for root in rigs.get(fname, []):
+        if root.object_reader.path_id == father.object_reader.path_id:
+            continue
+        try:
+            rig, tex = anim3d.export_rig(root, _component, _children, _main_texture)
+        except Exception as e:
+            print(f'  ! animáció kihagyva ({fname}): {e}')
+            continue
+        if rig:
+            return rig, tex
+    return None
