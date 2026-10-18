@@ -59,6 +59,7 @@ jobs:
               echo "== $f: a 40 legnagyobb fájl =="
               unzip -l "$f" | sort -k1 -n -r | head -40 || true
             done
+            command -v ffmpeg >/dev/null || sudo apt-get install -y -qq ffmpeg >/dev/null || true
             pip install --quiet UnityPy numpy || echo "UnityPy nélkül csak a sima képek jönnek ki"
             for f in "${pkgs[@]}"; do python3 tools/extract_apk.py extract "$f" || echo "Hiba a kinyeréskor: $f"; done
             if [ -f apk/map.json ]; then

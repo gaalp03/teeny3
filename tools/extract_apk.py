@@ -25,6 +25,7 @@ import json
 import os
 import re
 import shutil
+import subprocess
 import sys
 import zipfile
 
@@ -95,6 +96,40 @@ def is_unity_member(z, m):
         return False
 
 
+def export_music(obj, out):
+    # a játék zenéi (music_*) tömörítve (Opus) a raw/hang mappába; a hangeffektek kimaradnak
+    try:
+        name = obj.peek_name() if hasattr(obj, 'peek_name') else obj.read().m_Name
+    except Exception:
+        return 0
+    if not name or not name.lower().startswith('music_'):
+        return 0
+    if not shutil.which('ffmpeg'):
+        print(f'  ! ffmpeg nélkül a zene kimarad: {name}')
+        return 0
+    folder = os.path.join(out, 'hang')
+    os.makedirs(folder, exist_ok=True)
+    dst = os.path.join(folder, safe_name(name) + '.ogg')
+    if os.path.exists(dst):
+        return 0
+    try:
+        samples = obj.read().samples
+    except Exception as e:
+        print(f'  ! zene kihagyva ({name}): {e}')
+        return 0
+    for data in samples.values():
+        wav = dst[:-4] + '.wav'
+        with open(wav, 'wb') as f:
+            f.write(data)
+        ok = subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-i', wav, '-c:a', 'libopus', '-b:a', '96k', dst]).returncode == 0
+        os.remove(wav)
+        if ok:
+            return 1
+        print(f'  ! zene átalakítása nem sikerült: {name}')
+        return 0
+    return 0
+
+
 def extract_unity(apk, out, tmp):
     try:
         import UnityPy  # noqa: F401
@@ -124,6 +159,9 @@ def extract_unity(apk, out, tmp):
     env = UnityPy.load(*files)
     n = 0
     for obj in env.objects:
+        if obj.type.name == 'AudioClip':
+            n += export_music(obj, out)
+            continue
         if obj.type.name not in ('Texture2D', 'Sprite'):
             continue
         try:
@@ -235,7 +273,17 @@ def trim_copy(src, dst):
 def cmd_map(args):
     with open(args.map, encoding='utf-8') as f:
         mapping = json.load(f)
-    manifest = {'figures': {}, 'backgrounds': {}}
+    manifest = {'figures': {}, 'backgrounds': {}, 'music': {}}
+    # zenék: {"town": "music_cityloop1", ...} — a raw/hang mappából
+    dst = os.path.join(CUSTOM, 'music')
+    for key, src in (mapping.get('music') or {}).items():
+        path = os.path.join(RAW, 'hang', safe_name(src) + '.ogg')
+        if not os.path.isfile(path):
+            print(f'  ! nincs meg a zene: {src}')
+            continue
+        os.makedirs(dst, exist_ok=True)
+        shutil.copyfile(path, os.path.join(dst, safe_name(key) + '.ogg'))
+        manifest['music'][key] = f'music/{safe_name(key)}.ogg'
     for kind, folder in (('figures', 'figures'), ('backgrounds', 'bg')):
         dst = os.path.join(CUSTOM, folder)
         os.makedirs(dst, exist_ok=True)
@@ -253,7 +301,7 @@ def cmd_map(args):
             manifest[kind][key] = f'{folder}/{name}'
     with open(os.path.join(CUSTOM, 'manifest.json'), 'w', encoding='utf-8') as f:
         json.dump(manifest, f, indent=2, ensure_ascii=False)
-    print(f"Kész: {len(manifest['figures'])} figura, {len(manifest['backgrounds'])} háttér → assets/custom/manifest.json")
+    print(f"Kész: {len(manifest['figures'])} figura, {len(manifest['backgrounds'])} háttér, {len(manifest['music'])} zene → assets/custom/manifest.json")
     print('Háttér kulcsok: dome, tower, park, street, beach, hive, vault')
 
 

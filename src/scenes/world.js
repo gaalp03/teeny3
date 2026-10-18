@@ -85,7 +85,7 @@
       this.stepT = 0;
       this.npcState = {};
       for (const n of W.npcs) this.npcState[n.id] = { face: n.dir || 'down' };
-      TT.audio.music(this.inHive() ? 'hive' : 'town');
+      TT.audio.music(this.musicKey());
       s.pos = { x: this.pl.x / TS, y: this.pl.y / TS };
       this.okCooldown = 0.45;
       this.thunderK = null;
@@ -399,6 +399,11 @@
       // legyőzése után Trigon eltűnik (a történet szerint bezárult a kapuja)
       if (n.id === 'trigon') return TT.cupDone('brotherhood') && !!TT.save.beaten.redx && !TT.save.beaten.trigon;
       return true;
+    },
+
+    // éjjel (ha van saját zene hozzá) más szól a városban
+    musicKey() {
+      return this.inHive() ? 'hive' : this.darkness() > 0.6 ? 'town_night' : 'town';
     },
 
     isNight() {
@@ -1086,7 +1091,7 @@
       if ((I.hit('ok') || aTap) && this.prompt && this.okCooldown <= 0) this.interact(this.prompt);
 
       // zene a negyed szerint
-      if (!TT.ui.overlayActive()) TT.audio.music(this.inHive() ? 'hive' : 'town');
+      if (!TT.ui.overlayActive()) TT.audio.music(this.musicKey());
 
       // kamera
       const tx = U.clamp(pl.x - TT.W / 2, 0, W.MW * TS - TT.W);

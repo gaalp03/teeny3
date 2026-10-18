@@ -314,6 +314,49 @@
     }),
   };
 
+  // Ha nincs saját zene és szintetizált dal sincs ilyen néven, ezek helyettesítik
+  const ALIAS = { town_night: 'town', dome: 'shop' };
+  const ONE_SHOT = new Set(['victory', 'defeat']);
+
+  // Saját zenék (assets/custom/music, a saját APK-ból): ha van, az szól a szintetizált dal helyett
+  const buffers = {};
+  function sampledUrl(name) {
+    const m = TT.custom && TT.custom.music;
+    return m && m[name];
+  }
+  function loadBuffer(url) {
+    if (!buffers[url]) {
+      buffers[url] = fetch(url)
+        .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error('HTTP ' + r.status))))
+        .then((ab) => new Promise((resolve, reject) => A.ctx.decodeAudioData(ab, resolve, reject)))
+        .catch(() => null);
+    }
+    return buffers[url];
+  }
+  function startSampled(name, url) {
+    const g = A.ctx.createGain();
+    g.gain.value = 1.2;
+    g.connect(A.musicGain);
+    const cur = { name, sampled: true, gain: g, done: false, src: null };
+    loadBuffer(url).then((buf) => {
+      if (cur.done || A.current !== cur) return;
+      if (!buf) {
+        // nem sikerült betölteni: marad a szintetizált dal
+        cur.done = true;
+        g.disconnect();
+        A.current = startSong(SONGS[name] ? name : ALIAS[name]);
+        return;
+      }
+      const src = A.ctx.createBufferSource();
+      src.buffer = buf;
+      src.loop = !ONE_SHOT.has(name);
+      src.connect(g);
+      src.start();
+      cur.src = src;
+    });
+    return cur;
+  }
+
   // Ütemező: előre beütemezett hangok (lookahead)
   function startSong(name) {
     const s = SONGS[name];
@@ -337,7 +380,7 @@
 
   function tick() {
     const cur = A.current;
-    if (!cur || cur.done || !A.ctx || A.ctx.state !== 'running') return;
+    if (!cur || cur.done || cur.sampled || !A.ctx || A.ctx.state !== 'running') return;
     const horizon = A.ctx.currentTime + 0.15;
     let allDone = true;
     for (const st of cur.chans) {
@@ -373,10 +416,14 @@
       old.done = true;
       try {
         old.gain.gain.setTargetAtTime(0, A.ctx.currentTime, 0.08);
-        setTimeout(() => old.gain.disconnect(), 800);
+        setTimeout(() => {
+          old.gain.disconnect();
+          if (old.src) old.src.stop();
+        }, 800);
       } catch (e) { /* már leállt */ }
     }
-    A.current = name ? startSong(name) : null;
+    const url = name && sampledUrl(name);
+    A.current = !name ? null : url ? startSampled(name, url) : startSong(SONGS[name] ? name : ALIAS[name]);
   };
 
   A.stopMusic = function () {
