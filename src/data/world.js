@@ -150,6 +150,7 @@
     { id: 'pizzaguy', who: 'kid_pizza', x: 42.5, y: 38.5, talk: 'pizzaguy' },
     { id: 'tourist', who: 'kid_tourist', x: 64, y: 57, talk: 'tourist' },
     { id: 'redx', who: 'red_x', x: 38, y: 66.6, trainer: 'redx', dir: 'right' },
+    { id: 'madmod', who: 'mad_mod', x: 47.5, y: 33, trainer: 'madmod', dir: 'down' },
   ];
 
   // Rejtett figurák és érmék
@@ -162,6 +163,7 @@
     { id: 'h_mega', x: 46, y: 67, fig: 'cyborg_mega' },
     { id: 'h_ultra', x: 10, y: 9, fig: 'robin_ultra' },
     { id: 'h_cowboy', x: 93, y: 43, fig: 'bb_cowboy' },
+    { id: 'h_larry', x: 93.5, y: 36.5, fig: 'larry' },
     { id: 'c1', x: 26, y: 42, coins: 60 }, { id: 'c2', x: 3.5, y: 40, coins: 80 }, { id: 'c3', x: 61, y: 26, coins: 70 },
     { id: 'c4', x: 78, y: 26, coins: 90 }, { id: 'c5', x: 30, y: 60, coins: 120 }, { id: 'c6', x: 90, y: 30, coins: 100 },
     { id: 'c7', x: 79, y: 52, coins: 110 }, { id: 'c8', x: 20, y: 11, coins: 250 }, { id: 'c9', x: 8, y: 52, coins: 90 },
@@ -253,6 +255,7 @@
     ],
     tourist: () => [
       { who: 'kid_tourist', text: 'Jump City gyönyörű! Bár valaki egy szürke ládát hagyott a kikötő végén…' },
+      { who: 'kid_tourist', text: 'Ja, és a keleti parton egy pici, Robinra hasonlító alak kuncogott a homokban. Furcsa egy város ez!' },
     ],
   };
 

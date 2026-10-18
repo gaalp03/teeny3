@@ -218,6 +218,22 @@
   M('black_nova', 'Fekete nova', 'beam', 44, 8, 'star', '#8e3fd6', { eff: [E('burn', 0.4, 3)] });
   M('queen_tamaran', 'Tamaran királynője', 'multi', 86, 0, 'star', '#c06bff', { super: true, hits: 6 });
 
+  // ---------- Vendégek: Mad Mod, Killer Moth, Larry ----------
+  M('mod_cane', 'Sétapálca', 'melee', 12, 2.3, 'staff', '#d62828');
+  M('hypno_spiral', 'Hipnospirál', 'beam', 20, 4.6, 'hex', '#f4f4f8', { eff: [E('stun', 0.35, 1)] });
+  M('swinging_sixties', 'Hatvanas lendület', 'multi', 38, 8, 'sonic', '#3f6fd8', { hits: 3, eff: [E('weak', 0.3, 4)] });
+  M('mod_tv', 'Mod-televízió', 'beam', 80, 0, 'hex', '#d62828', { super: true, eff: [E('stun', 1, 1.3)] });
+
+  M('moth_dust', 'Molypor', 'shot', 11, 2.2, 'smoke', '#c9b6e4', { eff: [E('poison', 0.3, 3)] });
+  M('wing_gust', 'Szárnycsapás', 'beam', 18, 4.4, 'wind', '#9b7fd6', { eff: [E('slow', 0.5, 3)] });
+  M('moth_dive', 'Zuhanórepülés', 'melee', 38, 8, 'kick', '#7a4fb8');
+  M('moth_swarm', 'Molyraj', 'multi', 84, 0, 'claw', '#c9b6e4', { super: true, hits: 6, eff: [E('poison', 1, 4)] });
+
+  M('tiny_jab', 'Pici bökés', 'melee', 11, 2, 'punch', '#2f9e44');
+  M('larry_laugh', 'Larry-kacaj', 'shot', 18, 4.5, 'magic', '#ffd23f', { eff: [E('weak', 0.5, 4)] });
+  M('mirror_kick', 'Tükörrúgás', 'melee', 38, 8, 'kick', '#d62828', { eff: [E('mark', 0.4, 4)] });
+  M('fifth_dimension', 'Ötödik dimenzió', 'beam', 92, 0, 'magic', '#ff9ecd', { super: true, eff: [E('stun', 1, 1.2), E('weak', 1, 4)] });
+
   // ---------- Teeny Titans 3: a Menta-banda ----------
   M('tape_shot', 'Ragasztószalag', 'shot', 10, 2.3, 'tape', '#c8a165', { eff: [E('slow', 0.2, 2.5)] });
   M('barcode_scan', 'Vonalkód-szkenner', 'beam', 20, 4.5, 'laser', '#ff4f4f', { eff: [E('mark', 0.6, 4)] });

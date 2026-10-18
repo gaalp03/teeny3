@@ -366,6 +366,30 @@
       hair: 'messy', hairColor: '#2c7a2c', eyes: 'dot', mouth: 'grin', gear: ['ears_pointy', 'antlers', 'red_nose', 'bandana'], bandColor: '#d62828',
     }, { short: 'R. Beast Boy', bio: 'Karácsonyi kiadás. Szánt húz, ajándékot hoz, és harcol.', noBox: true });
 
+  // ---------- Vendégek ----------
+  F('mad_mod', 'Mad Mod', 'mystic', 'epic', [105, 13, 11, 10],
+    ['mod_cane', 'hypno_spiral', 'swinging_sixties'], 'mod_tv',
+    {
+      skin: SKIN, top: '#1d3c8f', sleeves: '#1d3c8f', bottom: '#1d3c8f', boots: '#1d1d2b', gloves: '#f4f4f8',
+      hair: 'swoop', hairColor: '#e8743b', eyes: 'dot', mouth: 'grin', tie: '#d62828', gear: ['staff', 'monocle'],
+    }, { team: 'villain', short: 'Mad Mod', bio: 'A hatvanas évek stílusikonja. Hipnózissal tanít divatot — akarod, nem akarod.', noBox: true });
+
+  F('killer_moth', 'Killer Moth', 'speed', 'rare', [95, 12, 10, 13],
+    ['moth_dust', 'wing_gust', 'moth_dive'], 'moth_swarm',
+    {
+      skin: '#7a4fb8', top: '#5b3fa0', sleeves: '#5b3fa0', bottom: '#4a2f86', boots: '#2a1d4a', gloves: '#c9b6e4',
+      cape: '#c9b6e4', capeIn: '#9b7fd6', hair: 'bald', eyes: 'goggle', eyeColor: '#ffd23f', mouth: 'none', gear: ['antenna', 'wings_bee'],
+      chest: { sym: 'M', color: '#c9b6e4', ink: '#2a1d4a' },
+    }, { team: 'villain', short: 'K. Moth', bio: 'Repül a lámpafény felé. És a figurák felé. Leginkább a figurák felé.' });
+
+  F('larry', 'Larry', 'mystic', 'epic', [90, 12, 10, 12],
+    ['tiny_jab', 'larry_laugh', 'mirror_kick'], 'fifth_dimension',
+    {
+      skin: SKIN, top: '#2f9e44', sleeves: '#d62828', gloves: '#d62828', bottom: '#d62828', boots: '#1d1d2b',
+      belt: '#ffd23f', cape: '#ffd23f', capeIn: '#1d1d2b', hair: 'spiky', hairColor: '#1d1d2b',
+      mask: '#1d1d2b', eyes: 'lens', mouth: 'grin', chest: { sym: 'L', color: '#ffd23f', ink: '#1d1d2b' }, scale: 0.86,
+    }, { team: 'titans', bio: 'Robin legnagyobb rajongója az ötödik dimenzióból. Pici, de varázslatos.' });
+
   // ---------- Teeny Titans 3: Menta-banda ----------
   F('mintguard', 'Menta Őr', 'tech', 'common', [105, 10, 12, 9],
     ['tape_shot', 'barcode_scan', 'stamp'], 'warehouse_lock',
@@ -404,7 +428,7 @@
   // Passzív képességek (ahol eltér a típus alapértelmezésétől)
   const PASSIVE = {
     robin: 'leader', robin_ultra: 'leader', robin_pirate: 'leader', mrmint: 'leader',
-    robin_ninja: 'crit', speedy: 'crit', red_x: 'crit', slade: 'crit', seemore: 'crit',
+    robin_ninja: 'crit', speedy: 'crit', larry: 'lucky', red_x: 'crit', slade: 'crit', seemore: 'crit',
     robin_rock: 'firstwind', starfire: 'firstwind', blackfire: 'firstwind', controlfreak: 'firstwind',
     raven_white: 'regen', star_sleepy: 'regen', star_chef: 'regen', silkie: 'regen', silkie_gold: 'regen', plasmus: 'regen',
     raven_rage: 'berserk',
@@ -441,7 +465,7 @@
   TT.COMBOS = [
     ['robin', 'starfire', 'Titán-szívek'], ['cyborg', 'beastboy', 'Legjobb haverok'], ['raven', 'beastboy', 'Sötét és zöld'],
     ['terra', 'beastboy', 'Kőkemény barátság'], ['silkie', 'starfire', 'Silkie és a mamája'], ['robin', 'cyborg', 'Titán-taktika'],
-    ['raven', 'starfire', 'Sötét és fény'], ['jinx', 'kidflash', 'Szerencsés futás'], ['brain', 'mallah', 'Mester és társa'],
+    ['raven', 'starfire', 'Sötét és fény'], ['robin', 'larry', 'Nagy és kis Robin'], ['mad_mod', 'killer_moth', 'Gonosz divatbemutató'], ['jinx', 'kidflash', 'Szerencsés futás'], ['brain', 'mallah', 'Mester és társa'],
     ['rouge', 'brain', 'Testvériség'], ['mrmint', 'shrinkwrap', 'Gyári csomag'], ['speedy', 'aqualad', 'Kelet ereje'],
     ['bumblebee', 'masymenos', 'Kelet csípése'], ['gizmo', 'mammoth', 'H.I.V.E. haverok'], ['jinx', 'gizmo', 'H.I.V.E. Ötök'],
     ['slade', 'red_x', 'Árnyékok'], ['trigon', 'raven', 'Apa és lánya'], ['blackfire', 'starfire', 'Testvérharc'],
