@@ -136,6 +136,16 @@ def extract_unity(apk, out, tmp):
             n += 1
         except Exception as e:  # egy hibás textúra ne állítsa meg az egészet
             print(f'  ! kihagyva ({obj.type.name} {obj.path_id}): {e}')
+    # a 3D figurák (a boltban kiállított *_shop modellek) elölnézetből lerajzolva
+    try:
+        import render3d
+    except ImportError:
+        render3d = None
+    if render3d:
+        r = render3d.render_shop_models(env, lambda name, im: im.save(unique_path(out, f'render__{safe_name(name)}.png')))
+        if r:
+            print(f'  {r} 3D figura lerajzolva')
+        n += r
     return n
 
 

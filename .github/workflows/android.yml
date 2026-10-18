@@ -44,6 +44,10 @@ jobs:
             BRANCH=$(git rev-parse FETCH_HEAD)
             git checkout FETCH_HEAD -- apk 2>/dev/null || true
           fi
+          # a darabolt ideiglenes másolat letöltve: az ág törölhető
+          if [ -f apk/nyers-kesz ] && git ls-remote --exit-code origin refs/heads/apk-nyers >/dev/null 2>&1; then
+            git push origin --delete refs/heads/apk-nyers || echo "Az apk-nyers ág törlése nem sikerült"
+          fi
           onbranch=(apk/*.apk apk/*.xapk apk/*.apks apk/*.obb apk/*.zip)
           # nagy fájlok (pl. a játék .obb kiegészítője vagy a letöltési gyorsítótár zipben): az "apk-forras" nevű kiadáshoz csatolva
           gh release download apk-forras --dir apk --skip-existing --pattern '*.apk' --pattern '*.xapk' --pattern '*.apks' --pattern '*.obb' --pattern '*.zip' 2>/dev/null || true
@@ -55,7 +59,7 @@ jobs:
               echo "== $f: a 40 legnagyobb fájl =="
               unzip -l "$f" | sort -k1 -n -r | head -40 || true
             done
-            pip install --quiet UnityPy || echo "UnityPy nélkül csak a sima képek jönnek ki"
+            pip install --quiet UnityPy numpy || echo "UnityPy nélkül csak a sima képek jönnek ki"
             for f in "${pkgs[@]}"; do python3 tools/extract_apk.py extract "$f" || echo "Hiba a kinyeréskor: $f"; done
             if [ -f apk/map.json ]; then
               python3 tools/extract_apk.py map apk/map.json || echo "A párosítás nem sikerült, textúrák nélkül folytatom"
