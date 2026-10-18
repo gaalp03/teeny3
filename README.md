@@ -22,9 +22,9 @@ Gyűjts Teeny figurákat, harcolj 3v3 csapatcsatákban a Csatakupolában, és á
 - **Harci kellékek** (pizzaszelet, energiaital, tisztító spray), **Festőműhely** (arany, neon… figurák)
 - **Menta Gyár**: háromszintes kazamata futószalagokkal, gombokkal, robotokkal és kincsesládákkal
 - **Blokk-edzés** minijáték a Toronyban, **szezonális események** (Halloween, Karácsony)
-- **Bejárható Titánok Tornya** figuravitrinnel, **Pizzafogó** és **Figura-memória** minijáték, **Silkie-mellékküldetés**
+- **Bejárható Titánok Tornya** figuravitrinnel, **Pizzafogó**, **Figura-memória** és **Titán-kvíz** minijáték, **Silkie-mellékküldetés**
 - **Menta-járőrök** és autók a városban, **valós napszak** (este besötétedik) és **időjárás** (eső, vihar villámlással)
-- **47 teljesítmény**, **profil és rekordok**, **napi küldetések** (3 feladat naponta, bónusszal), napi jutalom, automatikus harc és gyorsítás (×1.6) gyakorláshoz
+- **48 teljesítmény**, **profil és rekordok**, **napi küldetések** (3 feladat naponta, bónusszal), napi jutalom, automatikus harc és gyorsítás (×1.6) gyakorláshoz
 - **Vakdobozok** a boltban (Alap / Prémium / Legendás), duplikátumokból tapasztalat
 - Szintlépés (max. 30), edzés, pizzaparti, gyűjtői jutalmak
 - Szintetizált zene és hangok, magyar felület, mentés automatikusan, 3 nehézségi szint

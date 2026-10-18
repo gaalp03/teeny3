@@ -634,14 +634,16 @@
     comicsMenu(back) {
       TT.ui.choose({
         title: 'Képregénybolt',
-        text: 'Gyűjtő Géza boltja: képregények, figurák és egy memóriajáték a pult mellett.',
+        text: 'Gyűjtő Géza boltja: képregények, figurák, memóriajáték a pult mellett, hátul pedig Control Freak kvízműsora.',
         options: [
           { label: 'Figura-memória (minijáték)', value: 'memory', color: '#ff6b35' },
+          { label: 'Titán-kvíz (Control Freak műsora)', value: 'quiz', color: '#c06bff' },
           { label: 'Gyűjtői jutalmak', value: 'rewards', color: '#3f6fd8' },
           { label: 'Mégse', value: null },
         ],
       }, (v) => {
         if (v === 'memory') TT.go('memory', { back });
+        else if (v === 'quiz') TT.go('quiz', { back });
         else if (v === 'rewards') this.collectorRewards();
       });
     },

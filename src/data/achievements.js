@@ -53,6 +53,7 @@
     A('silkie', 'Silkie hőse', 'Találd meg Silkie összes elveszett játékát.', 200, (s) => !!s.flags.silkieDone),
     A('rich', 'Tele zseb', 'Legyen egyszerre 5000 érméd.', 200, (s) => s.coins >= 5000),
     A('memory', 'Fényképező memória', 'Rakd ki a Figura-memóriát legfeljebb 14 lépésből.', 300, (s) => !!s.flags.memBest && s.flags.memBest <= (TT.MEMORY_BEST_GOAL || 14)),
+    A('quiz', 'Kvízkirály', 'Válaszolj helyesen mind a 8 kérdésre a Titán-kvízben.', 300, (s) => (s.flags.quizBest || 0) >= (TT.QUIZ_COUNT || 8)),
     A('pizza20', 'Pizzabajnok', 'Kapj el 20 pizzát egy Pizzafogó játékban.', 200, (s) => (s.flags.pizzaBest || 0) >= 20),
     A('daily7', 'Hűséges Titán', 'Gyűjtsd be a napi jutalmat 7 napon át egymás után.', 400, (s) => s.daily && s.daily.streak >= 7),
     A('quest10', 'Szorgalmas Titán', 'Teljesíts 10 napi küldetést.', 300, (s) => (s.stats.quests || 0) >= 10),
@@ -137,8 +138,8 @@
       ['Kibontott dobozok', String(st.boxes)],
       ['Végtelen Aréna rekord', s.endless ? s.endless + '. hullám' : '—'],
       ['Túlélő Torna győzelmek', String(s.flags.survivalWins || 0)],
-      ['Pizzafogó rekord', s.flags.pizzaBest ? s.flags.pizzaBest + ' pizza' : '—'],
-      ['Memória rekord', s.flags.memBest ? s.flags.memBest + ' lépés' : '—'],
+      ['Pizza / memória', `${s.flags.pizzaBest ? s.flags.pizzaBest + ' pizza' : '—'} / ${s.flags.memBest ? s.flags.memBest + ' lépés' : '—'}`],
+      ['Kvíz rekord', s.flags.quizBest ? `${s.flags.quizBest} / ${TT.QUIZ_COUNT || 8}` : '—'],
       ['Napi küldetések', String(st.quests || 0)],
       ['Teljesítmények', `${Object.keys(s.ach || {}).length} / ${TT.ACHIEVEMENTS.length}`],
     ];

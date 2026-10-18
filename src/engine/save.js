@@ -16,7 +16,7 @@
       found: {},
       beaten: {},
       pos: null,
-      stats: { wins: 0, losses: 0, boxes: 0, perfects: 0, kos: 0, supers: 0, swaps: 0, items: 0, trains: 0, pizzaGames: 0, memGames: 0, quests: 0 },
+      stats: { wins: 0, losses: 0, boxes: 0, perfects: 0, kos: 0, supers: 0, swaps: 0, items: 0, trains: 0, pizzaGames: 0, memGames: 0, quizGames: 0, quests: 0 },
       endless: 0,
       items: { pizza: 2, energy: 1, cleanse: 1 },
       playTime: 0,
