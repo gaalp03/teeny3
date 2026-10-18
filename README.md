@@ -69,6 +69,7 @@ cd android && ./gradlew assembleDebug
 | Beszéd / belépés | E / Enter / Szóköz | A gomb |
 | Menü / térkép | Esc / M | jobb felső gombok |
 | Napi küldetések | Q (városban) | bal felső „Napi” gomb |
+| Gyors utazás | térkép (M), kattintás a kék épületnévre | térkép gomb, koppintás a kék épületnévre |
 | Támadások | 1, 2, 3 (J, K, L) | kártyák alul |
 | Szuper | R / 4 | SZUPER gomb |
 | Blokk | Szóköz (tartsd) | BLOKK gomb (tartsd) |

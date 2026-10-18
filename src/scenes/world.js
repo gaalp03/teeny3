@@ -911,7 +911,7 @@
         ],
       }, (v) => {
         if (v === 'team') TT.go('collection', { from: 'world' });
-        else if (v === 'map') this.showMap = !this.showMap;
+        else if (v === 'map') this.toggleMap();
         else if (v === 'save') {
           TT.store.write();
           TT.ui.toast('Játék elmentve!');
@@ -957,8 +957,22 @@
         return;
       }
       if (I.hit('map') || I.tapIn(L.map.x, L.map.y, L.map.w, L.map.h)) {
-        this.showMap = !this.showMap;
+        this.toggleMap();
         TT.audio.sfx('select');
+      }
+      // gyors utazás: épületnévre koppintás a térképen
+      if (this.showMap) {
+        for (const tp of I.taps) {
+          const lab = (this.mapLabels || []).find((r) => tp.x >= r.x - 6 && tp.x <= r.x + r.w + 6 && tp.y >= r.y - 6 && tp.y <= r.y + r.h + 6);
+          if (!lab) continue;
+          if (lab.ok) {
+            TT.audio.sfx('select');
+            TT.ui.confirm(`Gyors utazás ide: ${lab.b.name}?`, (ok) => ok && this.fastTravel(lab.b), 'Utazás', 'Mégse');
+          } else TT.ui.toast('Oda még nem jutsz el gyalog sem.', { color: '#ff8a80' });
+          I.consumeTaps();
+          return;
+        }
+        I.consumeTaps();
       }
       if (TT.questSummary() && (I.pressed('KeyQ') || I.tapIn(L.quest.x, L.quest.y, L.quest.w, L.quest.h))) {
         TT.audio.sfx('select');
@@ -1197,6 +1211,45 @@
         pedestal: false, pose: pl.moving ? 'walk' : 'idle', walk: pl.walk, paint: TT.paintOf('robin'),
         facing: pl.dir === 'left' ? -1 : 1, back: pl.dir === 'up', noCustom: true,
       });
+    },
+
+    toggleMap() {
+      this.showMap = !this.showMap;
+      if (this.showMap) this.mapReach = this.reachable();
+    },
+
+    // gyalog elérhető mezők (zárt kapuk és NPC-k akadályként), a gyors utazáshoz
+    reachable() {
+      const TS = W.TS;
+      const seen = new Uint8Array(W.MW * W.MH);
+      const sx = Math.floor(this.pl.x / TS), sy = Math.floor(this.pl.y / TS);
+      const q = [sy * W.MW + sx];
+      seen[q[0]] = 1;
+      for (let qi = 0; qi < q.length; qi++) {
+        const x = q[qi] % W.MW, y = Math.floor(q[qi] / W.MW);
+        for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+          const nx = x + dx, ny = y + dy;
+          if (nx < 0 || ny < 0 || nx >= W.MW || ny >= W.MH) continue;
+          const k = ny * W.MW + nx;
+          if (seen[k] || this.blocked((nx + 0.5) * TS, (ny + 0.5) * TS)) continue;
+          seen[k] = 1;
+          q.push(k);
+        }
+      }
+      return seen;
+    },
+
+    canTravel(b) {
+      if (!this.mapReach || !b.door) return false;
+      const x = Math.floor(b.door[0]), y = Math.floor(b.door[1] + 1.15);
+      for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) if (this.mapReach[(y + j) * W.MW + x + i]) return true;
+      return false;
+    },
+
+    fastTravel(b) {
+      this.showMap = false;
+      TT.audio.sfx('door');
+      TT.go('world', { pos: { x: b.door[0], y: b.door[1] + 1.15 }, dir: 'down' });
     },
 
     // NPC-k: körülnéznek, a közeli játékos felé fordulnak, néha gondolatbuborékot mutatnak
@@ -1440,6 +1493,7 @@
       ctx.restore();
       const k = mw / (W.MW * TS);
       const placed = [];
+      this.mapLabels = [];
       for (const b of W.buildings) {
         if (!b.name) continue;
         const bx = x + b.door[0] * TS * k, by = y + b.door[1] * TS * k;
@@ -1447,7 +1501,10 @@
         const hit = (ly) => placed.some((r) => Math.abs(r.x - bx) < (r.w + lw) / 2 && Math.abs(r.y - ly) < 14);
         const ly = !hit(by - 14) ? by - 14 : by + 10;
         placed.push({ x: bx, y: ly, w: lw });
-        D.text(ctx, b.name, bx, ly, { size: 12, align: 'center', color: '#fff', lw: 3 });
+        const ok = this.canTravel(b);
+        this.mapLabels.push({ b, ok, x: bx - lw / 2, y: ly - 9, w: lw, h: 18 });
+        if (ok) D.panel(ctx, bx - lw / 2, ly - 9, lw, 18, { fill: 'rgba(63,111,216,0.85)', r: 6, lw: 1.5, shadow: false });
+        D.text(ctx, b.name, bx, ly, { size: 12, align: 'center', color: ok ? '#fff' : '#b8b0d0', lw: 3 });
       }
       for (const n of W.npcs) {
         if (!n.trainer || TT.save.beaten[n.trainer] || !this.npcVisible(n)) continue;
@@ -1477,7 +1534,7 @@
       ctx.lineWidth = 2;
       ctx.strokeStyle = '#1d1433';
       ctx.stroke();
-      D.text(ctx, 'Piros: edző · Rózsaszín: Silkie játéka · Sárga: te · M: bezár', TT.W / 2, y + mh + 2, { size: 13, align: 'center', color: '#c8b8f0', lw: 3 });
+      D.text(ctx, 'Piros: edző · Rózsaszín: Silkie játéka · Sárga: te · Kék névre koppintva: gyors utazás · M: bezár', TT.W / 2, y + mh + 2, { size: 13, align: 'center', color: '#c8b8f0', lw: 3 });
     },
   };
 
