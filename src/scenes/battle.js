@@ -396,11 +396,13 @@
       this.k = U.clamp(skill, 0, 1);
       this.think = 0.8;
       this.plan = null;
-      this.react = 0.55 - this.k * 0.38;
-      this.blockChance = 0.1 + this.k * 0.55;
-      this.perfectChance = this.k * 0.4;
-      this.aggr = 0.45 + this.k * 0.5;
-      this.interval = 0.5 - this.k * 0.28;
+      // (kiegyensúlyozva: korábban az ellenfél az ütések ~40-60%-át blokkolta, és minden feltöltött
+      // támadását azonnal elsütötte — embernek túl nehéz volt)
+      this.react = 0.6 - this.k * 0.3;
+      this.blockChance = 0.05 + this.k * 0.32;
+      this.perfectChance = this.k * 0.2;
+      this.aggr = 0.35 + this.k * 0.35;
+      this.interval = 0.8 - this.k * 0.3;
     }
     update(dt, c, s) {
       const me = c.act(s);
