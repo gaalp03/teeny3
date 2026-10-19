@@ -105,7 +105,7 @@ def export_music(obj, out):
     low = (name or '').lower()
     # zenék, a menü-/harci hangok, a képességek hangjai, az öt Titán harci, visszaszámláló és bolti
     # szinkronja és a bemondott figuranevek; a többi szinkronhang kimarad
-    voice = re.match(r'^sfx_vo_(robin|raven|starfire|beastboy|cyborg)_(battle_|countdown_|store_enter|hurt|defeated|win|title\d|city_new|missioncomplete)|^sfx_menus_newfigreveal_names_', low)
+    voice = re.match(r'^sfx_vo_(robin|raven|starfire|beastboy|cyborg)_(battle_|countdown_|store_enter|store_addtocart|hurt|defeated|win|title\d|city_new|missioncomplete)|^sfx_menus_newfigreveal_names_', low)
     if not voice and not low.startswith('music_') and not (low.startswith('sfx_') and not low.startswith('sfx_vo_')):
         return 0
     if not shutil.which('ffmpeg'):

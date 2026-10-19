@@ -298,6 +298,7 @@
         if (r.sx >= ax && r.sx <= ax + aw && r.sy >= ay && r.sy <= ay + ah && Math.hypot(r.x - r.sx, r.y - r.sy) < 8 && TT.model3d && TT.model3d.has(this.sel)) {
           this.dance = 2.6;
           TT.audio.sfx('select');
+          TT.audio.voice(this.sel, 'dance', 1);
         }
       }
       if (!held) this.yaw += dt * 0.5;

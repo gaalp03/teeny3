@@ -133,6 +133,8 @@
       const info = TT.grantFigure(id);
       TT.store.write();
       TT.audio.sfx('buy');
+      // a csapatból egy Titán megjegyzést tesz a vásárlásra (eredeti TT2-szinkron)
+      TT.audio.voiceFrom(s.team.slice(), 'buy', 0.8);
       this.opening = { box: b, id, info, t: 0, taps: 0, shake: 0, done: false };
     },
 
