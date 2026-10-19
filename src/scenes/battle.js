@@ -19,7 +19,7 @@
       sup: TT.MOVES[fig.sup],
       superM: passive === 'firstwind' ? 40 : 0,
       status: passive === 'shieldstart' ? { shield: { t: 60, v: Math.round(st.hp * 0.12), max: 60 } } : {},
-      stun: 0, guard: 100, blocking: false, blockT: 0, blockCd: 0,
+      stun: 0, guard: 100, blocking: false, blockT: 0, blockCd: 0, pw: PERFECT_WINDOW,
       action: null, alive: true, koT: 0,
       // animáció
       x: 0, y: 0, hurtT: 0, flashT: 0,
@@ -196,7 +196,7 @@
       if (a.combo) dmg *= 1.3;
       let perfect = false, blocked = false, broke = false;
       if (def.blocking) {
-        if (def.blockT <= PERFECT_WINDOW || def.perfectChain) {
+        if (def.blockT <= def.pw || def.perfectChain) {
           perfect = true;
           def.perfectChain = true;
           dmg *= a.isSuper ? 0.2 : 0;
@@ -479,7 +479,8 @@
     enter(p) {
       this.p = p;
       // nehézség: az ellenfél szintje és ügyessége
-      const DIFF = { easy: { lvl: -2, ai: -0.18, xp: 0.9 }, normal: { lvl: 0, ai: 0, xp: 1 }, hard: { lvl: 2, ai: 0.12, xp: 1.25 } };
+      // könnyűn a saját Titánjaid tökéletes blokk ablaka is szélesebb
+      const DIFF = { easy: { lvl: -2, ai: -0.18, xp: 0.9, pw: 0.42 }, normal: { lvl: 0, ai: 0, xp: 1 }, hard: { lvl: 2, ai: 0.12, xp: 1.25 } };
       const df = DIFF[TT.settings.difficulty || 'normal'] || DIFF.normal;
       this.diff = df;
       const en = Object.assign({}, p.enemy, {
@@ -492,6 +493,7 @@
       this.night = !!p.night && ['street', 'park', 'beach', 'tower'].includes(this.bg);
       const pteam = (p.playerTeam || TT.save.team).filter((id) => TT.save.owned[id]).map((id) => ({ id, lvl: TT.save.owned[id].lvl, stars: TT.starsOf(id) }));
       this.c = new Combat(pteam, en.team, { ai: en.ai }, (type, d) => this.onEvent(type, d));
+      if (df.pw && !p.tutorial) for (const f of this.c.sides[0].fighters) f.pw = df.pw;
       if (en.music === 'boss') for (const f of this.c.sides[1].fighters) if (f.id === en.who) f.boss = true;
       if (p.hpFrac) {
         for (const f of this.c.sides[0].fighters) {
@@ -1332,7 +1334,7 @@
         }
         if (f.blocking) {
           ctx.save();
-          const perfect = f.blockT <= PERFECT_WINDOW;
+          const perfect = f.blockT <= f.pw;
           ctx.globalAlpha = 0.55;
           ctx.beginPath();
           ctx.arc(x + facing * 48, y - 75, 62, -Math.PI / 2.4, Math.PI / 2.4, facing < 0);
@@ -1702,7 +1704,7 @@
       const total = Math.max(0.3, a.hits[0]);
       const k = U.clamp(tt / total, 0, 1);
       const r = 46 + k * 110;
-      const inPerfect = tt <= PERFECT_WINDOW;
+      const inPerfect = tt <= me.pw;
       ctx.save();
       ctx.globalAlpha = 0.85;
       ctx.lineWidth = inPerfect ? 7 : 4;
@@ -1714,7 +1716,7 @@
       ctx.lineWidth = 3;
       ctx.strokeStyle = '#7bff6b';
       ctx.beginPath();
-      ctx.arc(me.x, me.y - 72, 46 + (PERFECT_WINDOW / total) * 110, 0, Math.PI * 2);
+      ctx.arc(me.x, me.y - 72, 46 + (me.pw / total) * 110, 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
       // felkiáltójel az ellenfél feje felett
