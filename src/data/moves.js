@@ -317,6 +317,27 @@
   M('sleigh_dash', 'Szánkóroham', 'melee', 40, 7.8, 'kick', '#d62828');
   M('sleigh_ride', 'Rénszarvas-roham', 'multi', 84, 0, 'punch', '#d62828', { super: true, hits: 6, melee: true });
 
+  // ---------- Radikális sorozat (legendás) ----------
+  M('rad_birdarangs', 'Radikális madárrangok', 'multi', 12, 2.3, 'bird', '#ff2e86', { hits: 3 });
+  M('staff_jump', 'Botugrás', 'slam', 26, 5, 'staff', '#ff2e86', { eff: [E('stun', 0.3, 0.9)] });
+  M('eagle_strike', 'Sas-csapás', 'multi', 86, 0, 'bird', '#ff2e86', { super: true, hits: 5, eff: [E('mark', 1, 5)] });
+  M('dark_crystals', 'Sötét kristályok', 'multi', 12, 2.4, 'magic', '#b04cff', { hits: 3 });
+  M('chain_root', 'Árnyláncok', 'beam', 30, 6, 'magic', '#7a2cff', { eff: [E('slow', 0.8, 4), E('stun', 0.3, 1)] });
+  M('minion_swarm', 'Démoncsatlósok', 'multi', 88, 0, 'magic', '#b04cff', { super: true, hits: 6, eff: [E('weak', 1, 5)] });
+  M('multi_blast', 'Csillagsorozat', 'multi', 13, 2.4, 'star', '#ff2e86', { hits: 4 });
+  M('healing_guitar', 'Gyógyító gitárszóló', 'self', 0, 9, 'note', '#ff9ecd', { heal: 0.18, eff: [E('regen', 1, 4, { self: true })] });
+  M('radical_nova', 'Radikális nóva', 'beam', 90, 0, 'star', '#ff2e86', { super: true, eff: [E('burn', 1, 4)] });
+  M('rad_claws', 'Punk karmok', 'melee', 13, 2.2, 'claw', '#7bd65b');
+  M('ice_guitar', 'Jeges gitár', 'beam', 28, 5.5, 'sonic', '#7fd3ff', { eff: [E('slow', 0.7, 4)] });
+  M('rad_eagle', 'Rocksas', 'multi', 86, 0, 'bird', '#7bd65b', { super: true, hits: 5, melee: true });
+  M('electric_sword', 'Villámkard', 'melee', 14, 2.4, 'lightning', '#ff4fd8');
+  M('battery_drain', 'Elemszívás', 'beam', 26, 5.5, 'lightning', '#ffe066', { eff: [E('weak', 0.6, 4)] });
+  M('rad_shield', 'Neonpajzs', 'self', 0, 8, 'shield', '#ff4fd8', { shield: 0.2 });
+  M('overcharge', 'Túltöltés', 'beam', 92, 0, 'lightning', '#ff4fd8', { super: true, eff: [E('stun', 1, 1.2)] });
+  M('beatbox', 'Beatbox', 'shot', 11, 2.2, 'note', '#5fe0c8');
+  M('rad_burp', 'Radikális böfi', 'beam', 26, 5.5, 'blob', '#5fe0c8', { eff: [E('poison', 0.5, 4)] });
+  M('beatbox_bomb', 'Beatbox-bomba', 'slam', 86, 0, 'note', '#5fe0c8', { super: true, eff: [E('stun', 1, 1.3)] });
+
   // Leírás generálása
   for (const m of Object.values(MOVES)) {
     const parts = [];

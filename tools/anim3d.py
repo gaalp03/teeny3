@@ -122,8 +122,14 @@ def _bindpose(m):
                      [m.e20, m.e21, m.e22, m.e23], [m.e30, m.e31, m.e32, m.e33]])
 
 
+def rig_key(name):
+    # a bolti modell szülője és a harci prefab neve néha csak írásmódban tér el (RavenRadical / Raven_Radical)
+    return name.lower().replace('_', '').replace(' ', '')
+
+
 def find_rig_roots(env, names, component):
-    """A megadott nevű, szülő nélküli objektumok (a harci figura-prefabok) név szerint."""
+    """A megadott nevű, szülő nélküli objektumok (a harci figura-prefabok), rig_key szerint."""
+    keys = {rig_key(n) for n in names}
     out = {}
     for obj in env.objects:
         if obj.type.name != 'GameObject':
@@ -132,18 +138,18 @@ def find_rig_roots(env, names, component):
             name = obj.peek_name() if hasattr(obj, 'peek_name') else None
         except Exception:
             name = None
-        if name is not None and name not in names:
+        if name is not None and rig_key(name) not in keys:
             continue
         try:
             go = obj.read()
         except Exception:
             continue
-        if go.m_Name not in names:
+        if rig_key(go.m_Name) not in keys:
             continue
         tr = component(go, 'Transform')
         if tr is None or (tr.m_Father and tr.m_Father.path_id):
             continue
-        out.setdefault(go.m_Name, []).append(tr)
+        out.setdefault(rig_key(go.m_Name), []).append(tr)
     return out
 
 

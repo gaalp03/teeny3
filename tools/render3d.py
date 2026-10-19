@@ -345,7 +345,7 @@ def _export_rig(rigs, father):
         fname = father.m_GameObject.read().m_Name
     except Exception:
         return None
-    for root in rigs.get(fname, []):
+    for root in rigs.get(anim3d.rig_key(fname), []):
         if root.object_reader.path_id == father.object_reader.path_id:
             continue
         try:

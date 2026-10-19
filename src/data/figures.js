@@ -162,6 +162,32 @@
     retro('cyborg', { top: '#f4f4f8', bottom: '#f4f4f8', boots: '#c9ced8', gloves: '#c9ced8', hair: 'flat', hairColor: '#1d1d2b' }),
     { short: 'Retró Cyborg', bio: 'Csillogó fehér páncél, régi iskola. BOOYAH — 80-as kiadásban.' });
 
+  // ---------- Radikális sorozat (punk Titánok, legendás) ----------
+  F('robin_rad', 'Radikális Robin', 'speed', 'legendary', [105, 14, 11, 14],
+    ['rad_birdarangs', 'staff_jump', 'flying_kick'], 'eagle_strike',
+    retro('robin', { top: '#1d1d2b', sleeves: '#1d1d2b', bottom: '#d62828', cape: '#ff6b35', capeIn: '#1d1d2b', hairColor: '#4a2a6b', mouth: 'smirk' }),
+    { short: 'Rad. Robin', bio: 'Taraj, bőrdzseki, dühös gitárriff. A vezér punk korszaka.' });
+
+  F('raven_rad', 'Radikális Raven', 'mystic', 'legendary', [100, 15, 10, 12],
+    ['dark_crystals', 'chain_root', 'dark_shield'], 'minion_swarm',
+    retro('raven', { top: '#6b2fa0', bottom: '#ff4fd8', boots: '#ff4fd8', mouth: 'frown' }),
+    { short: 'Rad. Raven', bio: 'Koponyás kapucni, láncok és démoni csatlósok. Ne kérdezd, milyen zenét hallgat.' });
+
+  F('star_rad', 'Radikális Starfire', 'speed', 'legendary', [105, 14, 10, 14],
+    ['multi_blast', 'starbolt', 'healing_guitar'], 'radical_nova',
+    retro('starfire', { hairColor: '#ff2e86', top: '#ff9ecd', bottom: '#ff9ecd', boots: '#ff4fd8', mouth: 'grin' }),
+    { short: 'Rad. Starfire', bio: 'Rózsaszín sörény és gitárszóló, ami gyógyít. Ez dicsőségesen radikális!' });
+
+  F('bb_rad', 'Radikális Beast Boy', 'brawn', 'legendary', [110, 14, 11, 12],
+    ['rad_claws', 'ice_guitar', 'goat_butt'], 'rad_eagle',
+    retro('beastboy', { top: '#1d1d2b', bottom: '#1d1d2b', stripe: '#ff2e86', boots: '#1d1d2b', gloves: '#ff2e86', mouth: 'smirk' }),
+    { short: 'Rad. Beast Boy', bio: 'Punk karmok, jeges gitár és egy rocksas. A zenekar dobosa akart lenni.' });
+
+  F('cyborg_rad', 'Radikális Cyborg', 'tech', 'legendary', [130, 13, 14, 9],
+    ['electric_sword', 'battery_drain', 'rad_shield'], 'overcharge',
+    retro('cyborg', { top: '#f4f4f8', bottom: '#ff9ecd', boots: '#c9ced8', gloves: '#ff4fd8', hair: 'flat', hairColor: '#ff4fd8' }),
+    { short: 'Rad. Cyborg', bio: 'Neon páncél és villámkard. BOOYAH, punk kiadásban!' });
+
   // ---------- Titánok Kelet és barátok ----------
   F('aqualad', 'Aqualad', 'mystic', 'rare', [105, 11, 11, 11],
     ['water_whip', 'tidal', 'fish_swarm'], 'atlantis_wave',
@@ -272,6 +298,11 @@
     ['nibble', 'cute_look', 'silk_spit'], 'giant_silkie',
     { body: 'worm', skin: '#f2e8ff', spots: '#b9a3ff', eyes: 'big', eyeColor: '#1d1d2b', mouth: 'smile' },
     { team: 'titans', bio: 'Starfire kis kedvence. Lehetetlen nem szeretni.' });
+
+  F('silkie_rad', 'Radikális Silkie', 'brawn', 'legendary', [125, 12, 13, 10],
+    ['beatbox', 'rad_burp', 'nibble'], 'beatbox_bomb',
+    Object.assign({}, LIST.find((f) => f.id === 'silkie').look, { skin: '#d8f7f0', spots: '#5fe0c8' }),
+    { short: 'Rad. Silkie', bio: 'Robotpáncél, szárnyak és beatbox. A legradikálisabb kukac Jump Cityben.' });
 
   F('cinderblock', 'Cinderblock', 'brawn', 'epic', [150, 13, 15, 6],
     ['slab_punch', 'brick_rain', 'rubble'], 'concrete_crush',
