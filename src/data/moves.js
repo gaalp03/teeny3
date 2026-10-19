@@ -338,6 +338,22 @@
   M('rad_burp', 'Radikális böfi', 'beam', 26, 5.5, 'blob', '#5fe0c8', { eff: [E('poison', 0.5, 4)] });
   M('beatbox_bomb', 'Beatbox-bomba', 'slam', 86, 0, 'note', '#5fe0c8', { super: true, eff: [E('stun', 1, 1.3)] });
 
+  // ---------- Különleges TT2-változatok ----------
+  M('cat_scratch', 'Macskakarom', 'melee', 10, 1.9, 'claw', '#7bd65b');
+  M('waffle_toss', 'Gofridobás', 'shot', 22, 4.5, 'pie', '#e8b04b', { eff: [E('slow', 0.35, 3)] });
+  M('nine_lives', 'Kilenc élet', 'multi', 78, 0, 'claw', '#7bd65b', { super: true, hits: 6, melee: true, eff: [E('regen', 1, 5, { self: true })] });
+  M('martian_beam', 'Marsi sugár', 'beam', 27, 5.5, 'laser', '#4fd36b', { eff: [E('weak', 0.4, 4)] });
+  M('martian_morph', 'Marsi átváltozás', 'slam', 80, 0, 'rock', '#4fd36b', { super: true, eff: [E('stun', 1, 1.2)] });
+  M('bubble_trap', 'Buborékcsapda', 'shot', 20, 4.6, 'bubble', '#7fd3ff', { eff: [E('stun', 0.3, 1)] });
+  M('whale_drop', 'Bálnazuhanás', 'slam', 82, 0, 'wave', '#4fc3f7', { super: true, eff: [E('slow', 1, 4)] });
+  M('super_dash', 'Szuperroham', 'melee', 38, 7.8, 'kick', '#b04cff');
+  M('dark_bolt', 'Sötét csillaglövés', 'shot', 13, 2.3, 'star', '#b04cff', { eff: [E('burn', 0.25, 3)] });
+  M('terrible_glare', 'Rettenetes tekintet', 'beam', 92, 0, 'laser', '#b04cff', { super: true, eff: [E('burn', 1, 4), E('weak', 1, 4)] });
+  M('robo_drain', 'Robot-elemszívás', 'beam', 26, 5.5, 'lightning', '#ff3b3b', { eff: [E('slow', 0.5, 3)] });
+  M('poison_pellet', 'Mérgező golyó', 'shot', 20, 4.4, 'smoke', '#7bd65b', { eff: [E('poison', 0.6, 4)] });
+  M('wing_rangs', 'Szárnyas rangok', 'multi', 13, 2.4, 'shuriken', '#3fa7ff', { hits: 3 });
+  M('night_flight', 'Éjszakai repülés', 'multi', 90, 0, 'kick', '#3fa7ff', { super: true, hits: 5, melee: true, eff: [E('mark', 1, 5)] });
+
   // Leírás generálása
   for (const m of Object.values(MOVES)) {
     const parts = [];

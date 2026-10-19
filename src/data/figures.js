@@ -508,6 +508,37 @@
   };
   for (const f of LIST) if (PASSIVE[f.id]) f.passive = PASSIVE[f.id];
 
+  // ---------- Különleges TT2-változatok ----------
+  F('bb_cat', 'Macska Beast Boy', 'speed', 'rare', [95, 11, 9, 13],
+    ['cat_scratch', 'waffle_toss', 'cheetah'], 'nine_lives',
+    retro('beastboy', { top: '#7bd65b', bottom: '#7bd65b', boots: '#5aa83c', gloves: '#7bd65b', stripe: '#3b6b2b', mouth: 'grin' }),
+    { short: 'M. Beast Boy', bio: 'Végleg macskának maradt. Dorombol, karmol és gofrit dobál.' });
+
+  F('bb_martian', 'Marsi Beast Boy', 'mystic', 'epic', [105, 13, 10, 11],
+    ['goat_butt', 'martian_beam', 'gorilla_slam'], 'martian_morph',
+    retro('beastboy', { top: '#2f9e44', bottom: '#2a3fb0', boots: '#2a3fb0', gloves: '#2f9e44', stripe: '#d62828', cape: '#2a3fb0', capeIn: '#1d2a7a', mouth: 'smirk' }),
+    { short: 'Marsi BB', bio: 'Marsi Vadászként öltözött be. Most már a Marson is ő a legviccesebb.' });
+
+  F('aqualad_pirate', 'Kalóz Aqualad', 'brawn', 'epic', [110, 12, 11, 10],
+    ['cutlass', 'bubble_trap', 'water_whip'], 'whale_drop',
+    retro('aqualad', { hairColor: '#111', gear: ['pirate_hat'], mouth: 'grin' }),
+    { short: 'K. Aqualad', bio: 'Kampókéz, falláb és egy papagáj. Atlantisz legvidámabb kalóza.' });
+
+  F('star_terrible', 'Rettenetes Starfire', 'mystic', 'legendary', [105, 15, 10, 13],
+    ['dark_bolt', 'eye_beams', 'super_dash'], 'terrible_glare',
+    retro('starfire', { top: '#2a1a3a', bottom: '#2a1a3a', boots: '#2a1a3a', hairColor: '#ff2e86', mouth: 'frown' }),
+    { short: 'R. Starfire', bio: 'A sötét oldal Tamaranról. Egy pillantással felperzsel bárkit.' });
+
+  F('blood_robot', 'Robot Brother Blood', 'tech', 'epic', [125, 13, 13, 8],
+    ['mind_control', 'robo_drain', 'blood_bolt'], 'hive_judgement',
+    Object.assign({}, LIST.find((f) => f.id === 'bloodbrother').look, { top: '#c1121f', bottom: '#8a8f9c', boots: '#8a8f9c', gloves: '#c1121f', eyes: 'glow', eyeColor: '#ffb703' }),
+    { team: 'hive', short: 'R. B. Blood', bio: 'Félig ember, félig gép, teljesen hipnotikus. A H.I.V.E. 2.0 igazgatója.' });
+
+  F('robin_nightwing', 'Nightwing', 'speed', 'legendary', [108, 15, 11, 15],
+    ['staff_strike', 'poison_pellet', 'wing_rangs'], 'night_flight',
+    retro('robin', { top: '#1d1d2b', sleeves: '#1d1d2b', bottom: '#1d1d2b', boots: '#1d1d2b', gloves: '#3fa7ff', belt: '#3fa7ff', cape: null, chest: { sym: 'V', color: '#3fa7ff', ink: '#1d1d2b' }, mouth: 'smirk' }),
+    { short: 'Nightwing', bio: 'A felnőtt Robin a jövőből. Gyorsabb, menőbb, és még mindig ő a vezér.' });
+
   TT.FIG_LIST = LIST;
   TT.FIG = {};
   for (const f of LIST) {

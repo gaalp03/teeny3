@@ -8,7 +8,7 @@ Gyűjts Teeny figurákat, harcolj 3v3 csapatcsatákban a Csatakupolában, és á
 
 ## Mi van benne
 
-- **69 gyűjthető figura** (Titánok, változatok, a Retró és a Radikális sorozat, Titánok Kelet, H.I.V.E., gonoszok, Gonosz Testvériség, az új
+- **75 gyűjthető figura** (Titánok, változatok, a Retró és a Radikális sorozat, különleges TT2-változatok (pl. Nightwing), Titánok Kelet, H.I.V.E., gonoszok, Gonosz Testvériség, az új
   Menta-banda, valamint Mad Mod, Killer Moth és Larry), mind kódból rajzolva, 4 ritkasággal és 4 típussal (Erő › Tech › Misztikus › Gyorsaság › Erő)
 - **Csillagszint** a dupla figurákból, **csapatbónusz** azonos csapatú figurákkal, **barátság-kombók**
   (pl. Robin + Starfire szuper támadásnál a társ is beugrik), **passzív képességek**

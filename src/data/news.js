@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 6;
+  TT.NEWS_VERSION = 7;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 7, who: 'beastboy', text: 'Hat különleges változat a dobozokban: Nightwing, Rettenetes Starfire, Robot Brother Blood, Kalóz Aqualad, Marsi Beast Boy… és én, macskaként! Miaú, dude!' },
     { v: 6, who: 'robin', text: 'Új legendás sorozat a dobozokban: a Radikális Titánok! Punk Robin, Raven, Starfire, Beast Boy, Cyborg — és Radikális Silkie beatboxszal.' },
     { v: 5, who: 'cyborg', text: 'A támadások is az eredeti TT2-es képességhangokkal szólnak: bot-csapás, madárrang, gorillaütés, lézerszem és még sok más. BOOYAH!' },
     { v: 4, who: 'starfire', text: 'Ha a saját TT2-es fájljaidat használod, harc közben a Titánok az eredeti hangjukon szólalnak meg, az új figurák nevét pedig a doboznyitáskor a bemondó mondja be!' },
