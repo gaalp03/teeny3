@@ -1691,16 +1691,23 @@
     },
 
     // Bejövő támadás jelzése: zsugorodó kör a célpont körül (zöld = tökéletes blokk ablak)
-    drawTelegraph(ctx) {
+    // a soron következő ellenséges találatig hátralévő idő (null, ha nem jön támadás)
+    incoming() {
       const c = this.c;
-      if (this.state !== 'fight') return;
+      if (this.state !== 'fight') return null;
       const en = c.act(1), me = c.act(0);
-      if (!en || !me || !en.alive || !me.alive) return;
+      if (!en || !me || !en.alive || !me.alive) return null;
       const a = en.action;
-      if (!a || a.kind === 'self' || a.hi >= a.hits.length) return;
-      const first = a.hits[a.hi];
-      const tt = first - a.t;
-      if (tt < -0.05) return;
+      if (!a || a.kind === 'self' || a.hi >= a.hits.length) return null;
+      const tt = a.hits[a.hi] - a.t;
+      if (tt < -0.05) return null;
+      return { en, me, a, tt };
+    },
+
+    drawTelegraph(ctx) {
+      const inc = this.incoming();
+      if (!inc) return;
+      const { en, me, a, tt } = inc;
       const total = Math.max(0.3, a.hits[0]);
       const k = U.clamp(tt / total, 0, 1);
       const r = 46 + k * 110;
@@ -1923,6 +1930,18 @@
       // blokk
       const bl = L.block;
       const bon = f.blocking;
+      // bejövő támadásnál a gomb is jelez: sárgán villog, a tökéletes blokk ablakban zölden világít
+      const inc = this.incoming();
+      if (inc && !bon) {
+        const hot = inc.tt <= inc.me.pw;
+        ctx.save();
+        ctx.globalAlpha = hot ? 0.95 : 0.7 + 0.3 * Math.sin(TT.time * 18);
+        ctx.lineWidth = hot ? 9 : 7;
+        ctx.strokeStyle = hot ? '#7bff6b' : '#ffd23f';
+        D.rr(ctx, bl.x - 5, bl.y - 5, bl.w + 10, bl.h + 10, 18);
+        ctx.stroke();
+        ctx.restore();
+      }
       D.button(ctx, bl.x, bl.y, bl.w, bl.h, '', { color: bon ? '#2ecc71' : '#3f6fd8', pressed: bon });
       ctx.save();
       const cx = bl.x + bl.w / 2, cy = bl.y + 30 + (bon ? 3 : 0);
