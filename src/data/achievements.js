@@ -6,6 +6,7 @@
 
   const maxLvl = (s) => Math.max(0, ...Object.values(s.owned).map((o) => o.lvl));
   const maxStars = (s) => Math.max(0, ...Object.keys(s.owned).map((id) => TT.starsOf(id)));
+  const seriesDone = (s, id) => TT.SERIES.find((x) => x.id === id).ids.every((f) => s.owned[f]);
   const mapTrainers = () => TT.WORLD.npcs.filter((n) => n.trainer && n.trainer !== 'tutorial').map((n) => n.trainer);
 
   const A = (id, name, desc, coins, check) => ({ id, name, desc, coins, check });
@@ -58,6 +59,9 @@
     A('daily7', 'Hűséges Titán', 'Gyűjtsd be a napi jutalmat 7 napon át egymás után.', 400, (s) => s.daily && s.daily.streak >= 7),
     A('quest10', 'Szorgalmas Titán', 'Teljesíts 10 napi küldetést.', 300, (s) => (s.stats.quests || 0) >= 10),
     A('quest50', 'Küldetésmániás', 'Teljesíts 50 napi küldetést.', 1000, (s) => (s.stats.quests || 0) >= 50),
+    A('seriesRetro', 'Vissza a 80-as évekbe', 'Gyűjtsd össze a teljes Retró sorozatot (5 figura).', 600, (s) => seriesDone(s, 'retro')),
+    A('seriesRad', 'Totál radikális', 'Gyűjtsd össze a teljes Radikális sorozatot (6 figura).', 1500, (s) => seriesDone(s, 'rad')),
+    A('seriesSpecial', 'Különleges kiadás', 'Gyűjtsd össze mind a 6 különleges változatot.', 1200, (s) => seriesDone(s, 'special')),
   ];
 
   // Új teljesítmények ellenőrzése és jutalmazása

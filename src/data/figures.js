@@ -549,6 +549,14 @@
     }
   }
 
+  // Gyűjthető sorozatok (a teljes sorozat teljesítményt ér)
+  TT.SERIES = [
+    { id: 'retro', name: 'Retró sorozat', short: 'Retró', ids: ['robin_80s', 'raven_80s', 'star_80s', 'bb_80s', 'cyborg_80s'] },
+    { id: 'rad', name: 'Radikális sorozat', short: 'Radikális', ids: ['robin_rad', 'raven_rad', 'star_rad', 'bb_rad', 'cyborg_rad', 'silkie_rad'] },
+    { id: 'special', name: 'Különleges változatok', short: 'Különleges', ids: ['bb_cat', 'bb_martian', 'aqualad_pirate', 'star_terrible', 'blood_robot', 'robin_nightwing'] },
+  ];
+  for (const ser of TT.SERIES) for (const id of ser.ids) TT.FIG[id].series = ser.id;
+
   // Változatok alapfigurája (kombókhoz)
   TT.baseOf = function (id) {
     if (id.startsWith('robin')) return 'robin';

@@ -328,6 +328,11 @@
       D.text(ctx, own ? f.name : '???', tx, y + 30, { size: 22, maxWidth: w - 172 });
       D.rarityStars(ctx, f.rarity, tx + 8, y + 56, 16);
       D.text(ctx, R.name, tx + 8 + R.stars * 17 + 4, y + 57, { size: 14, color: R.color, lw: 3 });
+      const ser = f.series && TT.SERIES.find((x2) => x2.id === f.series);
+      if (ser) {
+        const have = ser.ids.filter((sid) => TT.save.owned[sid]).length;
+        D.text(ctx, ser.short + ' ' + have + '/' + ser.ids.length, x + w - 14, y + 106, { size: 12, align: 'right', color: have === ser.ids.length ? '#7bff6b' : '#ff9ecd', lw: 3 });
+      }
       D.typeIcon(ctx, f.type, tx + 12, y + 84, 11);
       D.text(ctx, TT.TYPES[f.type].name + ' · ' + (TT.TEAM_NAMES[f.team] || ''), tx + 30, y + 85, { size: 14, color: '#e8e2ff', lw: 3, maxWidth: w - 200 });
       const beats = TT.TYPES[f.type].beats;

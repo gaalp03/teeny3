@@ -127,6 +127,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # mi került az APK-ba a saját fájlokból (így a kiadás oldalán látszik, működött-e a párosítás)
+          TARTALOM=$(python3 -c "import json; m=json.load(open('assets/custom/manifest.json')); v=m.get('voice',{}); print('Saját TT2-tartalom: %d figura, %d 3D modell, %d zene, %d hangeffekt, %d támadáshang, %d bemondott név, %d szinkronhang.' % (len(m.get('figures',{})), len(m.get('models',{})), len(m.get('music',{})), len(m.get('sfx',{})), len(m.get('moves',{})), sum(1 for k in v.values() if 'name' in k), sum(len(l) for k in v.values() for n, l in k.items() if n != 'name')))" 2>/dev/null || echo "Saját TT2-tartalom nélkül készült.")
+          echo "$TARTALOM"
           for i in 1 2 3; do
             gh release delete legujabb --cleanup-tag -y || true
             sleep 3
@@ -134,7 +137,7 @@ jobs:
               --prerelease \
               --target "$GITHUB_SHA" \
               --title "Teeny Titans 3 – legújabb (1.${{ github.run_number }})" \
-              --notes "Automatikus build a(z) ${GITHUB_REF_NAME} ágról. Telefonon: töltsd le a TeenyTitans3.apk-t és telepítsd. A frissítés megtartja a mentést."; then
+              --notes "Automatikus build a(z) ${GITHUB_REF_NAME} ágról. Telefonon: töltsd le a TeenyTitans3.apk-t és telepítsd. A frissítés megtartja a mentést. $TARTALOM"; then
               exit 0
             fi
             sleep $((i * 10))
