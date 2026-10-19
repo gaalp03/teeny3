@@ -195,6 +195,16 @@ def extract_unity(apk, out, tmp):
         if r:
             print(f'  {r} 3D figura lerajzolva')
         n += r
+        # a harci arénák háttérképnek (arena__tower.png stb.)
+        try:
+            import arena3d
+            a = arena3d.render_arenas(env, lambda key, im: im.save(os.path.join(out, f'arena__{key}.png'), optimize=True),
+                                      render3d._component, render3d._children, render3d._mesh_parts)
+            if a:
+                print(f'  {a} aréna lerajzolva')
+            n += a
+        except Exception as e:
+            print(f'  ! az arénák kirajzolása nem sikerült: {e}')
     return n
 
 

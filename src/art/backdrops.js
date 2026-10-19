@@ -202,7 +202,7 @@
       ctx.drawImage(cache[kind], 0, 0);
     }
     // élő elemek
-    if (kind === 'dome') {
+    if (kind === 'dome' && !custom) {
       // közönség
       const rnd = U.rng(3);
       for (let r = 0; r < 5; r++) {
