@@ -134,6 +134,7 @@
       const nf = side.fighters[target];
       nf.blocking = false;
       nf.stun = 0;
+      nf.enterT = 0; // a 3D figura beugrás-animációja
       this.emit('swap', { side: side.idx, from: cur, to: nf });
     }
 
@@ -979,6 +980,8 @@
           c.started = true;
           this.state = 'fight';
           TT.audio.sfx('go');
+          // harc eleje: az aktív figurák beugranak a talapzatra
+          for (const sd of c.sides) sd.fighters[sd.active].enterT = 0;
           if (this.p.tutorial) this.showTip('TÁMADJ! A kártyák feltöltődnek — koppints rájuk, vagy nyomd az 1, 2, 3 gombot!', 6);
         }
       } else if (this.state === 'fight') {
@@ -1009,6 +1012,7 @@
         f.s = U.lerp(f.s, f.ts, k);
         f.hurtT = Math.max(0, f.hurtT - dt);
         f.flashT = Math.max(0, f.flashT - dt);
+        if (f.enterT != null) f.enterT += dt;
         f.ghost = f.ghost > f.hp ? Math.max(f.hp, f.ghost - f.maxHp * dt * 0.6) : f.hp;
       }
       for (const p of this.projectiles) {
@@ -1238,6 +1242,7 @@
       else if (f.stun > 0) anim3d = { name: 'stun', t: TT.time };
       else if (f.hurtT > 0) anim3d = { name: 'hurt', t: 0.28 - f.hurtT };
       else if (pose === 'cheer') anim3d = { name: 'cheer', t: TT.time };
+      else if (active && f.enterT != null && f.enterT < 0.9) anim3d = { name: 'enter', t: f.enterT };
       TT.art.drawFigure(ctx, f.fig, x, y, f.s, {
         facing, pose, lean, anim3d, flash: f.flashT > 0 ? 1 : 0, t: TT.time + f.idx,
         pedestal: true, paint: f.side === 0 ? TT.paintOf(f.id) : null,
