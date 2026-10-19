@@ -138,7 +138,7 @@ def find_rig_roots(env, names, component):
             name = obj.peek_name() if hasattr(obj, 'peek_name') else None
         except Exception:
             name = None
-        if name is not None and rig_key(name) not in keys:
+        if name and rig_key(name) not in keys:
             continue
         try:
             go = obj.read()

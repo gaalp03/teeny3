@@ -5,7 +5,7 @@
   TT.NEWS_VERSION = 9;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
-    { v: 9, who: 'cyborg', text: 'Új harci terepek a TT2-ből: a Torony teteje, a H.I.V.E. bázis és a Csatakupolában az Igazság Csarnoka. Mint a régi szép időkben!' },
+    { v: 9, who: 'cyborg', text: 'Új harci terepek a TT2-ből: a Torony teteje, a H.I.V.E. bázis, a Csatakupolában az Igazság Csarnoka, a strandon Themyscira, a Trezorban pedig egy titkos barlang. Mint a régi szép időkben!' },
     { v: 8, who: 'raven', text: 'Gyűjtsd össze a teljes Retró, Radikális vagy Különleges sorozatot: mindegyik egy teljesítményt és sok érmét ér. A Gyűjteményben látod, hol tartasz.' },
     { v: 7, who: 'beastboy', text: 'Hat különleges változat a dobozokban: Nightwing, Rettenetes Starfire, Robot Brother Blood, Kalóz Aqualad, Marsi Beast Boy… és én, macskaként! Miaú, dude!' },
     { v: 6, who: 'robin', text: 'Új legendás sorozat a dobozokban: a Radikális Titánok! Punk Robin, Raven, Starfire, Beast Boy, Cyborg — és Radikális Silkie beatboxszal.' },

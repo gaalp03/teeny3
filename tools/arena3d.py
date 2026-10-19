@@ -96,6 +96,8 @@ ARENAS = {
     'tower': ('TopOfTowerArena', (24, 7, 0), (0, 4.5, 0), 50),
     'hive': ('HiveArena', (-14, 5, 0), (0, 3, 0), 50),
     'dome': ('HallofJusticeArena', (24, 7, 0), (0, 4.5, 0), 50),
+    'beach': ('Arena_Themyscira', (-24, 7, 0), (0, 4.5, 0), 50),
+    'vault': ('BatCaveArena', (-24, 7, 0), (0, 4.5, 0), 50),
 }
 
 
@@ -111,7 +113,7 @@ def render_arenas(env, save, component, children, mesh_parts):
             name = obj.peek_name() if hasattr(obj, 'peek_name') else None
         except Exception:
             name = None
-        if name is not None and name not in want:
+        if name and name not in want:
             continue
         try:
             go = obj.read()
