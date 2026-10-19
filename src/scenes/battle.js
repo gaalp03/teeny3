@@ -1080,7 +1080,25 @@
         for (const id of this.p.rewardFigs || []) figs.push(Object.assign({ id }, TT.grantFigure(id)));
         const syn = c.sides[0].synergy;
         if (syn && syn.n >= 3) s.flags.synWin = true;
-      } else s.stats.losses++;
+        s.stats.lossStreak = 0;
+      } else {
+        s.stats.losses++;
+        s.stats.lossStreak = (s.stats.lossStreak || 0) + 1;
+        // két (és öt) egymás utáni vereség után Raven felajánlja a könnyebb nehézséget
+        const ls = s.stats.lossStreak;
+        if ((ls === 2 || ls === 5) && (TT.settings.difficulty || 'normal') !== 'easy' && !this.p.tutorial) {
+          setTimeout(() => {
+            if (TT.scene !== this || this.state !== 'results') return;
+            TT.ui.say([{ who: 'raven', text: 'Ez most nem jött össze… Ha túl nehéz, átállíthatom a harcokat Könnyűre. A Beállításokban bármikor visszaállíthatod.' }], () => {
+              TT.ui.confirm('Legyen Könnyű a nehézség?', (ok) => {
+                if (!ok) return;
+                TT.settings.difficulty = 'easy';
+                TT.store.writeSettings();
+              }, 'Igen, könnyebben', 'Nem, maradjon');
+            });
+          }, 1400);
+        }
+      }
       if (this.p.onResult) this.p.onResult(won, this);
       TT.store.write();
       TT.checkAch();
