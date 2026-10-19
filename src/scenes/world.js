@@ -956,6 +956,10 @@
       const I = TT.input;
       const s = TT.save;
       const TS = W.TS;
+      // napszakváltáskor (valós idő) egy Titán a csapatból köszönti az éjszakát / a reggelt
+      const dark = this.darkness() > 0.5;
+      if (this.wasDark != null && dark !== this.wasDark) TT.audio.voiceFrom(s.team.slice(), dark ? 'night' : 'day', 1);
+      this.wasDark = dark;
       // vihar: mennydörgés kicsivel a villám után
       if (TT.weatherNow() === 'storm') {
         const k = Math.floor((TT.time + 3) / TT.backdrop.THUNDER_EVERY);

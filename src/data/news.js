@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 12;
+  TT.NEWS_VERSION = 13;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 13, who: 'starfire', text: 'Még többet beszélünk! A címképernyőn bekiabálunk, gyógyuláskor megköszönjük, a teljesített napi küldetésnek örülünk, és köszöntjük az éjszakát meg a reggelt is!' },
     { v: 12, who: 'cyborg', text: 'Végre nálam is szól minden: ha eltalálnak, kiesek vagy nyerek. A harc elején a csapatod első Titánja kiáltja a „Rajta!”-t, a boltban pedig köszönünk. BOOYAH!' },
     { v: 11, who: 'raven', text: 'A Gonosz Kupa után Wonder Woman vár a Csatakupola mellett az Igazság Ligájával. Éjjelente pedig Joker kószál a téren a pizzéria előtt… vigyázz vele.' },
     { v: 10, who: 'robin', text: 'Vendégek érkeztek a TT2-ből: Superman, Wonder Woman, Batman Beyond és Batgirl — és sajnos Joker meg Harley Quinn is. Mind a legendás és epikus dobozokban!' },

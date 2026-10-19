@@ -595,6 +595,7 @@
           } else if (move.kind === 'self') {
             this.auras.push({ f, color: move.color, t: 0, dur: 0.8 });
             sfx(move.heal ? 'heal' : move.shield ? 'shield' : 'buff');
+            if (move.heal) TT.audio.voice(f.id, 'heal', 0.8);
           } else {
             sfx('whoosh');
           }
@@ -652,6 +653,7 @@
         case 'item': {
           const it = TT.ITEMS[d.item];
           TT.audio.sfx(d.item === 'pizza' ? 'heal' : d.item === 'energy' ? 'buff' : 'shield');
+          if (d.item === 'pizza') TT.audio.voice(d.f.id, 'heal', 0.8);
           TT.fx.text(d.f.x, d.f.y - 175, it.name + '!', { color: it.color, tsize: 22, vy: -60 });
           TT.fx.burst(d.f.x, d.f.y - 70, 14, { color: it.color, shape: 'star', speed: 160, size: 6, life: 0.6 });
           break;

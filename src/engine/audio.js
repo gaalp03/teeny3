@@ -248,12 +248,13 @@
       loadBuffer(url).then((b) => { voiceBuf[url] = b || false; });
     }
     const buf = voiceBuf[url];
-    if (!buf) return;
+    if (!buf) return false;
     const src = A.ctx.createBufferSource();
     src.buffer = buf;
     src.connect(A.sfxGain);
     src.start();
     voiceUntil = now + buf.duration + 0.4;
+    return true;
   };
   // A TT2 bemondója kimondja a figura nevét (csak a pontosan egyező figuráknál, a változatoknál nem)
   A.announce = function (figId) {
@@ -279,7 +280,7 @@
       const v = TT.custom.voice[TT.baseOf ? TT.baseOf(x) : x];
       return v && v[kind] && v[kind].length;
     });
-    if (id) A.voice(id, kind, chance);
+    return id ? A.voice(id, kind, chance) : false;
   };
   A.preloadVoices = function () {
     if (!A.ctx || !TT.custom || !TT.custom.voice) return;

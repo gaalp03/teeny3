@@ -60,6 +60,10 @@
     update(dt) {
       this.t += dt;
       this.menu.update();
+      // az első érintés után egy Titán bekiáltja a címet (amíg be nem töltődik a hang, újrapróbálja)
+      if (!this.shout && TT.audio.unlocked && this.t < 8) {
+        this.shout = TT.audio.voiceFrom(U.shuffle(['robin', 'raven', 'starfire', 'beastboy', 'cyborg']), 'title', 1);
+      }
     },
 
     draw(ctx) {

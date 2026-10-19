@@ -70,6 +70,7 @@
       s.stats.quests = (s.stats.quests || 0) + 1;
       msgs.push(`Napi küldetés kész: ${q.text} (+${q.coins})`);
     }
+    if (msgs.length && TT.audio.voiceFrom) TT.audio.voiceFrom(s.team.slice(), 'mission', 1);
     if (!qs.bonus && qs.list.every((e) => e.done)) {
       qs.bonus = true;
       s.coins += BONUS_COINS;
