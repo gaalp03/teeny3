@@ -60,7 +60,7 @@
     if (!A.ctx) return;
     const t = A.ctx.currentTime;
     A.master.gain.setTargetAtTime(A.muted ? 0 : 1, t, 0.02);
-    A.musicGain.gain.setTargetAtTime(A.musicVol * 0.55, t, 0.05);
+    A.musicGain.gain.setTargetAtTime(A.musicVol * 0.85, t, 0.05);
     A.sfxGain.gain.setTargetAtTime(A.sfxVol * 0.9, t, 0.02);
   };
 
@@ -458,7 +458,7 @@
   }
   function startSampled(name, url) {
     const g = A.ctx.createGain();
-    g.gain.value = 1.2;
+    g.gain.value = 1.45;
     g.connect(A.musicGain);
     const cur = { name, sampled: true, gain: g, done: false, src: null };
     loadBuffer(url).then((buf) => {

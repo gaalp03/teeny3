@@ -19,11 +19,17 @@
   let shake = { t: 0, dur: 0, amp: 0 };
   let last = 0;
 
+  // A belső rajzfelület legnagyobb szélessége: nagy (pl. 1080p-s emulátor-) képernyőn a teljes felbontás
+  // akár 3840 képpont lenne, ami fölöslegesen lassú; ha mégis akadozik, a játék magától lejjebb veszi
+  const QUALITY = [1920, 1440, 960];
+  let quality = 0;
+  const perf = { sum: 0, n: 0, wait: 2 };
+
   TT.resize = function () {
     const ww = window.innerWidth, wh = window.innerHeight;
     const scale = Math.min(ww / TT.W, wh / TT.H);
     const cssW = Math.floor(TT.W * scale), cssH = Math.floor(TT.H * scale);
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2, QUALITY[quality] / cssW);
     canvas.style.width = cssW + 'px';
     canvas.style.height = cssH + 'px';
     canvas.width = Math.round(cssW * dpr);
@@ -96,9 +102,25 @@
   function frame(ts) {
     requestAnimationFrame(frame);
     if (!last) last = ts;
-    let rdt = Math.min(0.05, (ts - last) / 1000);
+    const raw = (ts - last) / 1000;
+    let rdt = Math.min(0.05, raw);
     last = ts;
     if (rdt <= 0) return;
+
+    // akadozás figyelése: ha 3 mp-en át átlagosan 30 FPS alatt fut, kisebb belső felbontásra vált
+    if (perf.wait > 0) perf.wait -= rdt;
+    else if (quality < QUALITY.length - 1 && !document.hidden && raw < 1) {
+      perf.sum += raw;
+      perf.n++;
+      if (perf.sum > 3) {
+        if (perf.sum / perf.n > 1 / 30 && canvas.width > QUALITY[quality + 1]) {
+          quality++;
+          TT.resize();
+          perf.wait = 2;
+        }
+        perf.sum = perf.n = 0;
+      }
+    }
 
     let dt = rdt;
     if (slowmo.t > 0) {

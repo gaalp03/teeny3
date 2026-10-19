@@ -309,7 +309,15 @@
     return new Float32Array(mul(rx, mul(rz, ry)));
   }
 
-  // Egy figura kirajzolása a közös vászonra; a vásznat adja vissza (vagy null-t)
+  // Kész képek tára: egy figurát csak akkor rajzolunk újra, ha a képe tényleg változott (új animációs
+  // kocka, fordulás, villanás). A WebGL-vászon visszamásolása drága (főleg emulátoron), a TT2-es
+  // animációk pedig csak 15 kockásak, így a legtöbb képkockán elég a tárolt képet kirakni.
+  const cache = {};
+  let cached = 0;
+  const r2 = (v) => Math.round((v || 0) * 100);
+
+  // Egy figura kirajzolása; a kész képet (vásznat) adja vissza, vagy null-t.
+  // o.res: a kép felbontása (256 a kis, padon ülő figurákhoz, egyébként 512)
   M.render = function (id, o) {
     const model = M.models[id];
     if (!model || !init()) return null;
@@ -318,7 +326,12 @@
     o = o || {};
     const animated = model.rigGpu && model.rigGpu.length && o.anim !== false;
     if (animated) skin(model, o.anim);
-    gl.viewport(0, 0, SIZE, SIZE);
+    const res = o.res === 256 ? 256 : SIZE;
+    const key = [animated ? model.rigKey : '-', r2(o.yaw), r2(o.pitch), r2(o.roll), Math.round((o.flash || 0) * 20), (o.tint || [1, 1, 1]).join(','), res].join('|');
+    const list = cache[id] || (cache[id] = []);
+    const hit = list.find((e) => e.key === key);
+    if (hit) return hit.canvas;
+    gl.viewport(0, 0, res, res);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.uniformMatrix3fv(L.uRot, false, rotation(o.yaw || 0, o.pitch || 0, o.roll || 0));
     gl.uniform1f(L.uFoot, FOOT);
@@ -363,7 +376,25 @@
         gl.drawElements(gl.TRIANGLES, p.count, p.type, 0);
       }
     }
-    return M.canvas;
+    // a kész kép átmásolása a figura saját tárolt vásznára (figuránként legfeljebb 2 változat)
+    if (cached > 40) {
+      for (const k of Object.keys(cache)) delete cache[k];
+      cached = 0;
+    }
+    let e;
+    if (list.length >= 2) e = list.shift();
+    else {
+      e = { canvas: document.createElement('canvas') };
+      cached++;
+    }
+    if (e.canvas.width !== res) e.canvas.width = e.canvas.height = res;
+    const c2 = e.canvas.getContext('2d');
+    c2.clearRect(0, 0, res, res);
+    // a viewport a vászon bal alsó sarkában van
+    c2.drawImage(M.canvas, 0, SIZE - res, res, res, 0, 0, res, res);
+    e.key = key;
+    list.push(e);
+    return e.canvas;
   };
 
   function normalize(v) {

@@ -125,7 +125,9 @@ def export_music(obj, out):
         wav = dst[:-4] + '.wav'
         with open(wav, 'wb') as f:
             f.write(data)
-        ok = subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-i', wav, '-c:a', 'libopus', '-b:a', '96k', dst]).returncode == 0
+        # a zenék monóban: a TT2 zenéi gyakorlatilag monók, és így biztosan mindkét hangszóróból szólnak
+        mono = ['-ac', '1'] if low.startswith('music_') else []
+        ok = subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-i', wav] + mono + ['-c:a', 'libopus', '-b:a', '96k', dst]).returncode == 0
         os.remove(wav)
         if ok:
             return 1

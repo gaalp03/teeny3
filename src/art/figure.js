@@ -1816,6 +1816,8 @@
       r3 = { yaw: (o.yaw3d != null ? o.yaw3d : -turn) - Math.PI / 4, pitch: 0.14, anim: o.anim3d || A.anim3dOf(pose, t) };
     } else if (r3 && o.yaw3d != null) r3.yaw = o.yaw3d;
     else if (r3 && facing < 0) r3.yaw = -r3.yaw;
+    // a kicsiben rajzolt (pl. padon ülő) figurákhoz elég a fele felbontás
+    if (r3) r3.res = Math.abs(scale) < 1.2 ? 256 : 512;
     const c3 = r3 && TT.model3d.render(fig.id, r3);
     if (c3) {
       // valódi 3D figura: a közös WebGL vászonról másolva (a figura 1 egység = 104 képpont magas)
