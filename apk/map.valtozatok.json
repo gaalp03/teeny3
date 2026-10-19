@@ -1,0 +1,35 @@
+{
+ "figures": {
+  "bb_cat": "render__beastboycat_shop.png",
+  "bb_martian": "render__beastboymartian_shop.png",
+  "aqualad_pirate": "render__aqualadpirate_shop.png",
+  "star_terrible": "render__starfiretheterrible_shop.png",
+  "blood_robot": "render__brotherbloodrobotic_shop.png",
+  "robin_nightwing": "render__nightwing_shop.png"
+ },
+ "voice": {
+  "bb_cat": {"name": ["sfx_menus_newfigreveal_names_CatBeastBoy"]},
+  "bb_martian": {"name": ["sfx_menus_newfigreveal_names_MartianBeastBoy"]},
+  "aqualad_pirate": {"name": ["sfx_menus_newfigreveal_names_PirateAqua"]},
+  "star_terrible": {"name": ["sfx_menus_newfigreveal_names_StarFIreTerrible"]},
+  "blood_robot": {"name": ["sfx_menus_newfigreveal_names_RoboticBlood"]},
+  "robin_nightwing": {"name": ["sfx_menus_newfigreveal_names_NightWing"]}
+ },
+ "moves": {
+  "cat_scratch": "sfx_abilities_catscratch",
+  "waffle_toss": "sfx_abilities_wafflethrow",
+  "nine_lives": "sfx_abilities_cheetah_airstrike",
+  "martian_beam": "sfx_abilities_Martian_ability_1",
+  "martian_morph": "sfx_abilities_Martian_ability_2",
+  "bubble_trap": "sfx_abilities_aquabubble",
+  "whale_drop": "sfx_abilities_aquawhale",
+  "super_dash": "sfx_abilities_superdash",
+  "terrible_glare": "sfx_abilities_biglaser",
+  "robo_drain": "sfx_abilities_batterydrain",
+  "poison_pellet": "sfx_abilities_poisonarrow",
+  "wing_rangs": "sfx_abilities_batarangcharge",
+  "night_flight": "sfx_abilities_batman_punches",
+  "mind_control": "sfx_abilities_hypnotize",
+  "cutlass": "sfx_abilities_sinestro_ax"
+ }
+}
