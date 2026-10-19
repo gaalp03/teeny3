@@ -2,6 +2,8 @@
  "backgrounds": {
   "tower": "arena__tower.png",
   "hive": "arena__hive.png",
-  "dome": "arena__dome.png"
+  "dome": "arena__dome.png",
+  "beach": "arena__beach.png",
+  "vault": "arena__vault.png"
  }
 }
