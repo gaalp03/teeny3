@@ -573,6 +573,9 @@
           const { f, move, a } = d;
           const t = d.target;
           const dir = f.side === 0 ? 1 : -1;
+          // eredeti képességhang, ha van; különben a beépített
+          const own = TT.audio.move(move);
+          const sfx = (n) => { if (!own) TT.audio.sfx(n); };
           if (move.kind === 'shot' || (move.kind === 'multi' && !move.melee)) {
             for (let i = 0; i < (move.hits || 1); i++) {
               this.projectiles.push({
@@ -580,18 +583,18 @@
                 x0: f.x + dir * 40, y0: f.y - 80 * f.s / 1.55, x1: t.x - dir * 10, y1: t.y - 70 + U.rand(-14, 14), big: a.isSuper,
               });
             }
-            TT.audio.sfx(move.fx === 'magic' || move.fx === 'hex' ? 'magic' : 'whoosh');
+            sfx(move.fx === 'magic' || move.fx === 'hex' ? 'magic' : 'whoosh');
           } else if (move.kind === 'beam') {
             const dur = (a.hits[a.hits.length - 1] - a.windup) + 0.22;
             this.beams.push({ f, target: t, color: move.color, fx: move.fx, t: 0, dur, big: a.isSuper });
-            TT.audio.sfx(move.fx === 'sonic' ? 'zap' : move.fx === 'fire' ? 'burn' : 'zap');
+            sfx(move.fx === 'sonic' ? 'zap' : move.fx === 'fire' ? 'burn' : 'zap');
           } else if (move.kind === 'slam') {
-            TT.audio.sfx('whoosh');
+            sfx('whoosh');
           } else if (move.kind === 'self') {
             this.auras.push({ f, color: move.color, t: 0, dur: 0.8 });
-            TT.audio.sfx(move.heal ? 'heal' : move.shield ? 'shield' : 'buff');
+            sfx(move.heal ? 'heal' : move.shield ? 'shield' : 'buff');
           } else {
-            TT.audio.sfx('whoosh');
+            sfx('whoosh');
           }
           break;
         }

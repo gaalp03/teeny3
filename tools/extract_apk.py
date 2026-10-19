@@ -103,10 +103,10 @@ def export_music(obj, out):
     except Exception:
         return 0
     low = (name or '').lower()
-    # zenék, a rövid menü-/harci hangok, az öt Titán harci szinkronja és a bemondott figuranevek;
-    # a többi szinkronhang és a képességek hangjai kimaradnak
+    # zenék, a menü-/harci hangok, a képességek hangjai, az öt Titán harci szinkronja és a bemondott
+    # figuranevek; a többi szinkronhang kimarad
     voice = re.match(r'^sfx_vo_(robin|raven|starfire|beastboy|cyborg)_battle_|^sfx_menus_newfigreveal_names_', low)
-    if not voice and not low.startswith('music_') and not (low.startswith('sfx_') and not re.search(r'^sfx_(vo_|abilities_)', low)):
+    if not voice and not low.startswith('music_') and not (low.startswith('sfx_') and not low.startswith('sfx_vo_')):
         return 0
     if not shutil.which('ffmpeg'):
         print(f'  ! ffmpeg nélkül a zene kimarad: {name}')
@@ -281,6 +281,30 @@ def trim_copy(src, dst):
     im.save(dst, optimize=True)
 
 
+def trim_impact(src, dst, length=1.2):
+    # A TT2 képességhangjai a teljes, több másodperces animációt kísérik (felhúzás, várakozás, csapás);
+    # nálunk egy támadás kb. egy másodperc, ezért a leghangosabb szakaszt vágjuk ki, a csapás elejétől.
+    import array
+    rate, blk = 8000, 400
+    try:
+        pcm = subprocess.run(['ffmpeg', '-loglevel', 'error', '-i', src, '-ac', '1', '-ar', str(rate), '-f', 's16le', '-'],
+                             capture_output=True, check=True).stdout
+    except (OSError, subprocess.CalledProcessError):
+        return False
+    a = array.array('h', pcm[:len(pcm) // 2 * 2])
+    rms = [(sum(x * x for x in a[i:i + blk]) / blk) ** 0.5 for i in range(0, len(a) - blk + 1, blk)]
+    n = int(length * rate / blk)
+    if len(rms) <= n:
+        return False
+    best = max(range(len(rms) - n + 1), key=lambda i: sum(rms[i:i + n]))
+    peak = max(rms[best:best + n])
+    start = next(i for i in range(best, best + n) if rms[i] >= peak * 0.35)
+    t0 = max(0.0, start * blk / rate - 0.05)
+    fade = f'afade=t=out:st={length - 0.3:.2f}:d=0.3'
+    return subprocess.run(['ffmpeg', '-loglevel', 'error', '-y', '-ss', f'{t0:.2f}', '-t', f'{length:.2f}', '-i', src,
+                           '-af', fade, '-c:a', 'libopus', '-b:a', '96k', dst]).returncode == 0
+
+
 def cmd_map(args):
     with open(args.map, encoding='utf-8') as f:
         mapping = json.load(f)
@@ -309,7 +333,9 @@ def cmd_map(args):
                 name = f'{safe_name(fig)}_{safe_name(kind)}_{i}.ogg'
                 shutil.copyfile(path, os.path.join(dst, name))
                 manifest['voice'].setdefault(fig, {}).setdefault(kind, []).append('voice/' + name)
-    for kind in ('music', 'sfx'):
+    # támadáshangok: {"staff": "sfx_abilities_staffslam", "gorilla_punch": ...} (fx vagy támadás szerint)
+    manifest['moves'] = {}
+    for kind in ('music', 'sfx', 'moves'):
         dst = os.path.join(CUSTOM, kind)
         for key, src in (mapping.get(kind) or {}).items():
             path = os.path.join(RAW, 'hang', safe_name(src) + '.ogg')
@@ -317,7 +343,9 @@ def cmd_map(args):
                 print(f'  ! nincs meg a hang: {src}')
                 continue
             os.makedirs(dst, exist_ok=True)
-            shutil.copyfile(path, os.path.join(dst, safe_name(key) + '.ogg'))
+            out = os.path.join(dst, safe_name(key) + '.ogg')
+            if kind != 'moves' or not trim_impact(path, out):
+                shutil.copyfile(path, out)
             manifest[kind][key] = f'{kind}/{safe_name(key)}.ogg'
     for kind, folder in (('figures', 'figures'), ('backgrounds', 'bg')):
         dst = os.path.join(CUSTOM, folder)

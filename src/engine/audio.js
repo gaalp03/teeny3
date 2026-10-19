@@ -202,6 +202,33 @@
         loadBuffer(TT.custom.sfx[name]).then((b) => { sfxBuf[name] = b || false; });
       }
     }
+    for (const url of Object.values(TT.custom.moves || {})) {
+      if (moveBuf[url] === undefined) {
+        moveBuf[url] = null;
+        loadBuffer(url).then((b) => { moveBuf[url] = b || false; });
+      }
+    }
+  };
+
+  // Eredeti TT2 képességhang a támadáshoz (előbb a támadás saját hangja, aztán a fajtájáé);
+  // false, ha nincs vagy még töltődik — ilyenkor a beépített hang szól
+  const moveBuf = {};
+  A.move = function (move) {
+    if (!A.ctx || !A.unlocked || A.muted || !TT.custom || !TT.custom.moves || !move) return false;
+    const url = TT.custom.moves[move.id] || TT.custom.moves[move.fx];
+    if (!url) return false;
+    if (moveBuf[url] === undefined) {
+      moveBuf[url] = null;
+      loadBuffer(url).then((b) => { moveBuf[url] = b || false; });
+      return false;
+    }
+    const buf = moveBuf[url];
+    if (!buf) return false;
+    const src = A.ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(A.sfxGain);
+    src.start();
+    return true;
   };
 
   // Szinkronhangok (a saját APK-ból): figura és helyzet szerint, egyszerre csak egy, sűrűn nem
