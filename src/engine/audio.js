@@ -138,6 +138,7 @@
     move: () => tone(660, 0.04, { vol: 0.06 }),
     back: () => tone(440, 0.09, { vol: 0.1, slide: 300 }),
     talk: () => tone(480 + Math.random() * 220, 0.035, { vol: 0.035 }),
+    next: () => {}, // új buborék: csak az eredeti TT2-hang szól, a beépített csendes
     step: () => noise(0.04, { vol: 0.025, freq: 900 }),
     hit: () => { noise(0.12, { vol: 0.3, freq: 1800, slide: 400 }); tone(160, 0.12, { type: 'sine', vol: 0.35, slide: 60 }); },
     hit2: () => { noise(0.28, { vol: 0.4, freq: 1400, slide: 200 }); tone(120, 0.3, { type: 'sine', vol: 0.5, slide: 35 }); tone(80, 0.25, { type: 'square', vol: 0.08, slide: 40 }); },

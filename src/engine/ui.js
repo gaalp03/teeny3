@@ -163,7 +163,7 @@
             if (this.i >= this.lines.length) {
               close(this);
               if (onDone) onDone();
-            }
+            } else TT.audio.sfx('next');
           }
         }
       },
