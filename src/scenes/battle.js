@@ -1235,9 +1235,9 @@
       } else if (f.stun > 0) pose = 'stun';
       else if (f.blocking) pose = 'block';
       else if (f.hurtT > 0) pose = 'hurt';
-      else if (this.state === 'finish' || this.state === 'results') {
-        if (c.winner === f.side && active) pose = 'cheer';
-      }
+      const over = this.state === 'finish' || this.state === 'results';
+      // a harc végén a győztes csapat minden élő figurája ünnepel (a padon ülők is), a vesztesek szédelegnek
+      if (pose === 'idle' && over && f.alive) pose = c.winner === f.side ? 'cheer' : 'stun';
       if (!active && f.alive) alpha = 0.92;
 
       ctx.save();
@@ -1253,7 +1253,8 @@
       else if (a) anim3d = { name: 'ability', slot: a.isSuper ? 'super' : a.slot, p: a.t / Math.max(0.01, a.end) };
       else if (f.stun > 0) anim3d = { name: 'stun', t: TT.time };
       else if (f.hurtT > 0) anim3d = { name: 'hurt', t: 0.28 - f.hurtT };
-      else if (pose === 'cheer') anim3d = { name: 'cheer', t: TT.time };
+      else if (pose === 'cheer') anim3d = { name: 'cheer', t: TT.time + f.idx * 0.37 };
+      else if (pose === 'stun') anim3d = { name: 'stun', t: TT.time + f.idx * 0.37 };
       else if (active && f.enterT != null && f.enterT < 0.9) anim3d = { name: 'enter', t: f.enterT };
       TT.art.drawFigure(ctx, f.fig, x, y, f.s, {
         facing, pose, lean, anim3d, flash: f.flashT > 0 ? 1 : 0, t: TT.time + f.idx,
