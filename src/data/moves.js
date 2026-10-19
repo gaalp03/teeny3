@@ -354,6 +354,31 @@
   M('wing_rangs', 'Szárnyas rangok', 'multi', 13, 2.4, 'shuriken', '#3fa7ff', { hits: 3 });
   M('night_flight', 'Éjszakai repülés', 'multi', 90, 0, 'kick', '#3fa7ff', { super: true, hits: 5, melee: true, eff: [E('mark', 1, 5)] });
 
+  // ---------- DC vendégek (Teeny Titans 2) ----------
+  M('bat_mine', 'Denevér-akna', 'slam', 26, 5.2, 'bomb', '#ff3b3b', { eff: [E('stun', 0.3, 0.9)] });
+  M('counter_strike', 'Ellencsapás', 'melee', 13, 2.3, 'punch', '#ff3b3b');
+  M('batarang_volley', 'Batarang-sorozat', 'multi', 14, 2.6, 'shuriken', '#ff3b3b', { hits: 3 });
+  M('future_knight', 'A jövő lovagja', 'multi', 90, 0, 'punch', '#ff3b3b', { super: true, hits: 6, melee: true, eff: [E('mark', 1, 5)] });
+  M('charged_rang', 'Feltöltött batarang', 'shot', 22, 4.5, 'bird', '#ffd23f', { eff: [E('stun', 0.3, 1)] });
+  M('grapple_kick', 'Csáklya-rúgás', 'melee', 36, 7.6, 'kick', '#8e44ad');
+  M('bat_storm', 'Denevérvihar', 'multi', 82, 0, 'bird', '#ffd23f', { super: true, hits: 5 });
+  M('super_punch', 'Szuperütés', 'melee', 15, 2.4, 'punch', '#3f6fd8');
+  M('heat_vision', 'Hősugár', 'beam', 30, 6, 'laser', '#ff3b3b', { eff: [E('burn', 0.6, 3)] });
+  M('super_breath', 'Fagyos lehelet', 'beam', 24, 5.5, 'wind', '#9be7ff', { eff: [E('slow', 0.8, 4)] });
+  M('man_of_steel', 'Az acélember', 'beam', 94, 0, 'laser', '#ff3b3b', { super: true, eff: [E('burn', 1, 4)] });
+  M('lasso_truth', 'Az igazság lasszója', 'shot', 22, 4.6, 'lasso', '#ffd23f', { eff: [E('stun', 0.45, 1.1)] });
+  M('bracelet_block', 'Karperec-hárítás', 'self', 0, 7.5, 'shield', '#c0c0c0', { shield: 0.22 });
+  M('amazon_combo', 'Amazon-kombó', 'multi', 13, 2.4, 'punch', '#d62828', { hits: 3, melee: true });
+  M('themyscira_fury', 'Themyscira dühe', 'multi', 90, 0, 'slash', '#ffd23f', { super: true, hits: 6, melee: true, eff: [E('atkUp', 1, 5, { self: true })] });
+  M('chatter_teeth', 'Vacogó műfogsor', 'shot', 13, 2.4, 'bomb', '#f4f4f8', { eff: [E('weak', 0.3, 3)] });
+  M('joker_hammer', 'Óriáskalapács', 'slam', 38, 8, 'rock', '#7a3fb0', { eff: [E('stun', 0.4, 1)] });
+  M('joker_laugh', 'Gonosz kacaj', 'shot', 18, 4.4, 'hex', '#4fd36b', { eff: [E('weak', 0.6, 4)] });
+  M('punchline', 'A poén', 'multi', 88, 0, 'hex', '#4fd36b', { super: true, hits: 5, eff: [E('poison', 1, 4)] });
+  M('mallet', 'Kalapácsütés', 'melee', 14, 2.3, 'punch', '#d62828');
+  M('harley_bomb', 'Harley-bomba', 'shot', 24, 5, 'bomb', '#1d1d2b', { eff: [E('burn', 0.4, 3)] });
+  M('harley_kiss', 'Puszi', 'shot', 18, 4.2, 'heart', '#ff4f81', { eff: [E('stun', 0.4, 1)] });
+  M('mallet_mayhem', 'Kalapács-káosz', 'slam', 84, 0, 'rock', '#d62828', { super: true, eff: [E('stun', 1, 1.2)] });
+
   // Leírás generálása
   for (const m of Object.values(MOVES)) {
     const parts = [];

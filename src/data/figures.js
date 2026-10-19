@@ -539,6 +539,49 @@
     retro('robin', { top: '#1d1d2b', sleeves: '#1d1d2b', bottom: '#1d1d2b', boots: '#1d1d2b', gloves: '#3fa7ff', belt: '#3fa7ff', cape: null, chest: { sym: 'V', color: '#3fa7ff', ink: '#1d1d2b' }, mouth: 'smirk' }),
     { short: 'Nightwing', bio: 'A felnőtt Robin a jövőből. Gyorsabb, menőbb, és még mindig ő a vezér.' });
 
+  // ---------- DC vendégek (Teeny Titans 2) ----------
+  F('dc_batman', 'Batman Beyond', 'tech', 'legendary', [115, 15, 12, 13],
+    ['counter_strike', 'batarang_volley', 'bat_mine'], 'future_knight',
+    {
+      skin: SKIN, top: '#1d1d2b', sleeves: '#1d1d2b', gloves: '#1d1d2b', bottom: '#1d1d2b', boots: '#1d1d2b', belt: '#d62828',
+      hair: 'bald', mask: '#1d1d2b', eyes: 'lens', mouth: 'frown', gear: ['cowl', 'ears_bat'], chest: { sym: 'B', color: '#d62828', ink: '#1d1d2b' },
+    }, { team: 'dc', short: 'Batman B.', bio: 'Gotham jövőbeli őrzője. Hightech páncél, régi iskolás makacsság.' });
+
+  F('dc_batgirl', 'Batgirl', 'speed', 'epic', [100, 13, 10, 14],
+    ['staff_strike', 'charged_rang', 'grapple_kick'], 'bat_storm',
+    {
+      skin: SKIN, top: '#8e44ad', sleeves: '#8e44ad', gloves: '#ffd23f', bottom: '#8e44ad', boots: '#ffd23f', belt: '#ffd23f', cape: '#1d1d2b', capeIn: '#ff9a3c',
+      hair: 'long', hairColor: '#ff6b35', mask: '#1d1d2b', eyes: 'lens', mouth: 'grin', gear: ['cowl', 'ears_bat'],
+    }, { team: 'dc', bio: 'Gotham legvagányabb hősnője. Gyorsabb a saját batarangjánál.' });
+
+  F('dc_superman', 'Superman', 'brawn', 'legendary', [140, 15, 14, 11],
+    ['super_punch', 'heat_vision', 'super_breath'], 'man_of_steel',
+    {
+      skin: SKIN, top: '#3f6fd8', sleeves: '#3f6fd8', gloves: '#3f6fd8', bottom: '#3f6fd8', boots: '#d62828', belt: '#ffd23f', cape: '#d62828', capeIn: '#a81d1d',
+      hair: 'swoop', hairColor: '#1d1d2b', eyes: 'dot', mouth: 'smile', chest: { sym: 'S', color: '#d62828', ink: '#ffd23f' },
+    }, { team: 'dc', bio: 'Gyorsabb egy száguldó golyónál, erősebb egy mozdonynál — és most Teeny méretű.' });
+
+  F('dc_wonderwoman', 'Wonder Woman', 'brawn', 'legendary', [130, 15, 13, 12],
+    ['amazon_combo', 'lasso_truth', 'bracelet_block'], 'themyscira_fury',
+    {
+      skin: '#e2b088', top: '#d62828', sleeves: '#e2b088', gloves: '#c0c0c0', bottom: '#2a3fb0', boots: '#d62828', belt: '#ffd23f',
+      hair: 'long', hairColor: '#1d1d2b', eyes: 'dot', mouth: 'smirk', gear: ['tiara'],
+    }, { team: 'dc', short: 'Wonder W.', bio: 'Themyscira hercegnője. A lasszója elől senki sem titkolózhat.' });
+
+  F('dc_joker', 'Joker', 'mystic', 'legendary', [115, 15, 11, 12],
+    ['chatter_teeth', 'joker_laugh', 'joker_hammer'], 'punchline',
+    {
+      skin: '#f4f4f8', top: '#7a3fb0', sleeves: '#7a3fb0', gloves: '#7a3fb0', bottom: '#7a3fb0', boots: '#2a1a3a', belt: '#4fd36b',
+      hair: 'spiky', hairColor: '#4fd36b', eyes: 'dot', mouth: 'grin',
+    }, { team: 'villain', bio: 'Gotham bohóc-hercege. A poénjai rosszabbak, mint Beast Boyé — és veszélyesebbek.' });
+
+  F('dc_harley', 'Harley Quinn', 'speed', 'epic', [105, 14, 10, 14],
+    ['mallet', 'harley_bomb', 'harley_kiss'], 'mallet_mayhem',
+    {
+      skin: '#f4f4f8', top: '#d62828', sleeves: '#1d1d2b', gloves: '#1d1d2b', bottom: '#1d1d2b', boots: '#d62828', belt: '#1d1d2b',
+      hair: 'puffs', hairColor: '#1d1d2b', mask: '#1d1d2b', eyes: 'lens', mouth: 'grin',
+    }, { team: 'villain', short: 'Harley', bio: 'Kalapács, bomba és egy puszi. Kiszámíthatatlanul szórakoztató.' });
+
   TT.FIG_LIST = LIST;
   TT.FIG = {};
   for (const f of LIST) {
@@ -554,6 +597,7 @@
     { id: 'retro', name: 'Retró sorozat', short: 'Retró', ids: ['robin_80s', 'raven_80s', 'star_80s', 'bb_80s', 'cyborg_80s'] },
     { id: 'rad', name: 'Radikális sorozat', short: 'Radikális', ids: ['robin_rad', 'raven_rad', 'star_rad', 'bb_rad', 'cyborg_rad', 'silkie_rad'] },
     { id: 'special', name: 'Különleges változatok', short: 'Különleges', ids: ['bb_cat', 'bb_martian', 'aqualad_pirate', 'star_terrible', 'blood_robot', 'robin_nightwing'] },
+    { id: 'dc', name: 'DC vendégek', short: 'DC', ids: ['dc_batman', 'dc_batgirl', 'dc_superman', 'dc_wonderwoman', 'dc_joker', 'dc_harley'] },
   ];
   for (const ser of TT.SERIES) for (const id of ser.ids) TT.FIG[id].series = ser.id;
 
@@ -585,5 +629,5 @@
     return c ? c[2] : null;
   };
 
-  TT.TEAM_NAMES = { titans: 'Titánok', east: 'Titánok Kelet', hive: 'H.I.V.E.', villain: 'Gonoszok', mint: 'Menta-banda', brotherhood: 'Testvériség' };
+  TT.TEAM_NAMES = { titans: 'Titánok', dc: 'Igazság Ligája', east: 'Titánok Kelet', hive: 'H.I.V.E.', villain: 'Gonoszok', mint: 'Menta-banda', brotherhood: 'Testvériség' };
 })(window.TT);

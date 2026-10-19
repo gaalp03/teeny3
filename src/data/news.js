@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 9;
+  TT.NEWS_VERSION = 10;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 10, who: 'robin', text: 'Vendégek érkeztek a TT2-ből: Superman, Wonder Woman, Batman Beyond és Batgirl — és sajnos Joker meg Harley Quinn is. Mind a legendás és epikus dobozokban!' },
     { v: 9, who: 'cyborg', text: 'Új harci terepek a TT2-ből: a Torony teteje, a H.I.V.E. bázis, a Csatakupolában az Igazság Csarnoka, a strandon Themyscira, a Trezorban pedig egy titkos barlang. Mint a régi szép időkben!' },
     { v: 8, who: 'raven', text: 'Gyűjtsd össze a teljes Retró, Radikális vagy Különleges sorozatot: mindegyik egy teljesítményt és sok érmét ér. A Gyűjteményben látod, hol tartasz.' },
     { v: 7, who: 'beastboy', text: 'Hat különleges változat a dobozokban: Nightwing, Rettenetes Starfire, Robot Brother Blood, Kalóz Aqualad, Marsi Beast Boy… és én, macskaként! Miaú, dude!' },
