@@ -134,6 +134,34 @@
       hair: 'long', hairColor: '#d1153a', eyes: 'sleepy', mouth: 'smile', gear: ['nightcap', 'pillow'], hatColor: '#ff9ecd',
     }, { short: 'Á. Starfire', bio: 'Pizsamaparti-kiadás. Néha harc közben is elalszik.' });
 
+  // ---------- Retró sorozat (a 80-as évek Titánjai) ----------
+  const retro = (id, extra) => Object.assign({}, LIST.find((f) => f.id === id).look, extra);
+  F('robin_80s', 'Retró Robin', 'speed', 'epic', [100, 12, 10, 13],
+    ['bo_staff', 'birdarang', 'flying_kick'], 'titans_go',
+    retro('robin', {
+      sleeves: SKIN, bottom: '#2f9e44', boots: '#2f9e44', cape: '#ffd23f', capeIn: '#e8b80f', hair: 'flat', mouth: 'smile',
+    }), { short: 'Retró Robin', bio: 'Egyenesen a 80-as évekből: rövid nadrág, sárga köpeny, örök optimizmus.' });
+
+  F('raven_80s', 'Retró Raven', 'mystic', 'epic', [95, 13, 9, 11],
+    ['azarath', 'dark_shield', 'metrion'], 'demon_rage',
+    retro('raven', { hood: false, hair: 'bob', hairColor: '#1d1d2b', boots: '#e8e8f0', mouth: 'smile', gear: ['gem'] }),
+    { short: 'Retró Raven', bio: 'Csillag fülbevaló, kapucni nélkül. A 80-as években még mosolygott is.' });
+
+  F('star_80s', 'Retró Starfire', 'speed', 'epic', [100, 12, 9, 13],
+    ['starbolt', 'eye_beams', 'tamaran_punch'], 'star_storm',
+    retro('starfire', { hairColor: '#ff2e86', top: '#8e44ad', bottom: '#8e44ad', boots: '#8e44ad', mouth: 'grin' }),
+    { short: 'Retró Starfire', bio: 'Hatalmas, dauerolt haj és végtelen lelkesedés. Minden dicsőséges!' });
+
+  F('bb_80s', 'Retró Beast Boy', 'brawn', 'epic', [100, 12, 10, 12],
+    ['cheetah', 'goat_butt', 'gorilla_slam'], 'trex',
+    retro('beastboy', { top: '#f4f4f8', bottom: '#d62828', stripe: '#d62828', boots: '#f4f4f8', gloves: '#f4f4f8', hairColor: '#3b6b2b', mouth: 'grin' }),
+    { short: 'Retró Beast Boy', bio: 'Piros-fehér egyenruha a 80-as évekből. A vicceit ugyanúgy senki sem érti.' });
+
+  F('cyborg_80s', 'Retró Cyborg', 'tech', 'epic', [118, 11, 13, 8],
+    ['booyah_punch', 'sonic_cannon', 'cyber_repair'], 'mega_cannon',
+    retro('cyborg', { top: '#f4f4f8', bottom: '#f4f4f8', boots: '#c9ced8', gloves: '#c9ced8', hair: 'flat', hairColor: '#1d1d2b' }),
+    { short: 'Retró Cyborg', bio: 'Csillogó fehér páncél, régi iskola. BOOYAH — 80-as kiadásban.' });
+
   // ---------- Titánok Kelet és barátok ----------
   F('aqualad', 'Aqualad', 'mystic', 'rare', [105, 11, 11, 11],
     ['water_whip', 'tidal', 'fish_swarm'], 'atlantis_wave',
