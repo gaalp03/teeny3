@@ -152,6 +152,8 @@
     { id: 'redx', who: 'red_x', x: 38, y: 66.6, trainer: 'redx', dir: 'right' },
     { id: 'madmod', who: 'mad_mod', x: 47.5, y: 33, trainer: 'madmod', dir: 'down' },
     { id: 'trigon', who: 'trigon', x: 80.5, y: 7.6, trainer: 'trigon', dir: 'right' },
+    { id: 'league', who: 'dc_wonderwoman', x: 70, y: 44, trainer: 'league', dir: 'left' },
+    { id: 'joker', who: 'dc_joker', x: 38, y: 43.5, trainer: 'joker', dir: 'down' },
   ];
 
   // Rejtett figurák és érmék

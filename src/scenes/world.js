@@ -396,6 +396,9 @@
 
     npcVisible(n) {
       if (n.id === 'redx') return TT.cupDone('brotherhood');
+      // a DC vendégek: Wonder Woman a Gonosz Kupa után, Joker a Kelet Kupa után jelenik meg
+      if (n.id === 'league') return TT.cupDone('villain');
+      if (n.id === 'joker') return TT.cupDone('east');
       // legyőzése után Trigon eltűnik (a történet szerint bezárult a kapuja)
       if (n.id === 'trigon') return TT.cupDone('brotherhood') && !!TT.save.beaten.redx && !TT.save.beaten.trigon;
       return true;
