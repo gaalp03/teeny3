@@ -272,6 +272,15 @@
     src.start();
     voiceUntil = A.ctx.currentTime + buf.duration + 0.4;
   };
+  // az első figura a listából, akinek van ilyen szinkronja (pl. a csapatból az, aki kimondja a „Rajta!”-t)
+  A.voiceFrom = function (ids, kind, chance) {
+    if (!TT.custom || !TT.custom.voice) return;
+    const id = ids.find((x) => {
+      const v = TT.custom.voice[TT.baseOf ? TT.baseOf(x) : x];
+      return v && v[kind] && v[kind].length;
+    });
+    if (id) A.voice(id, kind, chance);
+  };
   A.preloadVoices = function () {
     if (!A.ctx || !TT.custom || !TT.custom.voice) return;
     for (const kinds of Object.values(TT.custom.voice)) {

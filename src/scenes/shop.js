@@ -71,6 +71,8 @@
       this.menu = new TT.ui.Menu();
       this.opening = null;
       TT.audio.music('shop');
+      // a csapatból egy Titán köszön a boltban (ha van hozzá eredeti szinkron)
+      setTimeout(() => TT.scene === this && TT.audio.voiceFrom(TT.save.team.slice(), 'shop', 1), 500);
       this.build();
       if (!TT.save.flags.shopVisited) {
         TT.save.flags.shopVisited = true;
