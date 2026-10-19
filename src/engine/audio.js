@@ -227,6 +227,23 @@
     src.start();
     voiceUntil = now + buf.duration + 0.4;
   };
+  // A TT2 bemondója kimondja a figura nevét (csak a pontosan egyező figuráknál, a változatoknál nem)
+  A.announce = function (figId) {
+    if (!A.ctx || !A.unlocked || A.muted || !TT.custom || !TT.custom.voice) return;
+    const list = TT.custom.voice[figId] && TT.custom.voice[figId].name;
+    if (!list) return;
+    if (voiceBuf[list[0]] === undefined) {
+      voiceBuf[list[0]] = null;
+      loadBuffer(list[0]).then((b) => { voiceBuf[list[0]] = b || false; });
+    }
+    const buf = voiceBuf[list[0]];
+    if (!buf) return;
+    const src = A.ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(A.sfxGain);
+    src.start();
+    voiceUntil = A.ctx.currentTime + buf.duration + 0.4;
+  };
   A.preloadVoices = function () {
     if (!A.ctx || !TT.custom || !TT.custom.voice) return;
     for (const kinds of Object.values(TT.custom.voice)) {

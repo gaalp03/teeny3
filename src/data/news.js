@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 3;
+  TT.NEWS_VERSION = 4;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 4, who: 'starfire', text: 'Ha a saját TT2-es fájljaidat használod, harc közben a Titánok az eredeti hangjukon szólalnak meg, az új figurák nevét pedig a doboznyitáskor a bemondó mondja be!' },
     { v: 3, who: 'robin', text: 'Új epikus sorozat a dobozokban: a Retró Titánok! Retró Robin, Raven, Starfire, Beast Boy és Cyborg, egyenesen a 80-as évekből.' },
     { v: 3, who: 'cyborg', text: 'A Gyűjteményben a figurát ujjal körbe tudod forgatni, és ha rábökösz, táncol egyet. BOOYAH!' },
     { v: 2, who: 'controlfreak', text: 'Csatornaváltás! A Képregényboltban mostantól az én Titán-kvízem megy: 8 kérdés a figurákról, a gyors válasz több pontot ér!' },

@@ -290,6 +290,7 @@
     const o = {
       kind: 'reveal', t: 0, anim: 0,
       update(dt) {
+        if (this.t < 0.55 && this.t + dt >= 0.55) TT.audio.announce(id);
         this.t += dt;
         if (this.t > 0.9 && (I().hit('ok') || I().hit('back') || I().anyTap())) {
           close(this);
