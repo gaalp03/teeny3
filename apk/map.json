@@ -25,7 +25,12 @@
     "blackfire": "render__blackfire_shop.png",
     "red_x": "render__redx_shop.png",
     "mallah": "render__monsieurmallah_shop.png",
-    "killer_moth": "render__killermoth_shop.png"
+    "killer_moth": "render__killermoth_shop.png",
+    "robin_80s": "render__robin80s_shop.png",
+    "raven_80s": "render__raven80s_shop.png",
+    "star_80s": "render__starfire_80s_shop.png",
+    "bb_80s": "render__beastboy80s_shop.png",
+    "cyborg_80s": "render__cyborg_80s_shop.png"
   },
   "backgrounds": {},
   "music": {
