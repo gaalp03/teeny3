@@ -104,7 +104,8 @@ def export_music(obj, out):
         return 0
     low = (name or '').lower()
     # zenék és a rövid menü-/harci hangok; a szinkronhangok és a képességek hangjai kimaradnak
-    if not low.startswith('music_') and not (low.startswith('sfx_') and not re.search(r'^sfx_(vo_|abilities_)|newfigreveal_names', low)):
+    voice = re.match(r'^sfx_vo_(robin|raven|starfire|beastboy|cyborg)_battle_', low)
+    if not voice and not low.startswith('music_') and not (low.startswith('sfx_') and not re.search(r'^sfx_(vo_|abilities_)|newfigreveal_names', low)):
         return 0
     if not shutil.which('ffmpeg'):
         print(f'  ! ffmpeg nélkül a zene kimarad: {name}')
@@ -294,6 +295,19 @@ def cmd_map(args):
             manifest['models'][key] = f'models/{safe_name(key)}/model.json'
     # zenék és hangeffektek: {"town": "music_cityloop1", ...}, {"select": "sfx_gui_buttonconfirm", ...}
     manifest['sfx'] = {}
+    # szinkronhangok: {"robin": {"hurt": ["sfx_vo_robin_battle_hurt1", ...], ...}}
+    manifest['voice'] = {}
+    for fig, kinds in (mapping.get('voice') or {}).items():
+        for kind, srcs in kinds.items():
+            for i, src in enumerate(srcs):
+                path = os.path.join(RAW, 'hang', safe_name(src) + '.ogg')
+                if not os.path.isfile(path):
+                    continue
+                dst = os.path.join(CUSTOM, 'voice')
+                os.makedirs(dst, exist_ok=True)
+                name = f'{safe_name(fig)}_{safe_name(kind)}_{i}.ogg'
+                shutil.copyfile(path, os.path.join(dst, name))
+                manifest['voice'].setdefault(fig, {}).setdefault(kind, []).append('voice/' + name)
     for kind in ('music', 'sfx'):
         dst = os.path.join(CUSTOM, kind)
         for key, src in (mapping.get(kind) or {}).items():

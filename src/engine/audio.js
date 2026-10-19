@@ -45,6 +45,7 @@
       if (A.ctx.state !== 'running') A.ctx.resume();
       A.unlocked = true;
       A.preloadSfx();
+      A.preloadVoices();
       if (A.wanted && !A.current) A.music(A.wanted, true);
     } catch (e) {
       // Hang nélkül is megy a játék
@@ -199,6 +200,43 @@
       if (sfxBuf[name] === undefined) {
         sfxBuf[name] = null;
         loadBuffer(TT.custom.sfx[name]).then((b) => { sfxBuf[name] = b || false; });
+      }
+    }
+  };
+
+  // Szinkronhangok (a saját APK-ból): figura és helyzet szerint, egyszerre csak egy, sűrűn nem
+  const voiceBuf = {};
+  let voiceUntil = 0;
+  A.voice = function (figId, kind, chance) {
+    if (!A.ctx || !A.unlocked || A.muted || !TT.custom || !TT.custom.voice) return;
+    const base = TT.baseOf ? TT.baseOf(figId) : figId;
+    const list = TT.custom.voice[base] && TT.custom.voice[base][kind];
+    if (!list || !list.length || Math.random() > (chance == null ? 1 : chance)) return;
+    const now = A.ctx.currentTime;
+    if (now < voiceUntil) return;
+    const url = list[Math.floor(Math.random() * list.length)];
+    if (voiceBuf[url] === undefined) {
+      voiceBuf[url] = null;
+      loadBuffer(url).then((b) => { voiceBuf[url] = b || false; });
+    }
+    const buf = voiceBuf[url];
+    if (!buf) return;
+    const src = A.ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(A.sfxGain);
+    src.start();
+    voiceUntil = now + buf.duration + 0.4;
+  };
+  A.preloadVoices = function () {
+    if (!A.ctx || !TT.custom || !TT.custom.voice) return;
+    for (const kinds of Object.values(TT.custom.voice)) {
+      for (const list of Object.values(kinds)) {
+        for (const url of list) {
+          if (voiceBuf[url] === undefined) {
+            voiceBuf[url] = null;
+            loadBuffer(url).then((b) => { voiceBuf[url] = b || false; });
+          }
+        }
       }
     }
   };

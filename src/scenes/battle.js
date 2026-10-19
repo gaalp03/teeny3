@@ -556,6 +556,7 @@
             this.superCine = { f, t: 0 };
             TT.slowmo(0.35, 0.5);
           } else TT.audio.sfx('windup');
+          TT.audio.voice(f.id, 'attack', d.a.isSuper ? 1 : 0.4);
           this.banners.push({ f, text: d.a.combo ? `KOMBÓ: ${d.a.combo.name}!` : d.move.name, t: 0, dur: d.a.windup + 0.5, color: d.a.isSuper ? '#ffd23f' : '#ffffff', sup: d.a.isSuper });
           if (d.a.combo) {
             d.a.combo.partner.cameo = { t: 0, dur: d.a.windup + 0.9, host: f };
@@ -597,6 +598,7 @@
         case 'hit': {
           const { def, dmg, perfect, blocked, broke, crit, typeM, move, a, att } = d;
           const hx = def.x, hy = def.y - 70;
+          if (!blocked && !perfect && def.alive) TT.audio.voice(def.id, 'hurt', 0.35);
           if (perfect) {
             TT.audio.sfx('perfect');
             TT.fx.text(hx, hy - 50, 'TÖKÉLETES!', { color: '#7bff6b', tsize: 30 });
@@ -676,6 +678,7 @@
         }
         case 'ko':
           TT.audio.sfx('ko');
+          TT.audio.voice(d.f.id, 'ko', 1);
           TT.fx.text(d.f.x, d.f.y - 140, 'K.O.!', { color: '#ff4f4f', tsize: 44, vy: -60 });
           TT.fx.burst(d.f.x, d.f.y - 60, 24, { colors: ['#ffd23f', '#ff6b35', '#ffffff'], shape: 'star', speed: 380, size: 9, life: 0.9 });
           TT.slowmo(0.3, 0.6);
@@ -686,6 +689,7 @@
           break;
         case 'swap':
           TT.audio.sfx('swap');
+          TT.audio.voice(d.to.id, 'enter', 0.8);
           this.layout(d.side);
           TT.fx.burst(d.to.tx, d.to.ty - 50, 12, { color: '#ffffff', shape: 'circle', speed: 160, size: 6, life: 0.4 });
           break;
@@ -708,6 +712,11 @@
           this.banners = [];
           TT.slowmo(0.3, 1.0);
           TT.audio.music(d.winner === 0 ? 'victory' : 'defeat');
+          {
+            const ws = this.c.sides[d.winner];
+            const wf = ws && ws.fighters[ws.active];
+            if (wf) setTimeout(() => TT.audio.voice(wf.id, 'win', 1), 700);
+          }
           if (d.winner === 0) {
             for (let i = 0; i < 60; i++) {
               TT.fx.spawn(U.rand(0, TT.W), U.rand(-60, -10), {
