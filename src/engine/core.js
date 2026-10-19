@@ -29,7 +29,8 @@
     const ww = window.innerWidth, wh = window.innerHeight;
     const scale = Math.min(ww / TT.W, wh / TT.H);
     const cssW = Math.floor(TT.W * scale), cssH = Math.floor(TT.H * scale);
-    const dpr = Math.min(window.devicePixelRatio || 1, 2, QUALITY[quality] / cssW);
+    const q = TT.settings && TT.settings.lite ? QUALITY.length - 1 : quality;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2, QUALITY[q] / cssW);
     canvas.style.width = cssW + 'px';
     canvas.style.height = cssH + 'px';
     canvas.width = Math.round(cssW * dpr);
@@ -101,6 +102,8 @@
 
   function frame(ts) {
     requestAnimationFrame(frame);
+    // takarékos mód (kézzel vagy magától): legfeljebb 30 képkocka/mp — fele annyi rajzolás
+    if (last && (perf.lite || (TT.settings && TT.settings.lite)) && ts - last < 30) return;
     if (!last) last = ts;
     const raw = (ts - last) / 1000;
     let rdt = Math.min(0.05, raw);
@@ -109,13 +112,16 @@
 
     // akadozás figyelése: ha 3 mp-en át átlagosan 30 FPS alatt fut, kisebb belső felbontásra vált
     if (perf.wait > 0) perf.wait -= rdt;
-    else if (quality < QUALITY.length - 1 && !document.hidden && raw < 1) {
+    else if (!perf.lite && !document.hidden && raw < 1) {
       perf.sum += raw;
       perf.n++;
       if (perf.sum > 3) {
-        if (perf.sum / perf.n > 1 / 30 && canvas.width > QUALITY[quality + 1]) {
-          quality++;
-          TT.resize();
+        if (perf.sum / perf.n > 1 / 30) {
+          // előbb a felbontás csökken, ha az sem elég, jön a 30 FPS-es takarékos mód
+          if (quality < QUALITY.length - 1 && canvas.width > QUALITY[quality + 1]) {
+            quality++;
+            TT.resize();
+          } else perf.lite = true;
           perf.wait = 2;
         }
         perf.sum = perf.n = 0;

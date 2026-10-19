@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 14;
+  TT.NEWS_VERSION = 15;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 15, who: 'cyborg', text: 'Ha akadozik a játék, a Beállításokban kapcsold be a Takarékos módot: kisebb felbontás, 30 képkocka — sokkal simább gyenge gépen is. Ha nagyon lassú, magától is bekapcsol.' },
     { v: 14, who: 'raven', text: 'Az ellenfelek nyugodtabbak lettek: ritkábban védekeznek, és nem lőnek el azonnal minden támadást. Ha még mindig nehéz, a Beállításokban állíts Könnyű nehézségre.' },
     { v: 13, who: 'starfire', text: 'Még többet beszélünk! A címképernyőn bekiabálunk, gyógyuláskor megköszönjük, a teljesített napi küldetésnek örülünk, és köszöntjük az éjszakát meg a reggelt is!' },
     { v: 12, who: 'cyborg', text: 'Végre nálam is szól minden: ha eltalálnak, kiesek vagy nyerek. A harc elején a csapatod első Titánja kiáltja a „Rajta!”-t, a boltban pedig köszönünk. BOOYAH!' },
