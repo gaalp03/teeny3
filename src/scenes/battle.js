@@ -486,6 +486,8 @@
       });
       this.en = en;
       this.bg = en.bg || 'dome';
+      // éjjel a szabadtéri terepek besötétülnek (a fedett arénákban nincs különbség)
+      this.night = !!p.night && ['street', 'park', 'beach', 'tower'].includes(this.bg);
       const pteam = (p.playerTeam || TT.save.team).filter((id) => TT.save.owned[id]).map((id) => ({ id, lvl: TT.save.owned[id].lvl, stars: TT.starsOf(id) }));
       this.c = new Combat(pteam, en.team, { ai: en.ai }, (type, d) => this.onEvent(type, d));
       if (en.music === 'boss') for (const f of this.c.sides[1].fighters) if (f.id === en.who) f.boss = true;
@@ -1118,6 +1120,15 @@
       ctx.save();
       ctx.translate(sh.x, sh.y);
       TT.backdrop.draw(ctx, this.bg, TT.time);
+      if (this.night) {
+        ctx.fillStyle = 'rgba(14,20,64,0.48)';
+        ctx.fillRect(-20, -20, TT.W + 40, TT.H + 40);
+        const g = ctx.createRadialGradient(TT.W / 2, 400, 40, TT.W / 2, 400, 420);
+        g.addColorStop(0, 'rgba(255,236,190,0.22)');
+        g.addColorStop(1, 'rgba(255,236,190,0)');
+        ctx.fillStyle = g;
+        ctx.fillRect(-20, -20, TT.W + 40, TT.H + 40);
+      }
 
       // szuper sötétítés
       if (this.superCine) {

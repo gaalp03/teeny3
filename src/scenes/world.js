@@ -345,6 +345,7 @@
       const dir = this.pl.dir;
       TT.audio.sfx('error');
       TT.go('battle', {
+        night: this.darkness() > 0.5,
         enemy: {
           name: 'Menta-járőr', who: 'mintguard', team, bg: U.pick(['street', 'park']),
           ai: Math.min(0.66, 0.28 + lvl * 0.02), coins: 50 + lvl * 10,
@@ -479,7 +480,7 @@
           return;
         }
         if (tr.night && !this.isNight()) {
-          TT.ui.say([{ who: tr.who, text: 'Nappal nem harcolok, Madárfiú. Gyere vissza, ha besötétedik.' }]);
+          TT.ui.say([{ who: tr.who, text: tr.dayText || 'Nappal nem harcolok, Madárfiú. Gyere vissza, ha besötétedik.' }]);
           return;
         }
         if (!beaten) {
@@ -511,6 +512,7 @@
       const dir = this.pl.dir;
       const rewardFigs = first && tr.reward && tr.reward.figs ? tr.reward.figs : [];
       TT.go('battle', {
+        night: this.darkness() > 0.5,
         // a búcsúszöveg (pl. „itt a figurám”) csak az első győzelemhez illik
         enemy: Object.assign({ bg: tr.bg || 'street' }, tr, first ? {} : { outro: null }),
         tutorial: !!tr.tutorial && first,

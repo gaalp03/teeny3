@@ -151,6 +151,7 @@
       intro: [{ who: 'dc_wonderwoman', text: 'Hallottam, hogy megnyertétek a Gonosz Kupát. Az Igazság Ligája szeretné látni, mit tudtok — tisztességes harc lesz!' }],
       outro: [{ who: 'dc_wonderwoman', text: 'Igazi hősök vagytok. Fogadjátok el a figurámat Themyscira nevében!' }] },
     joker: { name: 'Joker', who: 'dc_joker', team: [T('dc_harley', 12), T('killer_moth', 12), T('dc_joker', 13)], ai: 0.6, coins: 600, bg: 'street', music: 'boss', night: true,
+      dayText: 'Nappal? Fényes nappal semmi sem vicces. Gyere vissza sötétedés után… HAHAHA!',
       reward: { figs: ['dc_harley'] },
       intro: [{ who: 'dc_joker', text: 'HAHAHA! Jump City éjszakái sokkal viccesebbek, mint Gothamé. Játsszunk egyet, kis hősök!' }],
       outro: [{ who: 'dc_joker', text: 'Na tessék, elrontottátok a poént. Harley, add oda nekik a figurádat… úgyis van még egy.' }] },
