@@ -305,9 +305,26 @@ def trim_impact(src, dst, length=1.2):
                            '-af', fade, '-c:a', 'libopus', '-b:a', '96k', dst]).returncode == 0
 
 
+def merge_map(base, extra):
+    # a kiegészítő párosítás felülírja/bővíti az alapot (a beágyazott szótárakat is, pl. voice → figura → fajta)
+    for key, val in extra.items():
+        if isinstance(val, dict) and isinstance(base.get(key), dict):
+            merge_map(base[key], val)
+        else:
+            base[key] = val
+    return base
+
+
 def cmd_map(args):
     with open(args.map, encoding='utf-8') as f:
         mapping = json.load(f)
+    # kiegészítők a map.json mellett (map.valami.json), betűrendben: így egy új sorozathoz elég egy kis fájl
+    folder = os.path.dirname(os.path.abspath(args.map))
+    for name in sorted(os.listdir(folder)):
+        if re.match(r'^map\.(?!example\.).+\.json$', name):
+            with open(os.path.join(folder, name), encoding='utf-8') as f:
+                merge_map(mapping, json.load(f))
+            print(f'  + {name}')
     manifest = {'figures': {}, 'backgrounds': {}, 'music': {}, 'models': {}}
     # 3D hálók: a render__X.png figurákhoz tartozó modell (raw/modell/X) automatikusan jön
     for key, src in (mapping.get('figures') or {}).items():
