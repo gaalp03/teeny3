@@ -201,8 +201,23 @@ def export_rig(root_tr, component, children, main_texture):
     names = list(body['clips'].keys())
     if 'idle' not in names:
         return None, {}
-    abilities = [c for c in names if c not in GENERIC][:MAX_ABILITIES]
-    wanted = [c for c in ['idle', 'hit small', 'hit', 'death', 'dizzy', 'dance', 'swap in'] if c in names] + abilities
+    # támadások: előbb az önálló mozdulatok (nem „intro/loop/outro” töredékek), azon belül a hosszabbak;
+    # a legutolsó (a játékban a szuper) a leghosszabb önálló mozdulat
+    def clip_len(name):
+        m = body['clips'][name].m_MuscleClip
+        return m.m_StopTime - m.m_StartTime
+    cands = [c for c in names if c not in GENERIC and c != 'small hit' and clip_len(c) > 0.3]
+    taunt = re.compile(r'raspberry|laugh|nuh uh|dance|cute', re.I)
+    whole = [c for c in cands if not re.search(r'intro|loop|outro|activate', c, re.I) and not taunt.search(c)]
+    parts = [c for c in cands if c not in whole and not taunt.search(c)]
+    picked = sorted(whole, key=clip_len)[:MAX_ABILITIES]
+    if len(picked) < MAX_ABILITIES:
+        picked += sorted(parts, key=clip_len, reverse=True)[:MAX_ABILITIES - len(picked)]
+    if not picked:
+        # ha csak gúnyolódás van, az is jobb a semminél
+        picked = sorted(cands, key=clip_len)[:MAX_ABILITIES]
+    abilities = sorted(picked, key=clip_len)
+    wanted = [c for c in ['idle', 'hit small', 'small hit', 'hit', 'death', 'dizzy', 'dance', 'swap in'] if c in names] + abilities
 
     # renderelők
     skins, rigids = [], []
