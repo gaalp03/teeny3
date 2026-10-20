@@ -138,7 +138,12 @@ jobs:
               --target "$GITHUB_SHA" \
               --title "Teeny Titans 3 – legújabb (1.${{ github.run_number }})" \
               --notes "Automatikus build a(z) ${GITHUB_REF_NAME} ágról. Telefonon: töltsd le a TeenyTitans3.apk-t és telepítsd. A frissítés megtartja a mentést. $TARTALOM"; then
-              exit 0
+              # a gh piszkozatként hozza létre és utólag teszi közzé; ha ez elmaradt, közzétesszük
+              sleep 3
+              if [ "$(gh release view legujabb --json isDraft -q .isDraft)" = "true" ]; then
+                gh release edit legujabb --draft=false --prerelease
+              fi
+              [ "$(gh release view legujabb --json isDraft -q .isDraft)" = "false" ] && exit 0
             fi
             sleep $((i * 10))
           done
