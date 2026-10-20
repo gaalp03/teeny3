@@ -1151,12 +1151,12 @@
       const items = [];
       const bw = 220;
       if (won) {
-        items.push({ id: 'cont', x: TT.W / 2 - bw / 2, y: 452, w: bw, h: 56, label: 'Tovább', color: '#2ecc71', onClick: () => this.finish(true) });
+        items.push({ id: 'cont', x: TT.W / 2 - bw / 2, y: 480, w: bw, h: 50, label: 'Tovább', color: '#2ecc71', onClick: () => this.finish(true) });
       } else if (this.p.noRetry) {
-        items.push({ id: 'back', x: TT.W / 2 - bw / 2, y: 452, w: bw, h: 56, label: 'Vissza', color: '#6c5ce7', onClick: () => this.finish(false) });
+        items.push({ id: 'back', x: TT.W / 2 - bw / 2, y: 480, w: bw, h: 50, label: 'Vissza', color: '#6c5ce7', onClick: () => this.finish(false) });
       } else {
-        items.push({ id: 'retry', x: TT.W / 2 - bw - 10, y: 452, w: bw, h: 56, label: 'Újra', color: '#ff6b35', onClick: () => this.retry() });
-        items.push({ id: 'back', x: TT.W / 2 + 10, y: 452, w: bw, h: 56, label: 'Vissza', color: '#6c5ce7', onClick: () => this.finish(false) });
+        items.push({ id: 'retry', x: TT.W / 2 - bw - 10, y: 480, w: bw, h: 50, label: 'Újra', color: '#ff6b35', onClick: () => this.retry() });
+        items.push({ id: 'back', x: TT.W / 2 + 10, y: 480, w: bw, h: 50, label: 'Vissza', color: '#6c5ce7', onClick: () => this.finish(false) });
       }
       this.menu.set(items);
     },
@@ -1232,7 +1232,7 @@
         ctx.fillRect(0, 0, TT.W, TT.H);
       }
 
-      this.drawHud(ctx);
+      if (this.state !== 'results') this.drawHud(ctx);
       if (this.state === 'fight' || this.state === 'count' || this.state === 'vs') this.drawControls(ctx);
       if (this.tip) this.drawTip(ctx);
       if (this.state === 'vs') this.drawVs(ctx);
@@ -2072,59 +2072,101 @@
       ctx.restore();
     },
 
+    // Eredmény: felül szalag a felirattal, középen látszik az ünneplő (vagy szomorú) csapat,
+    // alul kompakt kártyák a tapasztalattal, a gombok legalul
     drawResults(ctx) {
       const r = this.results;
       const a = U.clamp(r.t / 0.3, 0, 1);
       ctx.save();
-      ctx.fillStyle = `rgba(10,5,25,${0.6 * a})`;
+      // enyhe sötétítés felül és alul, a csapat középen jól látszik
+      const shade = ctx.createLinearGradient(0, 0, 0, TT.H);
+      shade.addColorStop(0, `rgba(10,5,25,${0.75 * a})`);
+      shade.addColorStop(0.3, `rgba(10,5,25,${0.15 * a})`);
+      shade.addColorStop(0.62, `rgba(10,5,25,${0.2 * a})`);
+      shade.addColorStop(1, `rgba(10,5,25,${0.85 * a})`);
+      ctx.fillStyle = shade;
       ctx.fillRect(0, 0, TT.W, TT.H);
-      const x = 150, y = 40, w = 660, h = 400;
       ctx.globalAlpha = a;
-      D.panel(ctx, x, y, w, h, { fill: r.won ? '#2b4a9a' : '#4a2a5a', r: 20, lw: 4 });
-      D.text(ctx, r.won ? 'GYŐZELEM!' : 'VERESÉG', TT.W / 2, y + 38, { size: 40, align: 'center', color: r.won ? '#ffd23f' : '#ff8a80' });
+      // szalag
+      const pop = U.ease.outBack(U.clamp(r.t / 0.45, 0, 1));
+      const col = r.won ? '#ffb000' : '#7a4a9a', colD = r.won ? '#c77700' : '#4a2a5a';
+      ctx.save();
+      ctx.translate(TT.W / 2, 62);
+      ctx.scale(pop, pop);
+      for (const sgn of [-1, 1]) {
+        ctx.fillStyle = colD;
+        ctx.beginPath();
+        ctx.moveTo(sgn * 190, -18);
+        ctx.lineTo(sgn * 250, -18);
+        ctx.lineTo(sgn * 230, 6);
+        ctx.lineTo(sgn * 250, 30);
+        ctx.lineTo(sgn * 190, 30);
+        ctx.closePath();
+        ctx.fill();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#120a2c';
+        ctx.stroke();
+      }
+      D.panel(ctx, -210, -34, 420, 62, { fill: col, r: 14, lw: 4 });
+      D.text(ctx, r.won ? 'GYŐZELEM!' : 'VERESÉG', 0, -2, { size: 46, align: 'center', color: r.won ? '#fffbe0' : '#ffd6e0' });
+      ctx.restore();
       if (r.won) {
-        D.coin(ctx, TT.W / 2 - 60, y + 82, 14);
         const shown = Math.floor(r.coins * U.clamp((r.t - 0.3) / 0.8, 0, 1));
-        D.text(ctx, '+' + shown, TT.W / 2 - 38, y + 83, { size: 26, color: '#ffd23f' });
+        const cw = D.measure(ctx, '+' + shown, 24) + 62;
+        D.panel(ctx, TT.W / 2 - cw / 2, 104, cw, 36, { fill: '#1b1140', r: 18, lw: 3, stroke: '#ffd23f' });
+        D.coin(ctx, TT.W / 2 - cw / 2 + 22, 122, 12);
+        D.text(ctx, '+' + shown, TT.W / 2 - cw / 2 + 42, 123, { size: 24, color: '#ffd23f' });
       } else {
         const sub = this.forfeit ? 'Feladtad a harcot — ezért nem jár tapasztalat.'
           : this.p.noRetry ? 'A figurák kevés tapasztalatot kaptak.' : 'A figurák kevés tapasztalatot kaptak. Próbáld újra!';
-        D.text(ctx, sub, TT.W / 2, y + 82, { size: 18, align: 'center', color: '#e8e2ff' });
+        D.text(ctx, sub, TT.W / 2, 122, { size: 18, align: 'center', color: '#e8e2ff' });
       }
+      // tapasztalat-kártyák
+      const n = r.rows.length, cw = 284, gap = 12;
+      const cx0 = TT.W / 2 - (n * cw + (n - 1) * gap) / 2;
       r.rows.forEach((row, i) => {
-        const ry = y + 112 + i * 72;
         const fig = TT.FIG[row.id];
-        ctx.drawImage(TT.art.figureCanvas(row.id, 96), x + 24, ry - 14, 76, 76);
-        D.text(ctx, fig.short, x + 108, ry + 10, { size: 20 });
+        const k1 = U.ease.outCubic(U.clamp((r.t - 0.15 - i * 0.1) / 0.4, 0, 1));
+        const x = cx0 + i * (cw + gap), y = 402 + (1 - k1) * 40;
+        ctx.save();
+        ctx.globalAlpha *= k1;
+        D.panel(ctx, x, y, cw, 70, { fill: 'rgba(27,17,64,0.92)', r: 14, lw: 3, stroke: TT.RARITY[fig.rarity].ring });
+        ctx.drawImage(TT.art.figureCanvas(row.id, 96), x + 4, y + 2, 64, 64);
         const k2 = U.clamp((r.t - 0.4 - i * 0.15) / 0.9, 0, 1);
         const showUp = row.ups > 0 && k2 >= 1;
-        D.text(ctx, 'Szint ' + (showUp ? row.after.lvl : row.before.lvl), x + 108, ry + 36, { size: 16, color: '#ffd23f' });
-        // XP sáv
+        D.text(ctx, fig.short, x + 70, y + 20, { size: 18 });
+        D.text(ctx, '+' + row.xp + ' XP', x + cw - 12, y + 20, { size: 16, align: 'right', color: '#e8e2ff' });
+        D.text(ctx, 'Szint ' + (showUp ? row.after.lvl : row.before.lvl), x + 70, y + 42, { size: 14, color: '#ffd23f' });
         let frac;
         if (row.ups > 0) frac = k2 < 0.6 ? U.lerp(row.before.xp / TT.xpToNext(row.before.lvl), 1, k2 / 0.6) : (row.after.xp / TT.xpToNext(row.after.lvl)) * ((k2 - 0.6) / 0.4);
         else frac = U.lerp(row.before.xp / TT.xpToNext(row.before.lvl), row.after.xp / TT.xpToNext(row.after.lvl), k2);
-        D.bar(ctx, x + 240, ry + 18, 260, 16, frac, { color: '#c06bff' });
-        D.text(ctx, '+' + row.xp + ' XP', x + 516, ry + 26, { size: 18, color: '#e8e2ff' });
+        D.bar(ctx, x + 70, y + 52, cw - 84, 10, frac, { color: '#c06bff' });
         if (showUp) {
           const p = 1 + Math.sin(TT.time * 8) * 0.06;
           ctx.save();
-          ctx.translate(x + 370, ry + 2);
+          ctx.translate(x + cw - 64, y + 42);
           ctx.scale(p, p);
-          D.text(ctx, 'SZINTLÉPÉS!', 0, 0, { size: 18, align: 'center', color: '#7bff6b' });
+          D.text(ctx, 'SZINTLÉPÉS!', 0, 0, { size: 15, align: 'center', color: '#7bff6b' });
           ctx.restore();
         }
+        ctx.restore();
       });
+      // kapott figurák a szalag alatt
       if (r.figs.length) {
-        const fy = y + 330;
+        const fy = 238;
         r.figs.forEach((f, i) => {
           const fx = TT.W / 2 - (r.figs.length - 1) * 130 / 2 + i * 130;
           const k3 = U.ease.outBack(U.clamp((r.t - 1.0 - i * 0.2) / 0.5, 0, 1));
           ctx.save();
           ctx.translate(fx, fy);
           ctx.scale(k3, k3);
-          D.sunburst(ctx, 0, 0, 0, 0, 'rgba(0,0,0,0)', 'rgba(0,0,0,0)');
-          ctx.drawImage(TT.art.figureCanvas(f.id, 96), -38, -58, 76, 76);
-          D.text(ctx, (f.isNew ? 'ÚJ: ' : '+' + f.xp + ' XP: ') + TT.FIG[f.id].short, 0, 30, { size: 16, align: 'center', color: f.isNew ? '#7bff6b' : '#ffe9a0' });
+          const g = ctx.createRadialGradient(0, -20, 4, 0, -20, 70);
+          g.addColorStop(0, 'rgba(255,240,160,0.7)');
+          g.addColorStop(1, 'rgba(255,240,160,0)');
+          ctx.fillStyle = g;
+          ctx.fillRect(-70, -90, 140, 140);
+          ctx.drawImage(TT.art.figureCanvas(f.id, 96), -44, -74, 88, 88);
+          D.text(ctx, (f.isNew ? 'ÚJ: ' : '+' + f.xp + ' XP: ') + TT.FIG[f.id].short, 0, 28, { size: 16, align: 'center', color: f.isNew ? '#7bff6b' : '#ffe9a0' });
           ctx.restore();
         });
       }
