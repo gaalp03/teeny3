@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 30;
+  TT.NEWS_VERSION = 31;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 31, who: 'kid_geza', text: 'Új a boltban: a Sorozat-doboz! Kiválasztod a sorozatot, és garantáltan olyan figurát kapsz belőle, ami még nincs meg. A Kelet Kupa után nyílik meg.' },
     { v: 30, who: 'starfire', text: 'Jelmezbál! Új sorozat: a Liga-Titánok. Raven Wonder Woman-nek, én Flash-nek, Robin Batmannek, Cyborg Zöld Lámpásnak öltözött, Silkie pedig szuperhős lett. És Bwana Beast is velünk tart!' },
     { v: 29, who: 'robin', text: 'A Menta Kupa után Lex Luthor beköltözik Mr. Mint trezorához, Rébusszal és Pingvinnel. Ha legyőzöd őket, Rébusz figurája a tiéd!' },
     { v: 28, who: 'cyborg', text: 'Megjött az erősítés: Flash, Aquaman, Supergirl, Shazam, Marsbéli Vadász és Sólyomlány! Mind ott vannak a dobozokban, eredeti TT2-es kinézettel. BOOYAH!' },

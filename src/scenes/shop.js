@@ -64,6 +64,8 @@
   }
   TT.drawBlindBox = drawBox;
 
+  const SERIES_BOX = { id: 'series', name: 'Sorozat-doboz', price: 1500, color: '#ff4fa3', req: 'east' };
+
   const scene = {
     enter(p) {
       this.p = p;
@@ -107,7 +109,46 @@
         onClick: () => this.buyOffer(off),
       });
       items.push({ id: 'team', x: TT.W - 220, y: 470, w: 200, h: 52, label: 'Gyűjtemény', color: '#3fa7ff', onClick: () => TT.go('collection', { from: 'shop', back: this.p.back }) });
+      const serLocked = !TT.cupDone(SERIES_BOX.req);
+      items.push({
+        id: 'series', x: TT.W - 216, y: 60, w: 196, h: 42, size: 16, label: serLocked ? 'Sorozat-doboz (zárva)' : 'Sorozat-doboz',
+        color: serLocked ? '#5a5470' : SERIES_BOX.color, disabled: serLocked,
+        onDisabled: () => TT.ui.toast(`Előbb nyerd meg: ${TT.CUP[SERIES_BOX.req].name}`, { color: '#ff8a80' }),
+        onClick: () => this.chooseSeries(),
+      });
       this.menu.set(items);
+    },
+
+    // Sorozat-doboz: a kiválasztott sorozatból garantáltan olyan figura, ami még hiányzik
+    chooseSeries() {
+      const s = TT.save;
+      TT.audio.sfx('select');
+      TT.ui.choose({
+        title: 'Sorozat-doboz',
+        text: `${SERIES_BOX.price} érme — garantáltan egy még hiányzó figura a választott sorozatból.`,
+        width: 460, buttonH: 38,
+        options: TT.SERIES.map((ser) => {
+          const missing = ser.ids.filter((id) => !s.owned[id]);
+          return {
+            label: `${ser.name} (${ser.ids.length - missing.length}/${ser.ids.length})`, value: ser.id, color: SERIES_BOX.color,
+            disabled: !missing.length || s.coins < SERIES_BOX.price,
+            onDisabled: () => TT.ui.toast(missing.length ? 'Nincs elég érméd!' : 'Ez a sorozat már teljes!', { color: missing.length ? '#ff8a80' : '#7bff6b' }),
+          };
+        }).concat([{ label: 'Mégse', value: null }]),
+      }, (v) => {
+        const ser = v && TT.SERIES.find((x) => x.id === v);
+        if (!ser) return;
+        const missing = ser.ids.filter((id) => !s.owned[id]);
+        if (!missing.length || s.coins < SERIES_BOX.price) return;
+        s.coins -= SERIES_BOX.price;
+        s.stats.boxes++;
+        const id = U.pick(missing);
+        const info = TT.grantFigure(id);
+        TT.store.write();
+        TT.audio.sfx('buy');
+        TT.audio.voiceFrom(s.team.slice(), 'buy', 0.8);
+        this.opening = { box: SERIES_BOX, id, info, t: 0, taps: 0, shake: 0, done: false };
+      });
     },
 
     buyOffer(off) {
