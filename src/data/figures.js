@@ -857,6 +857,47 @@
     retro('raven', { top: '#f4f4f8', bottom: '#f4f4f8', cloak: '#f4f4f8', mask: '#1d1d2b' }),
     { team: 'titans', short: 'L. Legasus', bio: 'Egy titokzatos szuperhősnő, aki semmiképp sem Raven. Tényleg. Ne kérdezz.' });
 
+  // ---------- TT2 ritkaságok ----------
+  F('clark_kent', 'Clark Kent', 'brawn', 'epic', [120, 14, 13, 11],
+    ['ck_punch', 'ck_glasses', 'ck_dash'], 'ck_reveal',
+    {
+      skin: SKIN, top: '#6b5a3a', sleeves: '#6b5a3a', gloves: SKIN, bottom: '#6b5a3a', boots: '#1d1d2b', shirt: '#f4f4f8', tie: '#d62828',
+      hair: 'swoop', hairColor: '#1d1d2b', eyes: 'lens', mouth: 'smile',
+    }, { team: 'dc', short: 'Clark', bio: 'Csak egy szemüveges riporter. Biztosan nem Superman. Biztos.' });
+
+  F('wonder_twins', 'Csodaikrek', 'mystic', 'epic', [110, 14, 11, 13],
+    ['wt_eagle', 'wt_water', 'wt_ice'], 'wt_activate',
+    {
+      skin: '#b8a8e0', top: '#6b3fa0', sleeves: '#6b3fa0', gloves: '#6b3fa0', bottom: '#6b3fa0', boots: '#6b3fa0',
+      hair: 'short', hairColor: '#1d1d2b', eyes: 'dot', mouth: 'grin',
+    }, { team: 'dc', short: 'Csodaikrek', bio: 'Két testvér, egy kézfogás, végtelen forma. Az egyik sas, a másik… egy vödör víz.' });
+
+  F('sticky_joe', 'Sticky Joe', 'brawn', 'epic', [130, 13, 13, 9],
+    ['sj_cane', 'sj_trash', 'sj_stink'], 'sj_dumpster',
+    {
+      skin: SKIN, top: '#6b5a7a', sleeves: '#6b5a7a', gloves: '#6b6b7a', bottom: '#4a4a55', boots: '#3a2a1a',
+      hair: 'messy', hairColor: '#f4f4f8', eyes: 'dot', mouth: 'grin', gear: ['nightcap'], hatColor: '#ff9ecd',
+    }, { team: 'villain', bio: 'A Jump City-i kukák királya. Mindent összegyűjt, amit kidobnak — figurákat is.' });
+
+  F('mr_chibi', 'Mr. Chibi', 'tech', 'legendary', [130, 14, 13, 10],
+    ['mc_slap', 'mc_money', 'mc_buy'], 'mc_collection',
+    {
+      skin: SKIN, top: '#2a2a44', sleeves: '#2a2a44', gloves: SKIN, bottom: '#2a2a44', boots: '#1d1d2b', shirt: '#f4f4f8', tie: '#6b3fa0',
+      hair: 'flat', hairColor: '#1d1d2b', eyes: 'lens', mouth: 'grin',
+    }, { team: 'mint', bio: 'Mr. Mint üzlettársa. Ha egy figura eladó, ő már meg is vette. Kétszer.' });
+
+  F('silkie_og', 'Ős-Silkie', 'brawn', 'rare', [120, 10, 12, 9],
+    ['og_bite', 'og_goo', 'og_snooze'], 'og_ancient',
+    retro('silkie', { skin: '#c8b89a' }),
+    { team: 'titans', short: 'Ős-Silkie', bio: 'Az eredeti, régi Silkie-figura. Kicsit kopott, de ő volt az első.' });
+
+  F('maeeye_other', 'Másik Mae-Eye', 'mystic', 'epic', [110, 14, 11, 12],
+    ['me_pie', 'me_spell', 'me_bake'], 'me_pie_rain',
+    {
+      skin: '#7bd65b', top: '#6b3fa0', sleeves: '#6b3fa0', gloves: '#7bd65b', bottom: '#2a1a3a', boots: '#2a1a3a',
+      hair: 'puffs', hairColor: '#6b3fa0', eyes: 'glow', eyeColor: '#ffd23f', mouth: 'grin',
+    }, { team: 'villain', short: 'M. Mae-Eye', bio: 'Mother Mae-Eye gonoszabb ikre egy párhuzamos világból. A pitéje még elvarázsoltabb.' });
+
   // Statisztikák kiegyenlítése: minden figura azonos "kerettel" indul, a különbséget
   // a szerep (HP/támadás/védekezés aránya) és a ritkaság adja.
   // (a lista legvégén, hogy a később felvett sorozatokra is vonatkozzon)
@@ -891,6 +932,7 @@
     { id: 'rookies', name: 'A Liga újoncai', short: 'Újonc', ids: ['dc_johnstewart', 'dc_jessica', 'dc_bluebeetle', 'dc_booster', 'dc_blacklightning', 'dc_vixen'] },
     { id: 'funny', name: 'Vicces változatok', short: 'Vicces', ids: ['dc_bathman', 'santa_claus', 'george_w', 'silkie_princess', 'trigon_argyle', 'cyborg_head'] },
     { id: 'friends', name: 'Titán-barátok', short: 'Barát', ids: ['nightwing_dad', 'red_arrow', 'rose_wilson', 'hooded_hood', 'bumblebee_justice', 'raven_legasus'] },
+    { id: 'rarities', name: 'TT2 ritkaságok', short: 'Ritkaság', ids: ['clark_kent', 'wonder_twins', 'sticky_joe', 'mr_chibi', 'silkie_og', 'maeeye_other'] },
   ];
   for (const ser of TT.SERIES) for (const id of ser.ids) TT.FIG[id].series = ser.id;
 

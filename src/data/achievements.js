@@ -70,6 +70,7 @@
     A('seriesRookies', 'Liga-toborzó', 'Gyűjtsd össze mind a 6 Liga-újoncot.', 1500, (s) => seriesDone(s, 'rookies')),
     A('seriesFunny', 'Nevetőgörcs', 'Gyűjtsd össze mind a 6 vicces változatot.', 1500, (s) => seriesDone(s, 'funny')),
     A('seriesFriends', 'Baráti kör', 'Gyűjtsd össze mind a 6 Titán-barátot.', 1500, (s) => seriesDone(s, 'friends')),
+    A('seriesRare', 'Igazi gyűjtő', 'Gyűjtsd össze mind a 6 TT2-ritkaságot.', 1500, (s) => seriesDone(s, 'rarities')),
   ];
 
   // Új teljesítmények ellenőrzése és jutalmazása

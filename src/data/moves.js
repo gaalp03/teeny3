@@ -561,6 +561,32 @@
   M('ll_disguise', 'Álruha', 'self', 0, 7.5, 'shield', '#ffd23f', { shield: 0.12 });
   M('ll_legend', 'Legasus legendája', 'beam', 86, 0, 'magic', '#8e5cff', { super: true, eff: [E('stun', 1, 1.2)] });
 
+  // ---------- TT2 ritkaságok ----------
+  M('ck_punch', 'Riporter-ütés', 'melee', 16, 2.4, 'punch', '#3f6fd8');
+  M('ck_glasses', 'Szemüveg le!', 'self', 0, 6.5, 'buff', '#d62828', { eff: [E('atkUp', 1, 6, { self: true })] });
+  M('ck_dash', 'Telefonfülke-roham', 'melee', 38, 7.6, 'kick', '#3f6fd8', { eff: [E('stun', 0.3, 0.9)] });
+  M('ck_reveal', 'Ez egy munka Supermannek!', 'beam', 90, 0, 'laser', '#ff3b3b', { super: true, eff: [E('burn', 1, 4)] });
+  M('wt_eagle', 'Sas-forma', 'melee', 16, 2.2, 'bird', '#c06bff');
+  M('wt_water', 'Víz-forma', 'shot', 22, 4.4, 'wave', '#4fc3f7', { eff: [E('slow', 0.6, 3)] });
+  M('wt_ice', 'Jég-forma', 'beam', 28, 5.8, 'wind', '#9be7ff', { eff: [E('stun', 0.3, 1)] });
+  M('wt_activate', 'Csodaikrek, aktiválás!', 'multi', 84, 0, 'magic', '#c06bff', { super: true, hits: 5, eff: [E('stun', 1, 1)] });
+  M('sj_cane', 'Botcsapás', 'melee', 16, 2.4, 'staff', '#c97b30');
+  M('sj_trash', 'Szemétdobás', 'shot', 17, 4.4, 'banana', '#7bd65b', { eff: [E('slow', 0.6, 3)] });
+  M('sj_stink', 'Bűzfelhő', 'shot', 18, 4.4, 'smoke', '#9aa5b1', { eff: [E('poison', 0.35, 4)] });
+  M('sj_dumpster', 'Kukaborogatás', 'slam', 84, 0, 'rock', '#6f8a3a', { super: true, eff: [E('poison', 1, 5)] });
+  M('mc_slap', 'Pénzes pofon', 'melee', 15, 2.4, 'punch', '#ffd23f');
+  M('mc_money', 'A pénz beszél', 'shot', 22, 4.6, 'coin', '#ffd23f', { eff: [E('weak', 0.6, 4)] });
+  M('mc_buy', 'Megveszem!', 'self', 0, 8.5, 'shield', '#ffd23f', { shield: 0.08 });
+  M('mc_collection', 'A teljes gyűjtemény', 'multi', 90, 0, 'coin', '#ffd23f', { super: true, hits: 5, eff: [E('mark', 1, 5)] });
+  M('og_bite', 'Ős-harapás', 'melee', 14, 2.2, 'claw', '#c8b89a');
+  M('og_goo', 'Ős-trutyi', 'shot', 18, 4.4, 'blob', '#c8b89a', { eff: [E('slow', 0.6, 3)] });
+  M('og_snooze', 'Ős-szundi', 'self', 0, 9, 'heal', '#9be7ff', { heal: 0.12 });
+  M('og_ancient', 'Az ősi lárva', 'slam', 80, 0, 'rock', '#c8b89a', { super: true, eff: [E('stun', 1, 1.1)] });
+  M('me_pie', 'Elvarázsolt pite', 'shot', 26, 4.4, 'pie', '#c06bff', { eff: [E('stun', 0.35, 1)] });
+  M('me_spell', 'Anyai átok', 'beam', 30, 5.8, 'hex', '#c06bff', { eff: [E('weak', 0.6, 4)] });
+  M('me_bake', 'Sütögetés', 'self', 0, 9, 'heal', '#ff9a3c', { heal: 0.12 });
+  M('me_pie_rain', 'Piteeső', 'multi', 84, 0, 'pie', '#c06bff', { super: true, hits: 5, eff: [E('slow', 1, 4)] });
+
   // Leírás generálása
   for (const m of Object.values(MOVES)) {
     const parts = [];
