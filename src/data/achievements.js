@@ -65,6 +65,7 @@
     A('seriesDC', 'Igazság Ligája', 'Gyűjtsd össze mind a 6 DC vendégfigurát.', 1500, (s) => seriesDone(s, 'dc')),
     A('seriesDCV', 'Igazságtalanság Ligája', 'Gyűjtsd össze mind a 6 DC gonosz figurát.', 1500, (s) => seriesDone(s, 'dcvillains')),
     A('seriesDCH', 'Szuperhős-gyűjtő', 'Gyűjtsd össze mind a 6 DC hős figurát.', 1500, (s) => seriesDone(s, 'dcheroes')),
+    A('seriesLeague', 'Jelmezbál', 'Gyűjtsd össze mind a 6 Liga-Titánt.', 1500, (s) => seriesDone(s, 'league')),
   ];
 
   // Új teljesítmények ellenőrzése és jutalmazása

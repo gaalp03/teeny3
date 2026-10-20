@@ -658,6 +658,39 @@
       hair: 'long', hairColor: '#d62828', eyes: 'dot', mouth: 'smirk', gear: ['wings_bee'],
     }, { team: 'dc', bio: 'Szárnyakkal és egy villámló buzogánnyal érkezik. Gonoszok, fedezékbe!' });
 
+  // ---------- Liga-Titánok (Teeny Titans 2) ----------
+  F('raven_wonder', 'Wonder Raven', 'mystic', 'legendary', [120, 15, 12, 12],
+    ['wr_strike', 'wr_lasso', 'wr_bracelets'], 'wr_amazon_magic',
+    retro('raven', { top: '#d62828', bottom: '#2a3fb0', cloak: '#2a3fb0', gear: ['tiara'] }),
+    { team: 'titans', short: 'W. Raven', bio: 'Raven Wonder Woman jelmezében. A lasszója sötét — de az igazságot így is kiszedi.' });
+
+  F('star_flash', 'Star Flash', 'speed', 'epic', [105, 14, 10, 15],
+    ['sf_bolts', 'sf_vortex', 'sf_dash'], 'sf_supernova',
+    retro('starfire', { top: '#d62828', sleeves: '#d62828', bottom: '#d62828', boots: '#ffd23f' }),
+    { team: 'titans', short: 'Star Flash', bio: 'Starfire felvette Flash ruháját, és azóta senki sem éri utol. Még a saját nyilai sem.' });
+
+  F('robin_bat', 'Bat Robin', 'tech', 'epic', [110, 14, 12, 12],
+    ['br_rangs', 'br_smoke', 'br_kick'], 'br_detective',
+    retro('robin', { top: '#6b6b7a', sleeves: '#6b6b7a', bottom: '#1d1d2b', cape: '#1d1d2b', capeIn: '#1d1d2b', gear: ['cowl', 'ears_bat'] }),
+    { team: 'titans', short: 'Bat Robin', bio: 'Robin álma valóra vált: Batman jelmezében járja Jump City sötét utcáit.' });
+
+  F('cyborg_lantern', 'Lámpás Cyborg', 'tech', 'legendary', [130, 15, 13, 9],
+    ['gc_fist', 'gc_beam', 'gc_shield'], 'gc_oath',
+    retro('cyborg', { top: '#1d1d2b', bottom: '#3fa34d', chest: { sym: '◎', color: '#1d1d2b', ink: '#4fd36b' } }),
+    { team: 'titans', short: 'L. Cyborg', bio: 'Cyborg a Zöld Lámpások gyűrűjét kapta. A legfényesebb nap, a legsötétebb éj… BOOYAH!' });
+
+  F('dc_bwana', 'Bwana Beast', 'brawn', 'epic', [135, 14, 13, 9],
+    ['bw_claw', 'bw_roar', 'bw_slam'], 'bw_chimera',
+    {
+      skin: '#e2b088', top: '#e2b088', sleeves: '#e2b088', gloves: '#e2b088', bottom: '#d62828', boots: '#d62828', belt: '#ffd23f',
+      hair: 'short', hairColor: '#1d1d2b', mask: '#d62828', eyes: 'dot', mouth: 'grin', gear: ['horns'],
+    }, { team: 'dc', short: 'Bwana', bio: 'Az állatok ura a Liga soraiból. Beast Boy szerint ő a „második legjobb” állatbarát.' });
+
+  F('silkie_super', 'Szuper Silkie', 'brawn', 'epic', [120, 13, 12, 10],
+    ['ss_punch', 'ss_burp', 'ss_fly'], 'ss_hero',
+    retro('silkie', { cape: '#d62828', capeIn: '#a81d1d' }),
+    { team: 'titans', short: 'Sz. Silkie', bio: 'Pelerint kapott, és azt hiszi, tud repülni. (Tud.)' });
+
   // Statisztikák kiegyenlítése: minden figura azonos "kerettel" indul, a különbséget
   // a szerep (HP/támadás/védekezés aránya) és a ritkaság adja.
   // (a lista legvégén, hogy a később felvett sorozatokra is vonatkozzon)
@@ -687,6 +720,7 @@
     { id: 'dc', name: 'DC vendégek', short: 'DC', ids: ['dc_batman', 'dc_batgirl', 'dc_superman', 'dc_wonderwoman', 'dc_joker', 'dc_harley'] },
     { id: 'dcvillains', name: 'DC gonoszok', short: 'DC gonosz', ids: ['dc_lex', 'dc_darkseid', 'dc_riddler', 'dc_penguin', 'dc_ivy', 'dc_bane'] },
     { id: 'dcheroes', name: 'DC hősök', short: 'DC hős', ids: ['dc_flash', 'dc_aquaman', 'dc_supergirl', 'dc_shazam', 'dc_martian', 'dc_hawkgirl'] },
+    { id: 'league', name: 'Liga-Titánok', short: 'Liga', ids: ['raven_wonder', 'star_flash', 'robin_bat', 'cyborg_lantern', 'dc_bwana', 'silkie_super'] },
   ];
   for (const ser of TT.SERIES) for (const id of ser.ids) TT.FIG[id].series = ser.id;
 
