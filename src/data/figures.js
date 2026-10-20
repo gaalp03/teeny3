@@ -777,6 +777,45 @@
       hair: 'spiky', hairColor: '#1d1d2b', eyes: 'dot', mouth: 'smile',
     }, { team: 'dc', bio: 'A Tantu-totem bármelyik állat erejét kölcsönadja neki. Még a csirkéét is.' });
 
+  // ---------- Vicces változatok (Teeny Titans 2) ----------
+  F('dc_bathman', 'Fürdő-Batman', 'brawn', 'epic', [130, 14, 12, 10],
+    ['bm_towel', 'bm_soap', 'bm_ducky'], 'bm_bubblebath',
+    {
+      skin: SKIN, top: SKIN, sleeves: SKIN, gloves: SKIN, bottom: '#f4f4f8', boots: SKIN,
+      hair: 'bald', hairColor: '#1d1d2b', mask: '#4a4a55', eyes: 'lens', mouth: 'grin', gear: ['cowl', 'ears_bat'],
+    }, { team: 'dc', short: 'Fürdő-Batman', bio: 'Még a Sötét Lovag is megfürdik néha. A gumikacsája a legjobb társa.' });
+
+  F('santa_claus', 'Mikulás', 'mystic', 'legendary', [130, 15, 13, 10],
+    ['sc_gift', 'sc_snow', 'sc_cookie'], 'sc_sleigh',
+    {
+      skin: SKIN, top: '#d62828', sleeves: '#d62828', gloves: '#1d1d2b', bottom: '#d62828', boots: '#1d1d2b', belt: '#1d1d2b',
+      hair: 'messy', hairColor: '#f4f4f8', eyes: 'dot', mouth: 'grin', gear: ['nightcap', 'mustache'], hatColor: '#d62828',
+    }, { team: 'titans', bio: 'Ho-ho-ho! Idén mindenki figurát kap. A rossz gyerekek dupla Gizmót.' });
+
+  F('george_w', 'George Washington', 'brawn', 'epic', [125, 14, 13, 10],
+    ['gw_bat', 'gw_cherry', 'gw_freedom'], 'gw_independence',
+    {
+      skin: SKIN, top: '#2a3fb0', sleeves: '#2a3fb0', gloves: '#f4f4f8', bottom: '#f4d35e', boots: '#1d1d2b',
+      hair: 'puffs', hairColor: '#f4f4f8', eyes: 'dot', mouth: 'grin',
+    }, { team: 'titans', short: 'G. Washington', bio: 'Robin legnagyobb hőse. A Titánok szerint biceps-ben is az első elnök.' });
+
+  F('silkie_princess', 'Hercegnő Silkie', 'mystic', 'epic', [120, 13, 12, 11],
+    ['sp_nibble', 'sp_tiara', 'sp_royal'], 'sp_party',
+    retro('silkie', { skin: '#ffc8e0', gear: ['tiara'] }),
+    { team: 'titans', short: 'H. Silkie', bio: 'Starfire koronát tett rá, és Silkie azóta csak hercegnőként hajlandó harcolni.' });
+
+  F('trigon_argyle', 'Pulóveres Trigon', 'mystic', 'legendary', [150, 15, 13, 8],
+    ['ta_knit', 'ta_hug', 'ta_glare'], 'ta_holiday',
+    {
+      skin: '#d62828', top: '#ff9ecd', sleeves: '#ff9ecd', gloves: '#d62828', bottom: '#f4f4f8', boots: '#1d1d2b',
+      hair: 'flat', hairColor: '#f4f4f8', eyes: 'glow', eyeColor: '#ffd23f', mouth: 'grin', gear: ['horns'], scale: 1.1,
+    }, { team: 'villain', short: 'Puló-Trigon', bio: 'Raven apja kötött pulóverben. Aranyos? Igen. Kevésbé veszélyes? Egyáltalán nem.' });
+
+  F('cyborg_head', 'Cyborg feje', 'tech', 'epic', [95, 14, 10, 14],
+    ['chd_roll', 'chd_booyah', 'chd_beam'], 'chd_rocket',
+    retro('cyborg', { scale: 0.85 }),
+    { team: 'titans', short: 'Cyborg feje', bio: 'Csak a feje. A teste épp szervizben van. A BOOYAH így is megy.' });
+
   // Statisztikák kiegyenlítése: minden figura azonos "kerettel" indul, a különbséget
   // a szerep (HP/támadás/védekezés aránya) és a ritkaság adja.
   // (a lista legvégén, hogy a később felvett sorozatokra is vonatkozzon)
@@ -809,6 +848,7 @@
     { id: 'league', name: 'Liga-Titánok', short: 'Liga', ids: ['raven_wonder', 'star_flash', 'robin_bat', 'cyborg_lantern', 'dc_bwana', 'silkie_super'] },
     { id: 'oddballs', name: 'DC különcök', short: 'Különc', ids: ['dc_catwoman', 'dc_cheetah', 'dc_sinestro', 'dc_grodd', 'dc_bizarro', 'dc_swamp'] },
     { id: 'rookies', name: 'A Liga újoncai', short: 'Újonc', ids: ['dc_johnstewart', 'dc_jessica', 'dc_bluebeetle', 'dc_booster', 'dc_blacklightning', 'dc_vixen'] },
+    { id: 'funny', name: 'Vicces változatok', short: 'Vicces', ids: ['dc_bathman', 'santa_claus', 'george_w', 'silkie_princess', 'trigon_argyle', 'cyborg_head'] },
   ];
   for (const ser of TT.SERIES) for (const id of ser.ids) TT.FIG[id].series = ser.id;
 

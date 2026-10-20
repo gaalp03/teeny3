@@ -68,6 +68,7 @@
     A('seriesLeague', 'Jelmezbál', 'Gyűjtsd össze mind a 6 Liga-Titánt.', 1500, (s) => seriesDone(s, 'league')),
     A('seriesOdd', 'Furcsa egy banda', 'Gyűjtsd össze mind a 6 DC különcöt.', 1500, (s) => seriesDone(s, 'oddballs')),
     A('seriesRookies', 'Liga-toborzó', 'Gyűjtsd össze mind a 6 Liga-újoncot.', 1500, (s) => seriesDone(s, 'rookies')),
+    A('seriesFunny', 'Nevetőgörcs', 'Gyűjtsd össze mind a 6 vicces változatot.', 1500, (s) => seriesDone(s, 'funny')),
   ];
 
   // Új teljesítmények ellenőrzése és jutalmazása

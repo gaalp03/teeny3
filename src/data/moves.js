@@ -509,6 +509,32 @@
   M('vx_turtle', 'Teknőspáncél', 'self', 0, 8, 'shield', '#3fa34d', { shield: 0.14 });
   M('vx_tantu', 'Tantu-totem', 'multi', 86, 0, 'claw', '#ff9a3c', { super: true, hits: 5, melee: true, eff: [E('atkUp', 1, 5, { self: true })] });
 
+  // ---------- Vicces változatok (Teeny Titans 2) ----------
+  M('bm_towel', 'Törölközőcsapás', 'melee', 17, 2.4, 'slash', '#f4f4f8');
+  M('bm_soap', 'Szappancsúszda', 'shot', 20, 4.4, 'bubble', '#9be7ff', { eff: [E('slow', 0.6, 3)] });
+  M('bm_ducky', 'Gumikacsa-bomba', 'slam', 40, 8, 'bomb', '#ffd23f', { eff: [E('stun', 0.4, 1)] });
+  M('bm_bubblebath', 'Habfürdő', 'multi', 84, 0, 'bubble', '#9be7ff', { super: true, hits: 5, eff: [E('slow', 1, 4)] });
+  M('sc_gift', 'Meglepetés-ajándék', 'shot', 26, 4.6, 'box', '#d62828', { eff: [E('stun', 0.4, 1)] });
+  M('sc_snow', 'Hóvihar', 'beam', 26, 5.8, 'wind', '#f4f4f8', { eff: [E('slow', 0.8, 4)] });
+  M('sc_cookie', 'Mézeskalács', 'self', 0, 9, 'heal', '#c97b30', { heal: 0.12 });
+  M('sc_sleigh', 'Szánrohanás', 'multi', 90, 0, 'star', '#ffd23f', { super: true, hits: 5, eff: [E('stun', 1, 1)] });
+  M('gw_bat', 'Ütő-csapás', 'melee', 16, 2.4, 'punch', '#c97b30');
+  M('gw_cherry', 'Cseresznyebomba', 'shot', 22, 4.4, 'pie', '#d62828', { eff: [E('burn', 0.5, 3)] });
+  M('gw_freedom', 'Szabadság!', 'self', 0, 6.5, 'buff', '#2a3fb0', { eff: [E('atkUp', 1, 6, { self: true })] });
+  M('gw_independence', 'Függetlenség napja', 'multi', 86, 0, 'star', '#d62828', { super: true, hits: 5, melee: true, eff: [E('mark', 1, 5)] });
+  M('sp_nibble', 'Királyi rágcsálás', 'melee', 15, 2.3, 'claw', '#ff9ecd');
+  M('sp_tiara', 'Tiaravillanás', 'shot', 20, 4.2, 'heart', '#ffd23f', { eff: [E('stun', 0.4, 1)] });
+  M('sp_royal', 'Királyi védelem', 'self', 0, 8, 'shield', '#c06bff', { shield: 0.12 });
+  M('sp_party', 'Hercegnő-buli', 'multi', 82, 0, 'heart', '#ff9ecd', { super: true, hits: 4, eff: [E('regen', 1, 5, { self: true })] });
+  M('ta_knit', 'Kötőtű-csapás', 'melee', 15, 2.5, 'slash', '#d62828');
+  M('ta_hug', 'Puha ölelés', 'shot', 20, 4.6, 'hex', '#ff9ecd', { eff: [E('slow', 0.7, 3)] });
+  M('ta_glare', 'Ünnepi szemsugár', 'beam', 30, 6.4, 'laser', '#ff3b3b', { eff: [E('burn', 0.6, 3)] });
+  M('ta_holiday', 'Démoni ünnep', 'beam', 92, 0, 'laser', '#d62828', { super: true, eff: [E('stun', 1, 1.2)] });
+  M('chd_roll', 'Fejgurulás', 'melee', 16, 2.1, 'punch', '#3fa7ff');
+  M('chd_booyah', 'BOOYAH-hullám', 'shot', 22, 4.4, 'sonic', '#5fd3ff', { eff: [E('stun', 0.35, 1)] });
+  M('chd_beam', 'Fejlézer', 'beam', 26, 5.4, 'laser', '#ff3b3b', { eff: [E('burn', 0.4, 3)] });
+  M('chd_rocket', 'Rakétafej', 'multi', 82, 0, 'rocket', '#3fa7ff', { super: true, hits: 4, eff: [E('mark', 1, 4)] });
+
   // Leírás generálása
   for (const m of Object.values(MOVES)) {
     const parts = [];
