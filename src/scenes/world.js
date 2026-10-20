@@ -404,6 +404,8 @@
       if (n.id === 'lex') return TT.cupDone('mint');
       // Bizarro a Gonosz Kupa után napozik a strandon
       if (n.id === 'bizarro') return TT.cupDone('villain');
+      // Csuklyás Hood a Testvériség Kupa után vadászik a parkban (csak éjjel harcol)
+      if (n.id === 'hood') return TT.cupDone('brotherhood');
       // legyőzése után Trigon eltűnik (a történet szerint bezárult a kapuja)
       if (n.id === 'trigon') return TT.cupDone('brotherhood') && !!TT.save.beaten.redx && !TT.save.beaten.trigon;
       return true;

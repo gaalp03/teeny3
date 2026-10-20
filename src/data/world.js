@@ -156,6 +156,7 @@
     { id: 'joker', who: 'dc_joker', x: 38, y: 43.5, trainer: 'joker', dir: 'down' },
     { id: 'lex', who: 'dc_lex', x: 18.5, y: 9.2, trainer: 'lex', dir: 'left' },
     { id: 'bizarro', who: 'dc_bizarro', x: 74, y: 59.5, trainer: 'bizarro', dir: 'left' },
+    { id: 'hood', who: 'hooded_hood', x: 18.5, y: 36, trainer: 'hood', dir: 'left' },
   ];
 
   // Rejtett figurák és érmék
