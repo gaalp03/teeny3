@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 32;
+  TT.NEWS_VERSION = 33;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 33, who: 'raven', text: 'A Gonosz Kupa után Bizarro napozik a strandon, Grodd gorillával és Gepárdnővel. Azt mondja, nem akar harcolni. Ez nála azt jelenti, hogy nagyon is akar.' },
     { v: 32, who: 'beastboy', text: 'Furcsa egy banda érkezett: Macskanő, Gepárdnő, Sinestro, Grodd gorilla, Bizarro és a Mocsárlény! Már 105 figura van, dude. A Sorozat-dobozzal könnyebb őket összeszedni.' },
     { v: 31, who: 'kid_geza', text: 'Új a boltban: a Sorozat-doboz! Kiválasztod a sorozatot, és garantáltan olyan figurát kapsz belőle, ami még nincs meg. A Kelet Kupa után nyílik meg.' },
     { v: 30, who: 'starfire', text: 'Jelmezbál! Új sorozat: a Liga-Titánok. Raven Wonder Woman-nek, én Flash-nek, Robin Batmannek, Cyborg Zöld Lámpásnak öltözött, Silkie pedig szuperhős lett. És Bwana Beast is velünk tart!' },

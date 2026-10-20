@@ -157,6 +157,13 @@
         { who: 'dc_riddler', text: 'Találós kérdés: mi az, ami három figurából áll, és mindjárt kikap? Segítek: a ti csapatotok!' },
       ],
       outro: [{ who: 'dc_lex', text: 'Lenyűgöző. Rébusz, add oda nekik a figurádat. Egy üzletember tudja, mikor kell befektetni… a jövőbeli szövetségesekbe.' }] },
+    bizarro: { name: 'Bizarro', who: 'dc_bizarro', team: [T('dc_cheetah', 13), T('dc_grodd', 13), T('dc_bizarro', 14)], ai: 0.44, coins: 650, bg: 'beach', music: 'boss',
+      reward: { figs: ['dc_cheetah'] },
+      intro: [
+        { who: 'dc_bizarro', text: 'Viszlát, kis Titánok! Bizarro nagyon NEM akar figurázni veletek! Bizarro csapata nagyon gyenge!' },
+        { who: 'dc_grodd', text: 'Úgy érti, hogy szeretne harcolni, és erősnek tartja a csapatát. Én pedig olvasok a gondolataitokban… félősek vagytok.' },
+      ],
+      outro: [{ who: 'dc_bizarro', text: 'Bizarro nyert! …Mármint vesztett. Bizarro nagyon NEM ad nektek Gepárdnő-figurát. Fogjátok!' }] },
     joker: { name: 'Joker', who: 'dc_joker', team: [T('dc_harley', 12), T('killer_moth', 12), T('dc_joker', 13)], ai: 0.54, coins: 600, bg: 'street', music: 'boss', night: true,
       dayText: 'Nappal? Fényes nappal semmi sem vicces. Gyere vissza sötétedés után… HAHAHA!',
       reward: { figs: ['dc_harley'] },

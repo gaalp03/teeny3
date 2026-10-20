@@ -402,6 +402,8 @@
       if (n.id === 'joker') return TT.cupDone('east');
       // Lex Luthor a Menta Kupa után költözik be Mr. Mint trezorához
       if (n.id === 'lex') return TT.cupDone('mint');
+      // Bizarro a Gonosz Kupa után napozik a strandon
+      if (n.id === 'bizarro') return TT.cupDone('villain');
       // legyőzése után Trigon eltűnik (a történet szerint bezárult a kapuja)
       if (n.id === 'trigon') return TT.cupDone('brotherhood') && !!TT.save.beaten.redx && !TT.save.beaten.trigon;
       return true;
