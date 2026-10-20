@@ -457,6 +457,32 @@
   M('ss_fly', 'Szuperrepülés', 'melee', 34, 7.4, 'kick', '#3f6fd8');
   M('ss_hero', 'Szuperlárva', 'multi', 82, 0, 'punch', '#3f6fd8', { super: true, hits: 4, melee: true, eff: [E('regen', 1, 5, { self: true })] });
 
+  // ---------- DC különcök (Teeny Titans 2) ----------
+  M('cw_whip', 'Ostorcsapás', 'melee', 17, 2.2, 'slash', '#6b3fa0');
+  M('cw_kiss', 'Macskapuszi', 'shot', 23, 4.4, 'heart', '#ff4f81', { eff: [E('stun', 0.4, 1)] });
+  M('cw_pounce', 'Macskaugrás', 'melee', 38, 7.2, 'claw', '#6b3fa0', { crit: 0.2 });
+  M('cw_heist', 'Nagy rablás', 'multi', 84, 0, 'claw', '#6b3fa0', { super: true, hits: 5, melee: true, eff: [E('mark', 1, 5)] });
+  M('ch_swipe', 'Karomsuhintás', 'melee', 18, 2.1, 'claw', '#f2b705');
+  M('ch_hairball', 'Szőrgombóc', 'shot', 22, 4.4, 'blob', '#c97b30', { eff: [E('slow', 0.7, 3)] });
+  M('ch_airstrike', 'Légiroham', 'melee', 43, 7.2, 'claw', '#f2b705', { eff: [E('stun', 0.3, 0.9)] });
+  M('ch_frenzy', 'Vadászösztön', 'multi', 84, 0, 'claw', '#f2b705', { super: true, hits: 6, melee: true, eff: [E('haste', 1, 5, { self: true })] });
+  M('si_axe', 'Sárga bárd', 'melee', 15, 2.4, 'slash', '#ffd23f');
+  M('si_fear', 'Félelemhullám', 'shot', 20, 4.6, 'hex', '#ffd23f', { eff: [E('weak', 0.6, 4)] });
+  M('si_beam', 'Sárga sugár', 'beam', 30, 6.2, 'laser', '#ffd23f', { eff: [E('burn', 0.5, 3)] });
+  M('si_yellow', 'A félelem gyűrűje', 'beam', 92, 0, 'laser', '#ffd23f', { super: true, eff: [E('stun', 1, 1.2)] });
+  M('gr_smash', 'Gorillacsapás', 'melee', 18, 2.5, 'punch', '#6b6b7a');
+  M('gr_mind', 'Elmeirányítás', 'shot', 20, 4.6, 'hex', '#ffe066', { eff: [E('stun', 0.4, 1)] });
+  M('gr_darwin', 'Evolúció', 'self', 0, 7, 'buff', '#ffe066', { eff: [E('atkUp', 1, 6, { self: true })] });
+  M('gr_ape_army', 'Gorillasereg', 'multi', 90, 0, 'punch', '#6b6b7a', { super: true, hits: 5, melee: true, eff: [E('stun', 1, 1)] });
+  M('bz_punch', 'Fordított ütés', 'melee', 15, 2.4, 'punch', '#3f6fd8');
+  M('bz_ice', 'Fagyos lehelet', 'beam', 24, 5.5, 'wind', '#9be7ff', { eff: [E('slow', 0.8, 4)] });
+  M('bz_fire', 'Tűzszem', 'beam', 28, 6, 'laser', '#ff6b35', { eff: [E('burn', 0.6, 3)] });
+  M('bz_backwards', 'Fordított világ', 'multi', 84, 0, 'punch', '#3f6fd8', { super: true, hits: 5, melee: true, eff: [E('weak', 1, 5)] });
+  M('sw_vine', 'Mocsárinda', 'melee', 14, 2.3, 'slash', '#6f8a3a');
+  M('sw_mud', 'Sárdobás', 'shot', 18, 4.4, 'blob', '#6f8a3a', { eff: [E('slow', 0.7, 3)] });
+  M('sw_regrow', 'Újranövés', 'self', 0, 9, 'heal', '#7bd65b', { heal: 0.12 });
+  M('sw_green', 'A Zöld haragja', 'slam', 84, 0, 'rock', '#6f8a3a', { super: true, eff: [E('poison', 1, 5)] });
+
   // Leírás generálása
   for (const m of Object.values(MOVES)) {
     const parts = [];

@@ -691,6 +691,49 @@
     retro('silkie', { cape: '#d62828', capeIn: '#a81d1d' }),
     { team: 'titans', short: 'Sz. Silkie', bio: 'Pelerint kapott, és azt hiszi, tud repülni. (Tud.)' });
 
+  // ---------- DC különcök (Teeny Titans 2) ----------
+  F('dc_catwoman', 'Macskanő', 'speed', 'epic', [100, 14, 10, 15],
+    ['cw_whip', 'cw_kiss', 'cw_pounce'], 'cw_heist',
+    {
+      skin: SKIN, top: '#3a2a5a', sleeves: '#3a2a5a', gloves: '#3a2a5a', bottom: '#3a2a5a', boots: '#3a2a5a',
+      hair: 'short', hairColor: '#1d1d2b', mask: '#3a2a5a', eyes: 'lens', mouth: 'smirk', gear: ['ears_pointy', 'goggles_up'],
+    }, { team: 'villain', bio: 'Gotham legügyesebb tolvaja. Minden csillogó figurát elcsen — főleg a ritkákat.' });
+
+  F('dc_cheetah', 'Gepárdnő', 'speed', 'epic', [100, 14, 10, 15],
+    ['ch_swipe', 'ch_hairball', 'ch_airstrike'], 'ch_frenzy',
+    {
+      skin: '#f2b705', top: '#f2b705', sleeves: '#f2b705', gloves: '#f2b705', bottom: '#f2b705', boots: '#f2b705',
+      hair: 'messy', hairColor: '#c97b30', eyes: 'dot', eyeColor: '#3fa34d', mouth: 'fang', gear: ['ears_pointy'],
+    }, { team: 'villain', bio: 'Wonder Woman ősellensége. Gyors, morcos, és utálja, ha valaki „cicának” hívja.' });
+
+  F('dc_sinestro', 'Sinestro', 'mystic', 'legendary', [125, 15, 12, 11],
+    ['si_axe', 'si_fear', 'si_beam'], 'si_yellow',
+    {
+      skin: '#e0457a', top: '#1d1d2b', sleeves: '#ffd23f', gloves: '#1d1d2b', bottom: '#1d1d2b', boots: '#1d1d2b', belt: '#ffd23f',
+      hair: 'flat', hairColor: '#1d1d2b', eyes: 'dot', mouth: 'smirk', gear: ['mustache'],
+    }, { team: 'villain', bio: 'A sárga gyűrű ura. A félelem a fegyvere — de Beast Boy pókjától ő is tart.' });
+
+  F('dc_grodd', 'Grodd gorilla', 'mystic', 'legendary', [145, 15, 13, 8],
+    ['gr_smash', 'gr_mind', 'gr_darwin'], 'gr_ape_army',
+    {
+      skin: '#6b6b7a', top: '#4a4a55', sleeves: '#4a4a55', gloves: '#4a4a55', bottom: '#4a4a55', boots: '#4a4a55',
+      hair: 'short', hairColor: '#3a3a44', eyes: 'dot', mouth: 'frown', scale: 1.1,
+    }, { team: 'villain', short: 'Grodd', bio: 'Zseniális gorilla, aki gondolatolvasással irányít. A banánt is így szerzi meg.' });
+
+  F('dc_bizarro', 'Bizarro', 'brawn', 'epic', [140, 14, 13, 9],
+    ['bz_punch', 'bz_ice', 'bz_fire'], 'bz_backwards',
+    {
+      skin: '#b8d8e8', top: '#2a3fb0', sleeves: '#2a3fb0', gloves: '#2a3fb0', bottom: '#2a3fb0', boots: '#d62828', cape: '#d62828', capeIn: '#a81d1d',
+      hair: 'swoop', hairColor: '#1d1d2b', eyes: 'dot', mouth: 'grin', chest: { sym: 'S', color: '#d62828', ink: '#ffd23f' },
+    }, { team: 'villain', bio: 'Bizarro nem gonosz! Bizarro nagyon is nem jó! …Vagy fordítva. Bizarro sem tudja.' });
+
+  F('dc_swamp', 'Mocsárlény', 'mystic', 'epic', [150, 13, 14, 7],
+    ['sw_vine', 'sw_mud', 'sw_regrow'], 'sw_green',
+    {
+      skin: '#6f8a3a', top: '#6f8a3a', sleeves: '#6f8a3a', gloves: '#6f8a3a', bottom: '#5a7030', boots: '#5a7030',
+      hair: 'messy', hairColor: '#4a5a28', eyes: 'glow', eyeColor: '#ff3b3b', mouth: 'frown', scale: 1.08,
+    }, { team: 'dc', bio: 'A mocsár őrzője. Lassú, csendes, és mindig visszanő — akárcsak a gaz a Torony kertjében.' });
+
   // Statisztikák kiegyenlítése: minden figura azonos "kerettel" indul, a különbséget
   // a szerep (HP/támadás/védekezés aránya) és a ritkaság adja.
   // (a lista legvégén, hogy a később felvett sorozatokra is vonatkozzon)
@@ -721,6 +764,7 @@
     { id: 'dcvillains', name: 'DC gonoszok', short: 'DC gonosz', ids: ['dc_lex', 'dc_darkseid', 'dc_riddler', 'dc_penguin', 'dc_ivy', 'dc_bane'] },
     { id: 'dcheroes', name: 'DC hősök', short: 'DC hős', ids: ['dc_flash', 'dc_aquaman', 'dc_supergirl', 'dc_shazam', 'dc_martian', 'dc_hawkgirl'] },
     { id: 'league', name: 'Liga-Titánok', short: 'Liga', ids: ['raven_wonder', 'star_flash', 'robin_bat', 'cyborg_lantern', 'dc_bwana', 'silkie_super'] },
+    { id: 'oddballs', name: 'DC különcök', short: 'Különc', ids: ['dc_catwoman', 'dc_cheetah', 'dc_sinestro', 'dc_grodd', 'dc_bizarro', 'dc_swamp'] },
   ];
   for (const ser of TT.SERIES) for (const id of ser.ids) TT.FIG[id].series = ser.id;
 
