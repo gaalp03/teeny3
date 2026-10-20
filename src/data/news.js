@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 34;
+  TT.NEWS_VERSION = 35;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 35, who: 'robin', text: 'A Gyűjteményben a „Rend” gombbal sorozatonként is rendezheted a figurákat. Így rögtön látod, melyik hiányzik még egy sorozatból!' },
     { v: 34, who: 'cyborg', text: 'Liga-toborzás! Két Zöld Lámpás (John Stewart és Jessica Cruz), Kék Bogár, Booster Gold, Black Lightning és Vixen. Már 111 figura van — BOOYAH!' },
     { v: 33, who: 'raven', text: 'A Gonosz Kupa után Bizarro napozik a strandon, Grodd gorillával és Gepárdnővel. Azt mondja, nem akar harcolni. Ez nála azt jelenti, hogy nagyon is akar.' },
     { v: 32, who: 'beastboy', text: 'Furcsa egy banda érkezett: Macskanő, Gepárdnő, Sinestro, Grodd gorilla, Bizarro és a Mocsárlény! Már 105 figura van, dude. A Sorozat-dobozzal könnyebb őket összeszedni.' },

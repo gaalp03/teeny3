@@ -26,12 +26,17 @@
       if (this.filter === 'own') l = l.filter((f) => own[f.id]);
       const sort = TT.settings.collSort || 'base';
       const idx = new Map(TT.FIG_LIST.map((f, i) => [f.id, i]));
+      const serIdx = new Map();
+      TT.SERIES.forEach((ser, si) => ser.ids.forEach((id, k) => serIdx.set(id, si * 100 + k)));
+      const serPos = (id) => (serIdx.has(id) ? serIdx.get(id) : 1e6);
       const by = {
         base: () => 0,
         lvl: (a, b) => (own[b.id] ? own[b.id].lvl : -1) - (own[a.id] ? own[a.id].lvl : -1),
         rarity: (a, b) => TT.RARITY[b.rarity].order - TT.RARITY[a.rarity].order,
         type: (a, b) => Object.keys(TT.TYPES).indexOf(a.type) - Object.keys(TT.TYPES).indexOf(b.type),
         team: (a, b) => Object.keys(TT.TEAM_NAMES).indexOf(a.team) - Object.keys(TT.TEAM_NAMES).indexOf(b.team),
+        // sorozatonként egymás mellett, a sorozaton belül a felsorolás rendjében; a sorozaton kívüliek a végén
+        series: (a, b) => serPos(a.id) - serPos(b.id),
       }[sort];
       l.sort((a, b) => by(a, b) || idx.get(a.id) - idx.get(b.id));
       return l.map((f) => f.id);
@@ -126,7 +131,7 @@
       items.push({ id: 'back', x: 16, y: 10, w: 120, h: 44, label: 'Vissza', color: '#6c5ce7', size: 20, onClick: () => this.leave() });
       items.push({ id: 'f_all', x: 150, y: 10, w: 100, h: 44, label: 'Mind', size: 18, color: this.filter === 'all' ? '#ff6b35' : '#4a3a8c', onClick: () => { this.filter = 'all'; this.list = this.makeList(); this.scroll = 0; } });
       items.push({ id: 'f_own', x: 258, y: 10, w: 120, h: 44, label: 'Megvan', size: 18, color: this.filter === 'own' ? '#ff6b35' : '#4a3a8c', onClick: () => { this.filter = 'own'; this.list = this.makeList(); this.scroll = 0; } });
-      const SORTS = [['base', 'Alap'], ['lvl', 'Szint'], ['rarity', 'Ritkaság'], ['type', 'Típus'], ['team', 'Csapat']];
+      const SORTS = [['base', 'Alap'], ['lvl', 'Szint'], ['rarity', 'Ritkaság'], ['type', 'Típus'], ['team', 'Csapat'], ['series', 'Sorozat']];
       const cur = SORTS.findIndex((x) => x[0] === (TT.settings.collSort || 'base'));
       items.push({
         id: 'sort', x: 386, y: 10, w: 150, h: 44, size: 16, label: 'Rend: ' + SORTS[cur][1], color: '#4a3a8c',
