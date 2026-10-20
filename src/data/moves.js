@@ -587,6 +587,20 @@
   M('me_bake', 'Sütögetés', 'self', 0, 9, 'heal', '#ff9a3c', { heal: 0.12 });
   M('me_pie_rain', 'Piteeső', 'multi', 84, 0, 'pie', '#c06bff', { super: true, hits: 5, eff: [E('slow', 1, 4)] });
 
+  // ---------- Multiverzum (Teeny Titans 2) ----------
+  M('mvb_claw', 'Multi-karom', 'melee', 17, 2.3, 'claw', '#5fd3ff');
+  M('mvb_pig', 'Méhmalac-hajítás', 'shot', 24, 4.6, 'peanut', '#ff9ecd', { eff: [E('stun', 0.4, 1)] });
+  M('mvb_rage', 'Multi-düh', 'self', 0, 6.5, 'buff', '#5fd3ff', { eff: [E('atkUp', 1, 6, { self: true })] });
+  M('mvb_merge', 'Állat-egyesülés', 'multi', 88, 0, 'claw', '#5fd3ff', { super: true, hits: 5, melee: true, eff: [E('mark', 1, 5)] });
+  M('mvj_hex', 'Multi-balszerencse', 'shot', 14, 2.2, 'hex', '#5fd3ff', { eff: [E('weak', 0.3, 3)] });
+  M('mvj_jinx', 'Átokhullám', 'beam', 30, 6.2, 'hex', '#5fd3ff', { eff: [E('stun', 0.35, 1)] });
+  M('mvj_kick', 'Szerencsétlen rúgás', 'melee', 38, 7.4, 'kick', '#1d1d2b', { crit: 0.25 });
+  M('mvj_chaos', 'Multiverzum-káosz', 'multi', 86, 0, 'hex', '#5fd3ff', { super: true, hits: 6, eff: [E('weak', 1, 5)] });
+  M('mvs_nibble', 'Multi-rágcsálás', 'melee', 15, 2.2, 'claw', '#5fd3ff');
+  M('mvs_goo', 'Sötét trutyi', 'shot', 20, 4.4, 'blob', '#1d1d2b', { eff: [E('slow', 0.6, 3)] });
+  M('mvs_bubble', 'Buborék-páncél', 'self', 0, 8, 'shield', '#5fd3ff', { shield: 0.14 });
+  M('mvs_giant', 'Multi-óriáslárva', 'slam', 86, 0, 'rock', '#5fd3ff', { super: true, eff: [E('stun', 1, 1.2)] });
+
   // Leírás generálása
   for (const m of Object.values(MOVES)) {
     const parts = [];

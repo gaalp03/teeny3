@@ -898,6 +898,26 @@
       hair: 'puffs', hairColor: '#6b3fa0', eyes: 'glow', eyeColor: '#ffd23f', mouth: 'grin',
     }, { team: 'villain', short: 'M. Mae-Eye', bio: 'Mother Mae-Eye gonoszabb ikre egy párhuzamos világból. A pitéje még elvarázsoltabb.' });
 
+  // ---------- Multiverzum (Teeny Titans 2) ----------
+  F('bwana_multi', 'Multiverzum Bwana Beast', 'brawn', 'legendary', [140, 15, 13, 10],
+    ['mvb_claw', 'mvb_pig', 'mvb_rage'], 'mvb_merge',
+    {
+      skin: '#e2b088', top: '#1d1d2b', sleeves: '#e2b088', gloves: '#5fd3ff', bottom: '#1d1d2b', boots: '#1d1d2b', belt: '#ffd23f',
+      hair: 'short', hairColor: '#1d1d2b', mask: '#f4f4f8', eyes: 'lens', mouth: 'grin', gear: ['horns'],
+    }, { team: 'dc', short: 'Multi-Bwana', bio: 'Egy másik világ Bwana Beastje — a társa egy méhmalac. Igen, méhmalac.' });
+
+  F('jinx_multi', 'Multiverzum Jinx', 'mystic', 'epic', [100, 14, 10, 14],
+    ['mvj_hex', 'mvj_jinx', 'mvj_kick'], 'mvj_chaos',
+    {
+      skin: '#e8e8f0', top: '#1d1d2b', sleeves: '#1d1d2b', gloves: '#1d1d2b', bottom: '#1d1d2b', boots: '#1d1d2b',
+      hair: 'jinx', hairColor: '#5fd3ff', eyes: 'dot', mouth: 'smirk',
+    }, { team: 'hive', short: 'Multi-Jinx', bio: 'Jinx egy párhuzamos univerzumból. A balszerencséje itt még kékebb.' });
+
+  F('silkie_multi', 'Multiverzum Silkie', 'mystic', 'epic', [120, 13, 12, 10],
+    ['mvs_nibble', 'mvs_goo', 'mvs_bubble'], 'mvs_giant',
+    retro('silkie', { skin: '#1d1d2b', spots: '#5fd3ff' }),
+    { team: 'titans', short: 'Multi-Silkie', bio: 'Silkie egy sötét másik világból. Ugyanolyan aranyos, csak kicsit ijesztőbb.' });
+
   // Statisztikák kiegyenlítése: minden figura azonos "kerettel" indul, a különbséget
   // a szerep (HP/támadás/védekezés aránya) és a ritkaság adja.
   // (a lista legvégén, hogy a később felvett sorozatokra is vonatkozzon)
@@ -933,6 +953,7 @@
     { id: 'funny', name: 'Vicces változatok', short: 'Vicces', ids: ['dc_bathman', 'santa_claus', 'george_w', 'silkie_princess', 'trigon_argyle', 'cyborg_head'] },
     { id: 'friends', name: 'Titán-barátok', short: 'Barát', ids: ['nightwing_dad', 'red_arrow', 'rose_wilson', 'hooded_hood', 'bumblebee_justice', 'raven_legasus'] },
     { id: 'rarities', name: 'TT2 ritkaságok', short: 'Ritkaság', ids: ['clark_kent', 'wonder_twins', 'sticky_joe', 'mr_chibi', 'silkie_og', 'maeeye_other'] },
+    { id: 'multiverse', name: 'Multiverzum', short: 'Multi', ids: ['bwana_multi', 'jinx_multi', 'silkie_multi'] },
   ];
   for (const ser of TT.SERIES) for (const id of ser.ids) TT.FIG[id].series = ser.id;
 

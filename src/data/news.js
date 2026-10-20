@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 39;
+  TT.NEWS_VERSION = 40;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 40, who: 'beastboy', text: 'Megnyílt egy kapu a multiverzumba! Átjött rajta egy kék Jinx, egy sötét Silkie és Bwana Beast a méhmalacával. Ez a legfurcsább dolog, amit láttam, dude.' },
     { v: 39, who: 'raven', text: 'A Testvériség Kupa után éjjelente egy csuklyás alak vadászik a parkban. Csuklyás Hood, Rose Wilsonnal és a Másik Mae-Eye-jal. Csak sötétben harcol.' },
     { v: 38, who: 'robin', text: 'Az utolsó TT2-kincsek is megérkeztek: Clark Kent, a Csodaikrek, Sticky Joe, Mr. Chibi, Ős-Silkie és a Másik Mae-Eye. Ezzel 129 figura vár rád!' },
     { v: 37, who: 'raven', text: 'Új sorozat: a Titán-barátok. Apuka Nightwing, Red Arrow, Rose Wilson, Csuklyás Hood, Igazság Bumblebee… és Lady Legasus. Aki egyáltalán nem én vagyok.' },

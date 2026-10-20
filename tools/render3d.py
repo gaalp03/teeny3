@@ -68,12 +68,36 @@ def _shader_name(mat):
         return ''
 
 
+# A multiverzumos figurák anyagai futás közben kapják a textúrát; ha egy rész textúra nélkül maradna,
+# ezt a (név szerint megtalált) textúrát kapja. render_shop_models állítja be modellenként.
+_fallback_tex = None
+
+
+def _multiverse_textures(env):
+    """{alapnév: Texture2D} a *_Texture_multiverse-Nx textúrákból, a legnagyobb felbontással."""
+    found = {}
+    for obj in env.objects:
+        if obj.type.name != 'Texture2D':
+            continue
+        try:
+            n = obj.peek_name() or obj.read().m_Name
+        except Exception:
+            continue
+        m = re.match(r'^(.+?)_texture_multiverse-(\d)x$', (n or '').lower())
+        if not m:
+            continue
+        key = re.sub(r'[^a-z]', '', m.group(1))
+        if key not in found or int(m.group(2)) > found[key][0]:
+            found[key] = (int(m.group(2)), obj)
+    return {k: v[1] for k, v in found.items()}
+
+
 def _main_texture(renderer, sub):
     """(textúra, átlátszó-e) — a „Cutout/Transparent” shaderű részek (pl. arc-matricák) átlátszó pixelei kimaradnak,
     a többi (Toon/Basic Tint) átlátszatlan, és a játékhoz hasonlóan csak az elülső lapjuk látszik."""
     mats = renderer.m_Materials
     if not mats:
-        return None, False
+        return _fallback_tex, False
     try:
         mat = mats[min(sub, len(mats) - 1)].read()
     except Exception:
@@ -84,8 +108,8 @@ def _main_texture(renderer, sub):
             try:
                 return np.asarray(env.m_Texture.read().image.convert('RGBA')), cutout
             except Exception:
-                return None, cutout
-    return None, cutout
+                return _fallback_tex, cutout
+    return _fallback_tex, cutout
 
 
 def _mesh_parts(root_tr):
@@ -311,8 +335,23 @@ def render_shop_models(env, save, only=None, save_model=None):
         except Exception as e:
             print(f'  ! animált modellek keresése nem sikerült: {e}')
             rigs = {}
+    global _fallback_tex
+    mv_tex = None
     n = 0
     for name, tr, father in shops:
+        _fallback_tex = None
+        if 'multiverse' in name.lower():
+            if mv_tex is None:
+                mv_tex = _multiverse_textures(env)
+            key = re.sub(r'[^a-z]', '', name.lower().replace('multiverse', '').replace('shop', ''))
+            tex = mv_tex.get(key)
+            if tex is None:
+                print(f'  ! {name}: nincs hozzá multiverzumos textúra, kimarad')
+                continue
+            try:
+                _fallback_tex = np.asarray(tex.read().image.convert('RGBA'))
+            except Exception:
+                continue
         try:
             parts = _mesh_parts(tr)
             im = render_parts(parts) if parts else None
@@ -334,6 +373,7 @@ def render_shop_models(env, save, only=None, save_model=None):
             except Exception as e:
                 print(f'  ! 3D háló kimentése nem sikerült ({name}): {e}')
         n += 1
+    _fallback_tex = None
     return n
 
 

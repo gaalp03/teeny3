@@ -71,6 +71,7 @@
     A('seriesFunny', 'Nevetőgörcs', 'Gyűjtsd össze mind a 6 vicces változatot.', 1500, (s) => seriesDone(s, 'funny')),
     A('seriesFriends', 'Baráti kör', 'Gyűjtsd össze mind a 6 Titán-barátot.', 1500, (s) => seriesDone(s, 'friends')),
     A('seriesRare', 'Igazi gyűjtő', 'Gyűjtsd össze mind a 6 TT2-ritkaságot.', 1500, (s) => seriesDone(s, 'rarities')),
+    A('seriesMulti', 'Párhuzamos világok', 'Gyűjtsd össze mind a 3 multiverzum-figurát.', 1000, (s) => seriesDone(s, 'multiverse')),
   ];
 
   // Új teljesítmények ellenőrzése és jutalmazása
