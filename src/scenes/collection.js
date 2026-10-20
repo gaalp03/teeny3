@@ -61,6 +61,43 @@
       this.slot = (this.slot + 1) % 3;
     },
 
+    // A legerősebb csapat a meglévő figurákból: a 8 legerősebb közül minden hármast kipróbál,
+    // a csapatbónusszal és a kombókkal együtt pontozva.
+    bestTeam() {
+      const s = TT.save;
+      const score = (id) => TT.power(TT.FIG[id], s.owned[id].lvl) * (1 + TT.starsOf(id) * TT.STAR_BONUS);
+      const top = Object.keys(s.owned).filter((id) => TT.FIG[id]).sort((a, b) => score(b) - score(a)).slice(0, 8);
+      if (top.length < 3) return null;
+      let best = null, bestV = -1;
+      for (let i = 0; i < top.length; i++) {
+        for (let j = i + 1; j < top.length; j++) {
+          for (let k = j + 1; k < top.length; k++) {
+            const ids = [top[i], top[j], top[k]];
+            const syn = TT.synergy(ids);
+            const combos = [[0, 1], [0, 2], [1, 2]].filter(([a, b]) => TT.comboOf(ids[a], ids[b])).length;
+            const v = ids.reduce((a, id) => a + score(id), 0) * (1 + (syn ? syn.bonus : 0) + combos * 0.03);
+            if (v > bestV) { bestV = v; best = ids; }
+          }
+        }
+      }
+      return best;
+    },
+
+    autoTeam() {
+      const best = this.bestTeam();
+      const s = TT.save;
+      if (!best) return;
+      if (best.every((id) => s.team.includes(id))) {
+        TT.ui.toast('Már a legerősebb csapatod áll ki!', { color: '#7bff6b' });
+        TT.audio.sfx('select');
+        return;
+      }
+      s.team = best;
+      TT.store.write();
+      TT.audio.sfx('swap');
+      TT.ui.toast('Legerősebb csapat: ' + best.map((id) => TT.FIG[id].short).join(', '), { color: '#7bff6b' });
+    },
+
     train(id) {
       const s = TT.save;
       const o = s.owned[id];
@@ -99,6 +136,7 @@
           this.list = this.makeList();
         },
       });
+      items.push({ id: 'best', x: 764, y: 10, w: 180, h: 44, size: 15, label: 'Legerősebb csapat', color: '#2ecc71', onClick: () => this.autoTeam() });
       // csapat helyek
       s.team.forEach((id, i) => {
         items.push({
