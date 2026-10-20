@@ -167,7 +167,6 @@
     freeze: () => { arp(['E7', 'B6', 'G6'], 0.04, { type: 'triangle', vol: 0.06 }); },
     stun: () => { arp(['A6', 'E6', 'A6', 'E6'], 0.05, { type: 'square', vol: 0.04 }); },
     buy: () => { SFX.coin(); tone(1760, 0.12, { vol: 0.07, delay: 0.16, type: 'triangle' }); },
-    error: () => { tone(200, 0.1, { vol: 0.12 }); tone(160, 0.14, { vol: 0.12, delay: 0.11 }); },
     levelup: () => arp(['C5', 'E5', 'G5', 'C6', 'G5', 'C6'], 0.07, { type: 'square', vol: 0.08 }),
     door: () => { tone(300, 0.08, { type: 'triangle', vol: 0.1 }); tone(450, 0.1, { type: 'triangle', vol: 0.1, delay: 0.08 }); },
     countdown: () => tone(660, 0.12, { vol: 0.12 }),
@@ -297,6 +296,8 @@
   };
 
   A.sfx = function (name) {
+    // a hibahang (nem töltött támadás, rossz kvízválasz stb.) zavaró volt, ezért sehol nem szól
+    if (name === 'error') return;
     if (!A.ctx || !A.unlocked || A.muted) return;
     if (customSfx(name)) return;
     const f = SFX[name];

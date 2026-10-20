@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 23;
+  TT.NEWS_VERSION = 24;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 24, who: 'cyborg', text: 'Turbó mód, BOOYAH! Harc közben sokkal több a képkocka, eltűnt az idegesítő hibahang, a víz is szebb lett a városban. A tökéletes blokk ablaka szélesebb, és ha túl korán blokkolsz, szólok: nyomd, amikor a kör zöld!' },
     { v: 23, who: 'raven', text: 'A Gonosz, a Menta és a Testvériség Kupa ellenfelei, meg a város erősebb edzői kevésbé ügyesek. Control Freak sem olyan rémes már. Ha mégis elakadsz: jobb figurák a dobozokból, és figyelj a típusokra.' },
     { v: 22, who: 'robin', text: 'Ha kikapsz, adok egy tippet: megmondom, milyen típusú az ellenfél csapata, és melyik figurádat érdemes ellenük bevetni. Egy jó vezér tanul a vereségből!' },
     { v: 21, who: 'robin', text: 'Nem tudod, kit vigyél harcba? A Gyűjteményben a „Legerősebb csapat” gomb kiválasztja a legjobb hármast — a csapatbónuszt és a kombókat is figyelembe veszi.' },
@@ -13,7 +14,7 @@
     { v: 18, who: 'robin', text: 'Az AUTO harc okosabb lett: rendesen védekezik, gyakran tökéletes blokkal, és időben lecseréli a sérült Titánt. Tipp: a gyakorláshoz továbbra is jobb, ha te irányítasz!' },
     { v: 17, who: 'cyborg', text: 'A BLOKK gomb most szól, ha jön a támadás: sárgán villog, és amikor zölden világít, akkor nyomd — az a tökéletes blokk! BOOYAH!' },
     { v: 16, who: 'robin', text: 'Könnyű nehézségen a blokk is megbocsátóbb: sokkal tovább tart a zöld, tökéletes blokk ablak, így könnyebb visszaverni a támadásokat.' },
-    { v: 15, who: 'cyborg', text: 'Ha akadozik a játék, a Beállításokban kapcsold be a Takarékos módot: kisebb felbontás, 30 képkocka — sokkal simább gyenge gépen is. Ha nagyon lassú, magától is bekapcsol.' },
+    { v: 15, who: 'cyborg', text: 'Ha akadozik a játék, a Beállításokban kapcsold be a Takarékos módot: kisebb belső felbontás, simább játék gyenge gépen is. Ha lassú, a játék magától is lejjebb veszi a felbontást.' },
     { v: 14, who: 'raven', text: 'Az ellenfelek nyugodtabbak lettek: ritkábban védekeznek, és nem lőnek el azonnal minden támadást. Ha még mindig nehéz, a Beállításokban állíts Könnyű nehézségre.' },
     { v: 13, who: 'starfire', text: 'Még többet beszélünk! A címképernyőn bekiabálunk, gyógyuláskor megköszönjük, a teljesített napi küldetésnek örülünk, és köszöntjük az éjszakát meg a reggelt is!' },
     { v: 12, who: 'cyborg', text: 'Végre nálam is szól minden: ha eltalálnak, kiesek vagy nyerek. A harc elején a csapatod első Titánja kiáltja a „Rajta!”-t, a boltban pedig köszönünk. BOOYAH!' },

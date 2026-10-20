@@ -314,6 +314,14 @@
   // animációk pedig csak 15 kockásak, így a legtöbb képkockán elég a tárolt képet kirakni.
   const cache = {};
   let cached = 0;
+  // Képkockánkénti újrarajzolási keret: egy képkockán legfeljebb ennyi figura kap új képet, a többi
+  // a legutóbbi (egy kockával régebbi) képét mutatja — így 6 animált figura sem fogja vissza az FPS-t.
+  // A kis (padon ülő) figurák külön, kisebb keretből és ritkábban frissülnek, hogy ne vegyék el a
+  // helyet a harcoló figurák elől.
+  const BUDGET = { 512: 1, 256: 1 }, SMALL_EVERY = 0.5;
+  const budget = { 512: 0, 256: 0 };
+  let budgetT = -1;
+  const lastAt = {};
   const r2 = (v) => Math.round((v || 0) * 100);
 
   // Egy figura kirajzolása; a kész képet (vásznat) adja vissza, vagy null-t.
@@ -331,6 +339,16 @@
     const list = cache[id] || (cache[id] = []);
     const hit = list.find((e) => e.key === key);
     if (hit) return hit.canvas;
+    const now = TT.rtime || 0;
+    if (now !== budgetT) {
+      budgetT = now;
+      budget[512] = BUDGET[512];
+      budget[256] = BUDGET[256];
+    }
+    const prev = list.length && list[list.length - 1];
+    if (prev && prev.canvas.width === res && (budget[res] <= 0 || (res === 256 && now - (lastAt[id] || 0) < SMALL_EVERY))) return prev.canvas;
+    budget[res]--;
+    lastAt[id] = now;
     gl.viewport(0, 0, res, res);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.uniformMatrix3fv(L.uRot, false, rotation(o.yaw || 0, o.pitch || 0, o.roll || 0));

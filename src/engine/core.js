@@ -21,7 +21,7 @@
 
   // A belső rajzfelület legnagyobb szélessége: nagy (pl. 1080p-s emulátor-) képernyőn a teljes felbontás
   // akár 3840 képpont lenne, ami fölöslegesen lassú; ha mégis akadozik, a játék magától lejjebb veszi
-  const QUALITY = [1920, 1440, 960];
+  const QUALITY = [1920, 1440, 1200, 960, 720];
   let quality = 0;
   const perf = { sum: 0, n: 0, wait: 2 };
 
@@ -102,26 +102,22 @@
 
   function frame(ts) {
     requestAnimationFrame(frame);
-    // takarékos mód (kézzel vagy magától): legfeljebb 30 képkocka/mp — fele annyi rajzolás
-    if (last && (perf.lite || (TT.settings && TT.settings.lite)) && ts - last < 30) return;
     if (!last) last = ts;
     const raw = (ts - last) / 1000;
     let rdt = Math.min(0.05, raw);
     last = ts;
     if (rdt <= 0) return;
 
-    // akadozás figyelése: ha 3 mp-en át átlagosan 30 FPS alatt fut, kisebb belső felbontásra vált
+    // akadozás figyelése: ha 3 mp-en át átlagosan 45 FPS alatt fut, lépcsőzetesen kisebb belső
+    // felbontásra vált (az FPS-t nem korlátozzuk, a takarékos mód a legkisebb felbontást jelenti)
     if (perf.wait > 0) perf.wait -= rdt;
-    else if (!perf.lite && !document.hidden && raw < 1) {
+    else if (!document.hidden && raw < 1 && quality < QUALITY.length - 1) {
       perf.sum += raw;
       perf.n++;
       if (perf.sum > 3) {
-        if (perf.sum / perf.n > 1 / 30) {
-          // előbb a felbontás csökken, ha az sem elég, jön a 30 FPS-es takarékos mód
-          if (quality < QUALITY.length - 1 && canvas.width > QUALITY[quality + 1]) {
-            quality++;
-            TT.resize();
-          } else perf.lite = true;
+        if (perf.sum / perf.n > 1 / 45 && canvas.width > QUALITY[quality + 1]) {
+          quality++;
+          TT.resize();
           perf.wait = 2;
         }
         perf.sum = perf.n = 0;

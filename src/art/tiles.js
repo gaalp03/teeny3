@@ -25,22 +25,50 @@
     switch (v) {
       case T.WATER:
       case T.POND: {
-        g.fillStyle = v === T.POND ? '#3fb2e8' : '#2f8fd8';
-        g.fillRect(px, py, S, S);
-        if (r < 0.3) {
-          g.strokeStyle = 'rgba(255,255,255,0.18)';
-          g.lineWidth = 2;
+        // mélység: a parttól távolodva sötétedik (a csempék egyszer, előre rajzolódnak, így ez ingyen van)
+        // (4×4 kis cellában a legközelebbi part valódi távolsága szerint, hogy ne lépcsőzzön)
+        const land = [];
+        for (let dy = -3; dy <= 3; dy++) for (let dx = -3; dx <= 3; dx++) if (isLand(n(dx, dy), T)) land.push([dx, dy]);
+        const SUB = 4, cs = S / SUB;
+        let deep = 1;
+        for (let sy = 0; sy < SUB; sy++) {
+          for (let sx = 0; sx < SUB; sx++) {
+            const cx = (sx + 0.5) / SUB, cy = (sy + 0.5) / SUB;
+            let dist = 3.5;
+            for (const [dx, dy] of land) {
+              const ex = Math.max(dx - cx, 0, cx - dx - 1), ey = Math.max(dy - cy, 0, cy - dy - 1);
+              dist = Math.min(dist, Math.hypot(ex, ey));
+            }
+            const k = v === T.POND ? 0.3 : U.clamp(dist / 3.2, 0, 1);
+            if (sx === 1 && sy === 1) deep = k;
+            g.fillStyle = `rgb(${Math.round(66 - k * 38)},${Math.round(172 - k * 56)},${Math.round(234 - k * 22)})`;
+            g.fillRect(Math.floor(px + sx * cs), Math.floor(py + sy * cs), Math.ceil(cs) + 1, Math.ceil(cs) + 1);
+          }
+        }
+        // hullámfodrok
+        g.strokeStyle = `rgba(255,255,255,${0.22 - deep * 0.08})`;
+        g.lineWidth = 2;
+        g.lineCap = 'round';
+        for (let i = 0; i < 2; i++) {
+          const q = h2(x, y, 31 + i);
+          if (q > 0.45) continue;
+          const wx = px + 4 + q * 40 % (S - 18), wy = py + 8 + h2(x, y, 41 + i) * (S - 14);
           g.beginPath();
-          g.moveTo(px + 6 + r * 20, py + 12 + r * 10);
-          g.quadraticCurveTo(px + 12 + r * 20, py + 8 + r * 10, px + 18 + r * 20, py + 12 + r * 10);
+          g.moveTo(wx, wy);
+          g.quadraticCurveTo(wx + 5, wy - 4, wx + 10, wy);
+          g.quadraticCurveTo(wx + 15, wy + 4, wx + 20, wy);
           g.stroke();
         }
-        // hab a part mentén
-        g.fillStyle = 'rgba(255,255,255,0.55)';
-        if (isLand(n(0, -1), T)) g.fillRect(px, py, S, 4);
-        if (isLand(n(0, 1), T)) g.fillRect(px, py + S - 4, S, 4);
-        if (isLand(n(-1, 0), T)) g.fillRect(px, py, 4, S);
-        if (isLand(n(1, 0), T)) g.fillRect(px + S - 4, py, 4, S);
+        // lágy hab a part mentén
+        const foam = (x0, y0, w, h) => {
+          g.fillStyle = 'rgba(255,255,255,0.28)';
+          g.fillRect(x0, y0, w, h);
+        };
+        g.fillStyle = 'rgba(255,255,255,0.6)';
+        if (isLand(n(0, -1), T)) { g.fillRect(px, py, S, 3); foam(px, py + 3, S, 4); }
+        if (isLand(n(0, 1), T)) { g.fillRect(px, py + S - 3, S, 3); foam(px, py + S - 7, S, 4); g.fillStyle = 'rgba(255,255,255,0.6)'; }
+        if (isLand(n(-1, 0), T)) { g.fillStyle = 'rgba(255,255,255,0.6)'; g.fillRect(px, py, 3, S); foam(px + 3, py, 4, S); }
+        if (isLand(n(1, 0), T)) { g.fillStyle = 'rgba(255,255,255,0.6)'; g.fillRect(px + S - 3, py, 3, S); foam(px + S - 7, py, 4, S); }
         break;
       }
       case T.GRASS:

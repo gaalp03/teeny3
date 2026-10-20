@@ -4,7 +4,7 @@
 (function (TT) {
   const U = TT.U;
   const D = TT.D;
-  const PERFECT_WINDOW = 0.28;
+  const PERFECT_WINDOW = 0.36;
   const SWAP_CD = 3.5;
 
   // ======================= LOGIKA =======================
@@ -486,7 +486,7 @@
       this.p = p;
       // nehézség: az ellenfél szintje és ügyessége
       // könnyűn a saját Titánjaid tökéletes blokk ablaka is szélesebb
-      const DIFF = { easy: { lvl: -2, ai: -0.18, xp: 0.9, pw: 0.42 }, normal: { lvl: 0, ai: 0, xp: 1 }, hard: { lvl: 2, ai: 0.12, xp: 1.25 } };
+      const DIFF = { easy: { lvl: -2, ai: -0.18, xp: 0.9, pw: 0.5 }, normal: { lvl: 0, ai: 0, xp: 1 }, hard: { lvl: 2, ai: 0.12, xp: 1.25 } };
       const df = DIFF[TT.settings.difficulty || 'normal'] || DIFF.normal;
       this.diff = df;
       const en = Object.assign({}, p.enemy, {
@@ -629,6 +629,8 @@
           } else if (blocked) {
             TT.audio.sfx('block');
             TT.fx.text(hx, hy - 40, 'BLOKK ' + dmg, { color: '#b8c2cc', tsize: 22 });
+            // a játékosnak megmutatjuk, miért nem lett tökéletes: túl korán nyomta le
+            if (def.side === 0 && d.hitIdx === 0) TT.fx.text(hx, hy - 78, 'Túl korán! Nyomd, amikor zöld', { color: '#ffd23f', tsize: 17, vy: -50 });
             TT.fx.burst(hx - (def.side === 0 ? -1 : 1) * 30, hy, 8, { color: '#d8e0ff', shape: 'spark', speed: 220, size: 5, life: 0.3 });
           } else {
             const big = dmg > def.maxHp * 0.12 || crit || a.isSuper;
