@@ -351,7 +351,7 @@
             ctx.fillStyle = '#000';
             ctx.fill();
             ctx.restore();
-            TT.art.drawFigure(ctx, TT.FIG[n.who], n.x, fy, 0.9, { pedestal: false, facing: n.face, t: this.t + n.x, noCustom: true });
+            TT.art.drawToy(ctx, TT.FIG[n.who], n.x, fy, 0.9, { facing: n.face, t: this.t + n.x });
           },
         });
       }
@@ -372,7 +372,7 @@
           ctx.fillStyle = '#000';
           ctx.fill();
           ctx.restore();
-          TT.art.drawFigure(ctx, TT.FIG.robin, pl.x, pl.y, 0.9, { pedestal: false, pose: pl.moving ? 'walk' : 'idle', walk: pl.walk, facing: pl.dir === 'left' ? -1 : 1, back: pl.dir === 'up', noCustom: true });
+          TT.art.drawToy(ctx, TT.FIG.robin, pl.x, pl.y, 0.9, { dir: pl.dir, moving: pl.moving, walk: pl.walk, paint: TT.paintOf('robin'), live: true });
         },
       });
       items.sort((a, b) => a.y - b.y);

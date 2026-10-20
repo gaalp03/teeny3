@@ -217,8 +217,8 @@
       ctx.drawImage(background(), 0, 0);
       // nézők a két oldalon
       const happy = this.cheer > 0 || (this.state === 'end' && this.cleared);
-      TT.art.drawFigure(ctx, TT.FIG.robin, 110, 500, 1.05, { pedestal: false, pose: happy ? 'cheer' : 'idle', t: this.t, noCustom: true });
-      TT.art.drawFigure(ctx, TT.FIG.raven, TT.W - 110, 500, 1.05, { pedestal: false, pose: happy ? 'cheer' : 'cast', t: this.t, facing: -1, noCustom: true });
+      TT.art.drawToy(ctx, TT.FIG.robin, 110, 500, 1.05, { pose: happy ? 'cheer' : 'idle', t: this.t, yaw3d: -0.45, live: true });
+      TT.art.drawToy(ctx, TT.FIG.raven, TT.W - 110, 500, 1.05, { pose: happy ? 'cheer' : 'cast', t: this.t, facing: -1, yaw3d: 0.45, live: true });
       if (this.state === 'play') this.menu.draw(ctx);
       else for (const c of this.cards) this.drawCard(ctx, c, false);
       TT.fx.draw(ctx, 0);

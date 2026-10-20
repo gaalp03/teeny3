@@ -399,15 +399,15 @@
         if (this.st.beaten[r.key]) continue;
         items.push({
           y: r.y, draw: () => {
-            TT.art.drawFigure(ctx, TT.FIG[r.boss ? 'boxbot' : 'mintguard'], r.x, OY + r.y + 10, r.boss ? 0.75 : 0.5, { pedestal: false, pose: 'walk', walk: r.walk, facing: r.face || 1, noCustom: true, paint: r.boss ? 'gold' : null });
+            TT.art.drawToy(ctx, TT.FIG[r.boss ? 'boxbot' : 'mintguard'], r.x, OY + r.y + 10, r.boss ? 0.75 : 0.5, { moving: true, walk: r.walk, facing: r.face || 1, paint: r.boss ? 'gold' : null });
             if (r.chase || r.boss) D.text(ctx, r.boss ? '★' : '!', r.x, OY + r.y - (r.boss ? 76 : 52), { size: 20, align: 'center', color: r.boss ? '#ffd23f' : '#ff4f4f' });
           },
         });
       }
       const pl = this.pl;
       items.push({
-        y: pl.y, draw: () => TT.art.drawFigure(ctx, TT.FIG.robin, pl.x, OY + pl.y + 10, 0.5, {
-          pedestal: false, pose: pl.moving ? 'walk' : 'idle', walk: pl.walk, facing: pl.dir === 'left' ? -1 : 1, back: pl.dir === 'up', noCustom: true, paint: TT.paintOf('robin'),
+        y: pl.y, draw: () => TT.art.drawToy(ctx, TT.FIG.robin, pl.x, OY + pl.y + 10, 0.5, {
+          dir: pl.dir, moving: pl.moving, walk: pl.walk, paint: TT.paintOf('robin'), live: true,
         }),
       });
       items.sort((a, b) => a.y - b.y);

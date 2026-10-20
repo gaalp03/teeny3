@@ -1860,6 +1860,31 @@
     ctx.restore();
   };
 
+  // Sétáló/álló szereplő a városban és a minijátékokban: ha van TT2-es 3D modell, azt rajzoljuk
+  // (járás közben játékfiguraként ugrál-billeg, a nézési irány szerint fordul), különben a rajzolt figurát.
+  // o: { dir: 'up'|'down'|'left'|'right', moving, walk, pose, t, live, paint, facing, back }
+  // live: folyamatosan animált (pl. a játékos); különben egyszer rajzolt álló kép (olcsó).
+  const TOY_YAW = { down: 0, right: -0.9, left: 0.9, up: Math.PI };
+  A.has3d = (id) => !!(id && TT.model3d && TT.settings.fig3d !== false && TT.model3d.has(id));
+  A.drawToy = function (ctx, fig, x, y, scale, o) {
+    o = o || {};
+    const dir = o.dir || (o.facing < 0 ? 'left' : o.facing > 0 ? 'right' : 'down');
+    if (A.has3d(fig.id)) {
+      const hop = o.moving ? Math.abs(Math.sin(o.walk || 0)) * 12 * scale : 0;
+      const anim = o.pose === 'cheer' || o.pose === 'stun' ? o.pose : 'idle';
+      A.drawFigure(ctx, fig, x, y - hop + (o.live ? 0 : Math.sin(TT.time * 2.2 + x) * 1.5 - 1.5), scale, {
+        pedestal: false, pose: 'idle', paint: o.paint, lean: o.moving ? Math.sin(o.walk || 0) * 0.07 : 0,
+        yaw3d: o.yaw3d != null ? o.yaw3d : TOY_YAW[dir] || 0,
+        anim3d: { name: anim, t: o.live || anim !== 'idle' ? (o.t != null ? o.t : TT.time) : 0 }, live3d: !!o.live,
+      });
+      return;
+    }
+    A.drawFigure(ctx, fig, x, y, scale, {
+      pedestal: false, pose: o.moving ? 'walk' : o.pose || 'idle', walk: o.walk, paint: o.paint, t: o.t,
+      facing: dir === 'left' ? -1 : 1, back: dir === 'up', noCustom: true,
+    });
+  };
+
   // A 3D figura elfordítása pózonként (a 2D tükrözés a bal oldaliakat a másik irányba fordítja)
   A.pose3d = function (pose, t, seed, o) {
     const sway = Math.sin(t * 1.3 + seed) * 0.1;

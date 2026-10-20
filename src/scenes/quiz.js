@@ -298,7 +298,7 @@
 
     drawHost(ctx) {
       const hostTalk = this.state !== 'ask';
-      TT.art.drawFigure(ctx, TT.FIG.controlfreak, 96, 300, 1.05, { pedestal: false, pose: hostTalk ? 'cheer' : 'idle', t: this.t, noCustom: true });
+      TT.art.drawToy(ctx, TT.FIG.controlfreak, 96, 300, 1.05, { pose: hostTalk ? 'cheer' : 'idle', t: this.t, yaw3d: -0.4, live: true });
       // beszédbuborék
       const lines = D.wrap(ctx, this.host, 520, 17).slice(0, 3);
       const h = 22 + lines.length * 22;
@@ -362,7 +362,7 @@
       D.bar(ctx, BX, 250, BW * 2 + BGAP, 18, this.left / TIME, { color: this.left < 4 ? '#ff4f4f' : '#4cd964' });
       D.text(ctx, Math.ceil(this.left) + ' mp', TT.W / 2, 259.5, { size: 13, align: 'center', lw: 3 });
       // a műsorvezető csak értékeléskor szól közbe
-      TT.art.drawFigure(ctx, TT.FIG.controlfreak, 76, 300, 0.85, { pedestal: false, pose: this.state === 'reveal' ? 'cheer' : 'idle', t: this.t, noCustom: true });
+      TT.art.drawToy(ctx, TT.FIG.controlfreak, 76, 300, 0.85, { pose: this.state === 'reveal' ? 'cheer' : 'idle', t: this.t, yaw3d: -0.4, live: true });
       if (this.state === 'reveal') {
         D.panel(ctx, BX, 284, BW * 2 + BGAP, 60, { fill: '#fff8e0', r: 12, lw: 3, shadow: false });
         const hl = D.wrap(ctx, this.host, BW * 2 - 20, 17).slice(0, 2);

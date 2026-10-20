@@ -208,7 +208,7 @@
       }
       // Beast Boy
       const pose = this.stun > 0 ? 'stun' : this.state === 'end' ? 'cheer' : Math.abs(this.vx) > 40 ? 'walk' : 'cast';
-      TT.art.drawFigure(ctx, TT.FIG.beastboy, this.x, 470, 1.15, { pedestal: false, pose, walk: this.t * 14, facing: this.vx < 0 ? -1 : 1, noCustom: true });
+      TT.art.drawToy(ctx, TT.FIG.beastboy, this.x, 470, 1.15, { pose, moving: pose === 'walk', walk: this.t * 14, dir: Math.abs(this.vx) > 40 ? (this.vx < 0 ? 'left' : 'right') : 'down', t: this.t, live: true });
       for (const it of this.items) this.drawItem(ctx, it);
       TT.fx.draw(ctx, 0);
       // HUD
