@@ -237,10 +237,20 @@
     const gap = 10;
     const textLines = cfg.text ? D.wrap(TT.ctx, cfg.text, w - 48, 20) : [];
     const headH = (cfg.title ? 56 : 18) + textLines.length * 26 + (textLines.length ? 10 : 0);
-    const h = headH + opts.length * (bh + gap) + 14;
+    // több oszlop (cfg.columns): a választások rácsban, a „Mégse” (value: null) teljes szélességben alul
+    const cols = cfg.columns || 1;
+    const grid = cols > 1 ? opts.filter((op) => op.value !== null) : opts;
+    const rows = Math.ceil(grid.length / cols) + (cols > 1 && grid.length < opts.length ? 1 : 0);
+    const h = headH + rows * (bh + gap) + 14;
     const x = (TT.W - w) / 2, y = Math.max(12, (TT.H - h) / 2);
+    const cw = (w - 48 - gap * (cols - 1)) / cols;
+    const place = (op) => {
+      const k = grid.indexOf(op);
+      if (k < 0) return { x: x + 24, y: y + headH + (rows - 1) * (bh + gap), w: w - 48 };
+      return { x: x + 24 + (k % cols) * (cw + gap), y: y + headH + Math.floor(k / cols) * (bh + gap), w: cw };
+    };
     const items = opts.map((op, i) => ({
-      id: 'o' + i, x: x + 24, y: y + headH + i * (bh + gap), w: w - 48, h: bh,
+      id: 'o' + i, ...place(op), h: bh,
       label: op.label, color: op.color || (op.value === null ? '#6c5ce7' : '#ff6b35'), disabled: op.disabled, value: op.value,
       size: cfg.size || 22, onDisabled: op.onDisabled,
     }));

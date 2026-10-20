@@ -126,7 +126,7 @@
       TT.ui.choose({
         title: 'Sorozat-doboz',
         text: `${SERIES_BOX.price} érme · garantáltan új figura a sorozatból`,
-        width: 480, buttonH: 27, size: 17,
+        width: 760, buttonH: 40, size: 18, columns: 2,
         options: TT.SERIES.map((ser) => {
           const missing = ser.ids.filter((id) => !s.owned[id]);
           return {
