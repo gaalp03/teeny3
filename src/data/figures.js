@@ -615,6 +615,49 @@
       hair: 'bald', hairColor: '#1d1d2b', mask: '#1d1d2b', eyes: 'lens', mouth: 'frown', scale: 1.08,
     }, { team: 'villain', bio: 'Izom, ész és egy zöld csövecske. A Venom-adag után még a talapzata is megremeg.' });
 
+  // ---------- DC hősök (Teeny Titans 2) ----------
+  F('dc_flash', 'Flash', 'speed', 'legendary', [110, 15, 11, 16],
+    ['speed_punches', 'speed_vortex', 'lightning_dash'], 'speed_force',
+    {
+      skin: SKIN, top: '#d62828', sleeves: '#d62828', gloves: '#d62828', bottom: '#d62828', boots: '#ffd23f', belt: '#ffd23f',
+      hair: 'bald', hairColor: '#d62828', eyes: 'dot', mouth: 'grin', gear: ['flash_cowl'], chest: { sym: 'ϟ', color: '#ffd23f', ink: '#d62828' },
+    }, { team: 'dc', bio: 'A leggyorsabb ember a világon. Mire elolvasod ezt, már háromszor körbefutotta Jump Cityt.' });
+
+  F('dc_aquaman', 'Aquaman', 'brawn', 'legendary', [140, 15, 13, 10],
+    ['trident_strike', 'bubble_guard', 'tidal_wave'], 'king_of_seas',
+    {
+      skin: SKIN, top: '#ff9a3c', sleeves: '#ff9a3c', gloves: '#3fa34d', bottom: '#3fa34d', boots: '#3fa34d', belt: '#ffd23f',
+      hair: 'long', hairColor: '#ffd23f', eyes: 'dot', mouth: 'smile',
+    }, { team: 'dc', bio: 'Atlantisz királya. A halak hallgatnak rá — Aqualad szerint néha túlságosan is.' });
+
+  F('dc_supergirl', 'Supergirl', 'brawn', 'epic', [120, 14, 12, 12],
+    ['kara_punch', 'freeze_breath', 'laser_eyes'], 'krypton_comet',
+    {
+      skin: SKIN, top: '#3f6fd8', sleeves: '#3f6fd8', gloves: '#3f6fd8', bottom: '#d62828', boots: '#d62828', cape: '#d62828', capeIn: '#a81d1d',
+      hair: 'long', hairColor: '#ffd23f', eyes: 'dot', mouth: 'smile', chest: { sym: 'S', color: '#d62828', ink: '#ffd23f' },
+    }, { team: 'dc', bio: 'Superman unokatestvére Kryptonról. Ugyanolyan erős, csak sokkal jobb a humora.' });
+
+  F('dc_shazam', 'Shazam', 'mystic', 'epic', [125, 14, 12, 11],
+    ['thunder_punch', 'magic_lightning', 'bulletproof'], 'shazam_bolt',
+    {
+      skin: SKIN, top: '#d62828', sleeves: '#d62828', gloves: '#ffd23f', bottom: '#d62828', boots: '#ffd23f', belt: '#ffd23f', cape: '#f4f4f8', capeIn: '#ffd23f',
+      hair: 'swoop', hairColor: '#1d1d2b', eyes: 'dot', mouth: 'grin', chest: { sym: 'ϟ', color: '#d62828', ink: '#ffd23f' },
+    }, { team: 'dc', bio: 'Egy varázsszó, és a kisfiúból villámló hős lesz. Csak ne mondd ki véletlenül!' });
+
+  F('dc_martian', 'Marsbéli Vadász', 'mystic', 'epic', [125, 14, 12, 10],
+    ['phase_punch', 'mind_blast', 'shape_shift'], 'martian_vision',
+    {
+      skin: '#3fa34d', top: '#1d4a9a', sleeves: '#3fa34d', gloves: '#3fa34d', bottom: '#1d4a9a', boots: '#1d4a9a', belt: '#ffd23f', cape: '#1d4a9a', capeIn: '#d62828',
+      hair: 'bald', hairColor: '#3fa34d', eyes: 'glow', eyeColor: '#ff6b35', mouth: 'frown',
+    }, { team: 'dc', short: 'Marsbéli', bio: 'A Mars utolsó fia. Gondolatolvasó, alakváltó — és imádja a kekszet.' });
+
+  F('dc_hawkgirl', 'Sólyomlány', 'speed', 'epic', [110, 14, 11, 14],
+    ['mace_swing', 'feather_storm', 'electric_mace'], 'nth_metal',
+    {
+      skin: SKIN, top: '#ffd23f', sleeves: '#ffd23f', gloves: '#c97b30', bottom: '#3fa34d', boots: '#c97b30', belt: '#ffd23f',
+      hair: 'long', hairColor: '#d62828', eyes: 'dot', mouth: 'smirk', gear: ['wings_bee'],
+    }, { team: 'dc', bio: 'Szárnyakkal és egy villámló buzogánnyal érkezik. Gonoszok, fedezékbe!' });
+
   // Statisztikák kiegyenlítése: minden figura azonos "kerettel" indul, a különbséget
   // a szerep (HP/támadás/védekezés aránya) és a ritkaság adja.
   // (a lista legvégén, hogy a később felvett sorozatokra is vonatkozzon)
@@ -643,6 +686,7 @@
     { id: 'special', name: 'Különleges változatok', short: 'Különleges', ids: ['bb_cat', 'bb_martian', 'aqualad_pirate', 'star_terrible', 'blood_robot', 'robin_nightwing'] },
     { id: 'dc', name: 'DC vendégek', short: 'DC', ids: ['dc_batman', 'dc_batgirl', 'dc_superman', 'dc_wonderwoman', 'dc_joker', 'dc_harley'] },
     { id: 'dcvillains', name: 'DC gonoszok', short: 'DC gonosz', ids: ['dc_lex', 'dc_darkseid', 'dc_riddler', 'dc_penguin', 'dc_ivy', 'dc_bane'] },
+    { id: 'dcheroes', name: 'DC hősök', short: 'DC hős', ids: ['dc_flash', 'dc_aquaman', 'dc_supergirl', 'dc_shazam', 'dc_martian', 'dc_hawkgirl'] },
   ];
   for (const ser of TT.SERIES) for (const id of ser.ids) TT.FIG[id].series = ser.id;
 

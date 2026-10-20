@@ -405,6 +405,32 @@
   M('venom_boost', 'Venom-adag', 'self', 0, 7, 'buff', '#7bd65b', { eff: [E('atkUp', 1, 6, { self: true })] });
   M('venom_rampage', 'Venom-tombolás', 'multi', 88, 0, 'punch', '#7bd65b', { super: true, hits: 4, melee: true, eff: [E('atkUp', 1, 5, { self: true })] });
 
+  // ---------- DC hősök (Teeny Titans 2) ----------
+  M('speed_punches', 'Villámököl-sorozat', 'multi', 16, 2.2, 'punch', '#ffd23f', { hits: 3, melee: true });
+  M('lightning_dash', 'Villámroham', 'melee', 40, 7.2, 'lightning', '#ffd23f', { eff: [E('stun', 0.3, 0.9)] });
+  M('speed_vortex', 'Forgószél', 'shot', 24, 4.4, 'wind', '#ffe066', { eff: [E('slow', 0.6, 3)] });
+  M('speed_force', 'Sebességerő', 'multi', 90, 0, 'lightning', '#ffd23f', { super: true, hits: 6, melee: true, eff: [E('haste', 1, 5, { self: true })] });
+  M('trident_strike', 'Szigonydöfés', 'melee', 15, 2.4, 'slash', '#ffc93c');
+  M('tidal_wave', 'Szökőár', 'slam', 36, 8, 'wave', '#4fc3f7', { eff: [E('slow', 0.6, 4)] });
+  M('bubble_guard', 'Buborékpajzs', 'self', 0, 8, 'shield', '#7fd3ff', { shield: 0.14 });
+  M('king_of_seas', 'A tenger királya', 'slam', 92, 0, 'wave', '#4fc3f7', { super: true, eff: [E('stun', 1, 1.2)] });
+  M('kara_punch', 'Kryptoni ütés', 'melee', 14, 2.3, 'punch', '#3f6fd8');
+  M('freeze_breath', 'Jeges lehelet', 'beam', 24, 5.5, 'wind', '#9be7ff', { eff: [E('slow', 0.8, 4)] });
+  M('laser_eyes', 'Lézerszem', 'beam', 28, 6, 'laser', '#ff3b3b', { eff: [E('burn', 0.6, 3)] });
+  M('krypton_comet', 'Kryptoni üstökös', 'multi', 86, 0, 'punch', '#3f6fd8', { super: true, hits: 5, melee: true, eff: [E('mark', 1, 5)] });
+  M('thunder_punch', 'Mennydörgő ütés', 'melee', 15, 2.4, 'punch', '#ffd23f');
+  M('magic_lightning', 'Varázsvillám', 'beam', 28, 6, 'lightning', '#ffe066', { eff: [E('stun', 0.3, 1)] });
+  M('bulletproof', 'Golyóálló', 'self', 0, 8, 'shield', '#d62828', { shield: 0.14 });
+  M('shazam_bolt', 'SHAZAM!', 'beam', 88, 0, 'lightning', '#ffd23f', { super: true, eff: [E('stun', 1, 1.2)] });
+  M('mind_blast', 'Elmecsapás', 'shot', 20, 4.4, 'hex', '#4fd36b', { eff: [E('weak', 0.6, 4)] });
+  M('phase_punch', 'Fázisütés', 'melee', 15, 2.4, 'punch', '#3fa34d');
+  M('shape_shift', 'Alakváltás', 'self', 0, 6.5, 'buff', '#4fd36b', { eff: [E('atkUp', 1, 6, { self: true })] });
+  M('martian_vision', 'Marsi látás', 'beam', 86, 0, 'laser', '#ff9a3c', { super: true, eff: [E('burn', 1, 4)] });
+  M('mace_swing', 'Buzogánycsapás', 'melee', 17, 2.1, 'punch', '#c0c0c0');
+  M('electric_mace', 'Villámbuzogány', 'melee', 41, 7.4, 'lightning', '#ffe066', { eff: [E('stun', 0.35, 1)] });
+  M('feather_storm', 'Tollvihar', 'multi', 16, 2.6, 'bird', '#c97b30', { hits: 3 });
+  M('nth_metal', 'N-fém csapás', 'multi', 86, 0, 'punch', '#ffe066', { super: true, hits: 5, melee: true, eff: [E('stun', 1, 1)] });
+
   // Leírás generálása
   for (const m of Object.values(MOVES)) {
     const parts = [];

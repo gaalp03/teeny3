@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 27;
+  TT.NEWS_VERSION = 28;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 28, who: 'cyborg', text: 'Megjött az erősítés: Flash, Aquaman, Supergirl, Shazam, Marsbéli Vadász és Sólyomlány! Mind ott vannak a dobozokban, eredeti TT2-es kinézettel. BOOYAH!' },
     { v: 27, who: 'raven', text: 'Rossz hír: új gonoszok kerültek a dobozokba a TT2-ből. Lex Luthor, Darkseid, Rébusz, Pingvin, Méregcsók és Bane. Jó hír: a tieid lehetnek. Gyűjtsd össze mind a hatot!' },
     { v: 26, who: 'beastboy', text: 'A dobozbontás most sokkal menőbb: villanás, és a figura ritkaságának színében ragyog az egész képernyő. Az arany fény legendást jelent, dude!' },
     { v: 25, who: 'starfire', text: 'Nézd, milyen szépek lettünk! A városban és a beszélgetésekben is az igazi TT2-es figuráink látszanak, és ugrálva lépkedünk, mint a játékfigurák!' },
