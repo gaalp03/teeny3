@@ -8,7 +8,7 @@ Gyűjts Teeny figurákat, harcolj 3v3 csapatcsatákban a Csatakupolában, és á
 
 ## Mi van benne
 
-- **117 gyűjthető figura** (Titánok, változatok, a Retró és a Radikális sorozat, különleges TT2-változatok (pl. Nightwing), DC vendégek (Superman, Wonder Woman, Joker…), DC gonoszok (Lex Luthor, Darkseid, Rébusz…), DC hősök (Flash, Aquaman, Shazam…), Liga-Titánok (Wonder Raven, Bat Robin…), DC különcök (Macskanő, Grodd, Bizarro…), a Liga újoncai (Zöld Lámpások, Booster Gold…), vicces változatok (Fürdő-Batman, Mikulás…), Titánok Kelet, H.I.V.E., gonoszok, Gonosz Testvériség, az új
+- **123 gyűjthető figura** (Titánok, változatok, a Retró és a Radikális sorozat, különleges TT2-változatok (pl. Nightwing), DC vendégek (Superman, Wonder Woman, Joker…), DC gonoszok (Lex Luthor, Darkseid, Rébusz…), DC hősök (Flash, Aquaman, Shazam…), Liga-Titánok (Wonder Raven, Bat Robin…), DC különcök (Macskanő, Grodd, Bizarro…), a Liga újoncai (Zöld Lámpások, Booster Gold…), vicces változatok (Fürdő-Batman, Mikulás…), Titán-barátok (Red Arrow, Lady Legasus…), Titánok Kelet, H.I.V.E., gonoszok, Gonosz Testvériség, az új
   Menta-banda, valamint Mad Mod, Killer Moth és Larry), mind kódból rajzolva, 4 ritkasággal és 4 típussal (Erő › Tech › Misztikus › Gyorsaság › Erő)
 - **Csillagszint** a dupla figurákból, **csapatbónusz** azonos csapatú figurákkal, **barátság-kombók**
   (pl. Robin + Starfire szuper támadásnál a társ is beugrik), **passzív képességek**
@@ -24,7 +24,7 @@ Gyűjts Teeny figurákat, harcolj 3v3 csapatcsatákban a Csatakupolában, és á
 - **Blokk-edzés** minijáték a Toronyban, **szezonális események** (Halloween, Karácsony)
 - **Bejárható Titánok Tornya** figuravitrinnel, **Pizzafogó**, **Figura-memória** és **Titán-kvíz** minijáték, **Silkie-mellékküldetés**
 - **Menta-járőrök** és autók a városban, **valós napszak** (este besötétedik) és **időjárás** (eső, vihar villámlással)
-- **58 teljesítmény** (köztük a teljes sorozatokért járók), **profil és rekordok**, **napi küldetések** (3 feladat naponta, bónusszal), napi jutalom, automatikus harc és gyorsítás (×1.6) gyakorláshoz
+- **59 teljesítmény** (köztük a teljes sorozatokért járók), **profil és rekordok**, **napi küldetések** (3 feladat naponta, bónusszal), napi jutalom, automatikus harc és gyorsítás (×1.6) gyakorláshoz
 - **Vakdobozok** a boltban (Alap / Prémium / Legendás), duplikátumokból tapasztalat
 - Szintlépés (max. 30), edzés, pizzaparti, gyűjtői jutalmak
 - Szintetizált zene és hangok, magyar felület, mentés automatikusan, 3 nehézségi szint

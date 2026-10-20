@@ -535,6 +535,32 @@
   M('chd_beam', 'Fejlézer', 'beam', 26, 5.4, 'laser', '#ff3b3b', { eff: [E('burn', 0.4, 3)] });
   M('chd_rocket', 'Rakétafej', 'multi', 82, 0, 'rocket', '#3fa7ff', { super: true, hits: 4, eff: [E('mark', 1, 4)] });
 
+  // ---------- Titán-barátok (Teeny Titans 2) ----------
+  M('nd_kick', 'Apa-rúgás', 'melee', 24, 2.3, 'kick', '#3fa7ff');
+  M('nd_bottle', 'Cumisüveg-dobás', 'shot', 30, 4.4, 'bomb', '#f4f4f8', { eff: [E('stun', 0.35, 1)] });
+  M('nd_lullaby', 'Altatódal', 'self', 0, 8, 'heal', '#9be7ff', { heal: 0.16 });
+  M('nd_family', 'Családi csapás', 'multi', 86, 0, 'kick', '#3fa7ff', { super: true, hits: 5, melee: true, eff: [E('atkUp', 1, 5, { self: true })] });
+  M('ra_arrow', 'Vörös nyíl', 'shot', 18, 2.2, 'arrow', '#d62828');
+  M('ra_poison', 'Mérgező nyíl', 'shot', 26, 4.5, 'arrow', '#7bd65b', { eff: [E('poison', 0.6, 4)] });
+  M('ra_volley', 'Nyílzápor', 'multi', 19, 2.8, 'arrow', '#d62828', { hits: 3 });
+  M('ra_bullseye', 'Telitalálat', 'multi', 86, 0, 'arrow', '#d62828', { super: true, hits: 5, eff: [E('mark', 1, 5)] });
+  M('rw_sword', 'Kardvágás', 'melee', 18, 2.3, 'slash', '#c0c0c0');
+  M('rw_foresight', 'Előrelátás', 'self', 0, 7, 'buff', '#ff9a3c', { eff: [E('atkUp', 1, 6, { self: true })] });
+  M('rw_strike', 'Pengevihar', 'melee', 42, 7.4, 'slash', '#ff9a3c', { crit: 0.25 });
+  M('rw_ravager', 'A Pusztító', 'multi', 86, 0, 'slash', '#ff9a3c', { super: true, hits: 5, melee: true, eff: [E('mark', 1, 5)] });
+  M('hh_spike', 'Tüskés buzogány', 'melee', 16, 2.4, 'punch', '#6b6b7a');
+  M('hh_soul', 'Lélekcsapás', 'shot', 22, 4.6, 'hex', '#d62828', { eff: [E('weak', 0.6, 4)] });
+  M('hh_portal', 'Portáltámadás', 'beam', 30, 6.4, 'magic', '#d62828', { eff: [E('stun', 0.35, 1)] });
+  M('hh_doom', 'A csuklya árnyéka', 'beam', 92, 0, 'magic', '#d62828', { super: true, eff: [E('weak', 1, 5)] });
+  M('jb_sting', 'Igazság-fullánk', 'melee', 18, 2.2, 'lightning', '#ffd23f');
+  M('jb_blast', 'Méh-sugár', 'beam', 30, 5.6, 'lightning', '#ffd23f', { eff: [E('stun', 0.3, 1)] });
+  M('jb_shrink', 'Zsugorodás', 'self', 0, 7.5, 'shield', '#ffd23f', { shield: 0.12 });
+  M('jb_swarm', 'Liga-raj', 'multi', 84, 0, 'lightning', '#ffd23f', { super: true, hits: 6, eff: [E('stun', 1, 0.8)] });
+  M('ll_kick', 'Lady-rúgás', 'melee', 15, 2.3, 'kick', '#f4f4f8');
+  M('ll_spell', 'Titkos varázs', 'shot', 22, 4.6, 'magic', '#8e5cff', { eff: [E('slow', 0.6, 3)] });
+  M('ll_disguise', 'Álruha', 'self', 0, 7.5, 'shield', '#ffd23f', { shield: 0.12 });
+  M('ll_legend', 'Legasus legendája', 'beam', 86, 0, 'magic', '#8e5cff', { super: true, eff: [E('stun', 1, 1.2)] });
+
   // Leírás generálása
   for (const m of Object.values(MOVES)) {
     const parts = [];

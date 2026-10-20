@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 36;
+  TT.NEWS_VERSION = 37;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 37, who: 'raven', text: 'Új sorozat: a Titán-barátok. Apuka Nightwing, Red Arrow, Rose Wilson, Csuklyás Hood, Igazság Bumblebee… és Lady Legasus. Aki egyáltalán nem én vagyok.' },
     { v: 36, who: 'beastboy', text: 'Ez a legviccesebb sorozat, dude: Fürdő-Batman gumikacsával, a Mikulás, George Washington, Hercegnő Silkie, Trigon kötött pulóverben… és Cyborg feje. Csak a feje!' },
     { v: 35, who: 'robin', text: 'A Gyűjteményben a „Rend” gombbal sorozatonként is rendezheted a figurákat. Így rögtön látod, melyik hiányzik még egy sorozatból!' },
     { v: 34, who: 'cyborg', text: 'Liga-toborzás! Két Zöld Lámpás (John Stewart és Jessica Cruz), Kék Bogár, Booster Gold, Black Lightning és Vixen. Már 111 figura van — BOOYAH!' },

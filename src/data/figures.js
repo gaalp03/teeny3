@@ -816,6 +816,47 @@
     retro('cyborg', { scale: 0.85 }),
     { team: 'titans', short: 'Cyborg feje', bio: 'Csak a feje. A teste épp szervizben van. A BOOYAH így is megy.' });
 
+  // ---------- Titán-barátok (Teeny Titans 2) ----------
+  F('nightwing_dad', 'Apuka Nightwing', 'speed', 'legendary', [115, 15, 12, 14],
+    ['nd_kick', 'nd_bottle', 'nd_lullaby'], 'nd_family',
+    {
+      skin: SKIN, top: '#1d1d2b', sleeves: '#1d1d2b', gloves: '#3fa7ff', bottom: '#1d1d2b', boots: '#1d1d2b',
+      hair: 'spiky', hairColor: '#1d1d2b', mask: '#1d1d2b', eyes: 'lens', mouth: 'grin', chest: { sym: 'V', color: '#1d1d2b', ink: '#3fa7ff' },
+    }, { team: 'titans', short: 'Apa Nightwing', bio: 'A jövőbeli Nightwing, egy babával a karján. Pelenkázni is akrobatikusan szokott.' });
+
+  F('red_arrow', 'Red Arrow', 'speed', 'epic', [100, 14, 10, 15],
+    ['ra_arrow', 'ra_poison', 'ra_volley'], 'ra_bullseye',
+    {
+      skin: SKIN, top: '#d62828', sleeves: '#1d1d2b', gloves: '#1d1d2b', bottom: '#1d1d2b', boots: '#d62828',
+      hair: 'spiky', hairColor: '#ff6b35', mask: '#f4f4f8', eyes: 'lens', mouth: 'smirk', gear: ['quiver'],
+    }, { team: 'east', bio: 'Speedy felnőtt. Ugyanaz az íj, csak sokkal komolyabb arccal.' });
+
+  F('rose_wilson', 'Rose Wilson', 'brawn', 'epic', [115, 15, 11, 12],
+    ['rw_sword', 'rw_foresight', 'rw_strike'], 'rw_ravager',
+    {
+      skin: '#f4e8e0', top: '#1d1d2b', sleeves: '#1d1d2b', gloves: '#ff9a3c', bottom: '#1d1d2b', boots: '#ff9a3c',
+      hair: 'long', hairColor: '#f4f4f8', eyes: 'dot', mouth: 'frown', gear: ['eyepatch'],
+    }, { team: 'villain', short: 'Rose', bio: 'Slade lánya, a Pusztító. Egy szeme van, de az mindent lát — előre.' });
+
+  F('hooded_hood', 'Csuklyás Hood', 'mystic', 'legendary', [130, 15, 13, 10],
+    ['hh_spike', 'hh_soul', 'hh_portal'], 'hh_doom',
+    {
+      skin: '#1d1d2b', top: '#d62828', sleeves: '#d62828', gloves: '#6b6b7a', bottom: '#1d1d2b', boots: '#1d1d2b', cloak: '#d62828',
+      hair: 'bald', hairColor: '#1d1d2b', eyes: 'glow', eyeColor: '#f4f4f8', mouth: 'frown', gear: ['light_hood'],
+    }, { team: 'villain', short: 'Hood', bio: 'Titokzatos csuklyás vadász, aki portálokon át érkezik. Még a Titánok sem tudják, ki ő.' });
+
+  F('bumblebee_justice', 'Igazság Bumblebee', 'speed', 'epic', [100, 14, 10, 15],
+    ['jb_sting', 'jb_blast', 'jb_shrink'], 'jb_swarm',
+    {
+      skin: '#8a5a3a', top: '#ffd23f', sleeves: '#1d1d2b', gloves: '#1d1d2b', bottom: '#1d1d2b', boots: '#ffd23f',
+      hair: 'puffs', hairColor: '#1d1d2b', mask: '#ffd23f', eyes: 'lens', mouth: 'smile', gear: ['wings_bee', 'antenna'],
+    }, { team: 'east', short: 'I. Bumblebee', bio: 'Bumblebee az Igazság Ligája egyenruhájában. Kicsi, de az egész Liga rá figyel.' });
+
+  F('raven_legasus', 'Lady Legasus', 'mystic', 'epic', [110, 14, 11, 12],
+    ['ll_kick', 'll_spell', 'll_disguise'], 'll_legend',
+    retro('raven', { top: '#f4f4f8', bottom: '#f4f4f8', cloak: '#f4f4f8', mask: '#1d1d2b' }),
+    { team: 'titans', short: 'L. Legasus', bio: 'Egy titokzatos szuperhősnő, aki semmiképp sem Raven. Tényleg. Ne kérdezz.' });
+
   // Statisztikák kiegyenlítése: minden figura azonos "kerettel" indul, a különbséget
   // a szerep (HP/támadás/védekezés aránya) és a ritkaság adja.
   // (a lista legvégén, hogy a később felvett sorozatokra is vonatkozzon)
@@ -849,6 +890,7 @@
     { id: 'oddballs', name: 'DC különcök', short: 'Különc', ids: ['dc_catwoman', 'dc_cheetah', 'dc_sinestro', 'dc_grodd', 'dc_bizarro', 'dc_swamp'] },
     { id: 'rookies', name: 'A Liga újoncai', short: 'Újonc', ids: ['dc_johnstewart', 'dc_jessica', 'dc_bluebeetle', 'dc_booster', 'dc_blacklightning', 'dc_vixen'] },
     { id: 'funny', name: 'Vicces változatok', short: 'Vicces', ids: ['dc_bathman', 'santa_claus', 'george_w', 'silkie_princess', 'trigon_argyle', 'cyborg_head'] },
+    { id: 'friends', name: 'Titán-barátok', short: 'Barát', ids: ['nightwing_dad', 'red_arrow', 'rose_wilson', 'hooded_hood', 'bumblebee_justice', 'raven_legasus'] },
   ];
   for (const ser of TT.SERIES) for (const id of ser.ids) TT.FIG[id].series = ser.id;
 
