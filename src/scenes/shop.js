@@ -125,8 +125,8 @@
       TT.audio.sfx('select');
       TT.ui.choose({
         title: 'Sorozat-doboz',
-        text: `${SERIES_BOX.price} érme — garantáltan egy még hiányzó figura a választott sorozatból.`,
-        width: 460, buttonH: 32,
+        text: `${SERIES_BOX.price} érme · garantáltan új figura a sorozatból`,
+        width: 480, buttonH: 30, size: 18,
         options: TT.SERIES.map((ser) => {
           const missing = ser.ids.filter((id) => !s.owned[id]);
           return {

@@ -483,6 +483,32 @@
   M('sw_regrow', 'Újranövés', 'self', 0, 9, 'heal', '#7bd65b', { heal: 0.12 });
   M('sw_green', 'A Zöld haragja', 'slam', 84, 0, 'rock', '#6f8a3a', { super: true, eff: [E('poison', 1, 5)] });
 
+  // ---------- A Liga újoncai (Teeny Titans 2) ----------
+  M('js_fist', 'Fényököl', 'melee', 15, 2.4, 'punch', '#4fd36b');
+  M('js_construct', 'Óriáskalapács-konstrukció', 'slam', 36, 8, 'rock', '#4fd36b', { eff: [E('stun', 0.4, 1)] });
+  M('js_shield', 'Fényfal', 'self', 0, 8.5, 'shield', '#4fd36b', { shield: 0.1 });
+  M('js_willpower', 'Akaraterő', 'beam', 92, 0, 'laser', '#4fd36b', { super: true, eff: [E('stun', 1, 1.2)] });
+  M('jc_gun', 'Fénygéppuska', 'multi', 15, 2.4, 'laser', '#4fd36b', { hits: 3 });
+  M('jc_beam', 'Gyűrűsugár', 'beam', 28, 6, 'laser', '#4fd36b', { eff: [E('weak', 0.5, 4)] });
+  M('jc_dive', 'Zuhanórepülés', 'melee', 38, 7.4, 'kick', '#4fd36b');
+  M('jc_light', 'Bátorság fénye', 'beam', 86, 0, 'laser', '#4fd36b', { super: true, eff: [E('stun', 1, 1.1)] });
+  M('kb_blade', 'Szkarabeusz-penge', 'melee', 15, 2.3, 'slash', '#2a6fd8');
+  M('kb_cannon', 'Plazmaágyú', 'beam', 28, 6, 'laser', '#3fa7ff', { eff: [E('burn', 0.5, 3)] });
+  M('kb_shield', 'Páncélpajzs', 'self', 0, 8, 'shield', '#2a6fd8', { shield: 0.14 });
+  M('kb_scarab', 'A szkarabeusz ereje', 'multi', 86, 0, 'laser', '#3fa7ff', { super: true, hits: 5, eff: [E('mark', 1, 5)] });
+  M('bg_punch', 'Aranyököl', 'melee', 18, 2.4, 'punch', '#ffd23f');
+  M('bg_blast', 'Jövőbeli sugár', 'shot', 27, 4.5, 'laser', '#ffd23f', { eff: [E('stun', 0.3, 0.9)] });
+  M('bg_kiss', 'Macsó puszi', 'self', 0, 6.5, 'heart', '#ff4f81', { eff: [E('atkUp', 1, 6, { self: true })] });
+  M('bg_future', 'Időutazó csapás', 'multi', 86, 0, 'punch', '#ffd23f', { super: true, hits: 5, melee: true, eff: [E('haste', 1, 4, { self: true })] });
+  M('bl_zap', 'Szikra', 'shot', 15, 2.2, 'lightning', '#7fd3ff');
+  M('bl_bolt', 'Villámcsapás', 'beam', 34, 6.2, 'lightning', '#7fd3ff', { eff: [E('stun', 0.35, 1)] });
+  M('bl_storm', 'Elektromos vihar', 'multi', 16, 2.8, 'lightning', '#7fd3ff', { hits: 3 });
+  M('bl_thunder', 'Fekete villám', 'beam', 92, 0, 'lightning', '#7fd3ff', { super: true, eff: [E('stun', 1, 1.2)] });
+  M('vx_chicken', 'Csirke-szellem', 'shot', 18, 4.2, 'peanut', '#ffd23f', { eff: [E('slow', 0.6, 3)] });
+  M('vx_elephant', 'Elefánt-erő', 'slam', 38, 8, 'rock', '#9aa5b1', { eff: [E('stun', 0.4, 1)] });
+  M('vx_turtle', 'Teknőspáncél', 'self', 0, 8, 'shield', '#3fa34d', { shield: 0.14 });
+  M('vx_tantu', 'Tantu-totem', 'multi', 86, 0, 'claw', '#ff9a3c', { super: true, hits: 5, melee: true, eff: [E('atkUp', 1, 5, { self: true })] });
+
   // Leírás generálása
   for (const m of Object.values(MOVES)) {
     const parts = [];

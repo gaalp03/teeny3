@@ -242,7 +242,7 @@
     const items = opts.map((op, i) => ({
       id: 'o' + i, x: x + 24, y: y + headH + i * (bh + gap), w: w - 48, h: bh,
       label: op.label, color: op.color || (op.value === null ? '#6c5ce7' : '#ff6b35'), disabled: op.disabled, value: op.value,
-      size: 22, onDisabled: op.onDisabled,
+      size: cfg.size || 22, onDisabled: op.onDisabled,
     }));
     menu.set(items);
     const o = {

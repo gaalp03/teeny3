@@ -734,6 +734,49 @@
       hair: 'messy', hairColor: '#4a5a28', eyes: 'glow', eyeColor: '#ff3b3b', mouth: 'frown', scale: 1.08,
     }, { team: 'dc', bio: 'A mocsár őrzője. Lassú, csendes, és mindig visszanő — akárcsak a gaz a Torony kertjében.' });
 
+  // ---------- A Liga újoncai (Teeny Titans 2) ----------
+  F('dc_johnstewart', 'John Stewart', 'tech', 'legendary', [130, 15, 13, 10],
+    ['js_fist', 'js_construct', 'js_shield'], 'js_willpower',
+    {
+      skin: '#8a5a3a', top: '#1d1d2b', sleeves: '#3fa34d', gloves: '#f4f4f8', bottom: '#1d1d2b', boots: '#3fa34d',
+      hair: 'short', hairColor: '#1d1d2b', eyes: 'dot', mouth: 'smile', chest: { sym: '◎', color: '#1d1d2b', ink: '#4fd36b' },
+    }, { team: 'dc', short: 'J. Stewart', bio: 'Egykori építész, ma Zöld Lámpás. A gyűrűjével bármit megépít — még egy figurapolcot is.' });
+
+  F('dc_jessica', 'Jessica Cruz', 'mystic', 'epic', [110, 14, 11, 13],
+    ['jc_gun', 'jc_beam', 'jc_dive'], 'jc_light',
+    {
+      skin: '#e2b088', top: '#1d1d2b', sleeves: '#1d1d2b', gloves: '#f4f4f8', bottom: '#1d1d2b', boots: '#f4f4f8',
+      hair: 'long', hairColor: '#4a2a1a', mask: '#4fd36b', eyes: 'lens', mouth: 'smile',
+    }, { team: 'dc', short: 'J. Cruz', bio: 'A legújabb Zöld Lámpás. Fél, mégis bátor — és ez a legnagyobb erő.' });
+
+  F('dc_bluebeetle', 'Kék Bogár', 'tech', 'epic', [115, 14, 12, 12],
+    ['kb_blade', 'kb_cannon', 'kb_shield'], 'kb_scarab',
+    {
+      skin: '#2a6fd8', top: '#2a6fd8', sleeves: '#1d1d2b', gloves: '#2a6fd8', bottom: '#1d1d2b', boots: '#2a6fd8',
+      hair: 'bald', hairColor: '#2a6fd8', eyes: 'glow', eyeColor: '#ffd23f', mouth: 'frown', gear: ['antenna'],
+    }, { team: 'dc', bio: 'Egy idegen szkarabeusz páncélja beszél hozzá. Néha túl sokat is.' });
+
+  F('dc_booster', 'Booster Gold', 'brawn', 'epic', [120, 14, 12, 11],
+    ['bg_punch', 'bg_blast', 'bg_kiss'], 'bg_future',
+    {
+      skin: SKIN, top: '#ffd23f', sleeves: '#2a3fb0', gloves: '#ffd23f', bottom: '#2a3fb0', boots: '#ffd23f', belt: '#ffd23f',
+      hair: 'swoop', hairColor: '#ffd23f', mask: '#2a3fb0', eyes: 'lens', mouth: 'grin',
+    }, { team: 'dc', short: 'Booster', bio: 'A jövőből jött, hogy híres legyen. Az autogramját már előre aláírta.' });
+
+  F('dc_blacklightning', 'Black Lightning', 'mystic', 'legendary', [120, 15, 12, 12],
+    ['bl_zap', 'bl_storm', 'bl_bolt'], 'bl_thunder',
+    {
+      skin: '#8a5a3a', top: '#2a3fb0', sleeves: '#2a3fb0', gloves: '#f4f4f8', bottom: '#2a3fb0', boots: '#f4f4f8', belt: '#ffd23f',
+      hair: 'short', hairColor: '#1d1d2b', mask: '#ffd23f', eyes: 'lens', mouth: 'frown',
+    }, { team: 'dc', short: 'B. Lightning', bio: 'Tanár nappal, villámhős éjjel. A házi feladat nála szó szerint elektromos.' });
+
+  F('dc_vixen', 'Vixen', 'speed', 'epic', [105, 14, 10, 14],
+    ['vx_chicken', 'vx_elephant', 'vx_turtle'], 'vx_tantu',
+    {
+      skin: '#8a5a3a', top: '#ff9a3c', sleeves: '#ff9a3c', gloves: '#ff9a3c', bottom: '#ff9a3c', boots: '#ff9a3c',
+      hair: 'spiky', hairColor: '#1d1d2b', eyes: 'dot', mouth: 'smile',
+    }, { team: 'dc', bio: 'A Tantu-totem bármelyik állat erejét kölcsönadja neki. Még a csirkéét is.' });
+
   // Statisztikák kiegyenlítése: minden figura azonos "kerettel" indul, a különbséget
   // a szerep (HP/támadás/védekezés aránya) és a ritkaság adja.
   // (a lista legvégén, hogy a később felvett sorozatokra is vonatkozzon)
@@ -765,6 +808,7 @@
     { id: 'dcheroes', name: 'DC hősök', short: 'DC hős', ids: ['dc_flash', 'dc_aquaman', 'dc_supergirl', 'dc_shazam', 'dc_martian', 'dc_hawkgirl'] },
     { id: 'league', name: 'Liga-Titánok', short: 'Liga', ids: ['raven_wonder', 'star_flash', 'robin_bat', 'cyborg_lantern', 'dc_bwana', 'silkie_super'] },
     { id: 'oddballs', name: 'DC különcök', short: 'Különc', ids: ['dc_catwoman', 'dc_cheetah', 'dc_sinestro', 'dc_grodd', 'dc_bizarro', 'dc_swamp'] },
+    { id: 'rookies', name: 'A Liga újoncai', short: 'Újonc', ids: ['dc_johnstewart', 'dc_jessica', 'dc_bluebeetle', 'dc_booster', 'dc_blacklightning', 'dc_vixen'] },
   ];
   for (const ser of TT.SERIES) for (const id of ser.ids) TT.FIG[id].series = ser.id;
 
