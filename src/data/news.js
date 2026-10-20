@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 22;
+  TT.NEWS_VERSION = 23;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 23, who: 'raven', text: 'A Gonosz, a Menta és a Testvériség Kupa ellenfelei, meg a város erősebb edzői kevésbé ügyesek. Control Freak sem olyan rémes már. Ha mégis elakadsz: jobb figurák a dobozokból, és figyelj a típusokra.' },
     { v: 22, who: 'robin', text: 'Ha kikapsz, adok egy tippet: megmondom, milyen típusú az ellenfél csapata, és melyik figurádat érdemes ellenük bevetni. Egy jó vezér tanul a vereségből!' },
     { v: 21, who: 'robin', text: 'Nem tudod, kit vigyél harcba? A Gyűjteményben a „Legerősebb csapat” gomb kiválasztja a legjobb hármast — a csapatbónuszt és a kombókat is figyelembe veszi.' },
     { v: 20, who: 'starfire', text: 'A trutyis Plasmus és az én szakács-énem nem gyógyul már olyan sokat harc közben, és a Regeneráció is gyengébb lett. Így sokkal igazságosabb!' },
