@@ -150,6 +150,13 @@
       reward: { figs: ['dc_wonderwoman'] },
       intro: [{ who: 'dc_wonderwoman', text: 'Hallottam, hogy megnyertétek a Gonosz Kupát. Az Igazság Ligája szeretné látni, mit tudtok — tisztességes harc lesz!' }],
       outro: [{ who: 'dc_wonderwoman', text: 'Igazi hősök vagytok. Fogadjátok el a figurámat Themyscira nevében!' }] },
+    lex: { name: 'Lex Luthor', who: 'dc_lex', team: [T('dc_riddler', 19), T('dc_penguin', 19), T('dc_lex', 20)], ai: 0.6, coins: 1000, bg: 'vault', music: 'boss',
+      reward: { figs: ['dc_riddler'] },
+      intro: [
+        { who: 'dc_lex', text: 'Szóval ti vertétek meg Mr. Mintet. Szép munka… a trezora mostantól az enyém. Ahogy hamarosan a figuráitok is.' },
+        { who: 'dc_riddler', text: 'Találós kérdés: mi az, ami három figurából áll, és mindjárt kikap? Segítek: a ti csapatotok!' },
+      ],
+      outro: [{ who: 'dc_lex', text: 'Lenyűgöző. Rébusz, add oda nekik a figurádat. Egy üzletember tudja, mikor kell befektetni… a jövőbeli szövetségesekbe.' }] },
     joker: { name: 'Joker', who: 'dc_joker', team: [T('dc_harley', 12), T('killer_moth', 12), T('dc_joker', 13)], ai: 0.54, coins: 600, bg: 'street', music: 'boss', night: true,
       dayText: 'Nappal? Fényes nappal semmi sem vicces. Gyere vissza sötétedés után… HAHAHA!',
       reward: { figs: ['dc_harley'] },

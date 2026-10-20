@@ -400,6 +400,8 @@
       // a DC vendégek: Wonder Woman a Gonosz Kupa után, Joker a Kelet Kupa után jelenik meg
       if (n.id === 'league') return TT.cupDone('villain');
       if (n.id === 'joker') return TT.cupDone('east');
+      // Lex Luthor a Menta Kupa után költözik be Mr. Mint trezorához
+      if (n.id === 'lex') return TT.cupDone('mint');
       // legyőzése után Trigon eltűnik (a történet szerint bezárult a kapuja)
       if (n.id === 'trigon') return TT.cupDone('brotherhood') && !!TT.save.beaten.redx && !TT.save.beaten.trigon;
       return true;

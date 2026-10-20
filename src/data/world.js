@@ -154,6 +154,7 @@
     { id: 'trigon', who: 'trigon', x: 80.5, y: 7.6, trainer: 'trigon', dir: 'right' },
     { id: 'league', who: 'dc_wonderwoman', x: 70, y: 44, trainer: 'league', dir: 'left' },
     { id: 'joker', who: 'dc_joker', x: 38, y: 43.5, trainer: 'joker', dir: 'down' },
+    { id: 'lex', who: 'dc_lex', x: 18.5, y: 9.2, trainer: 'lex', dir: 'left' },
   ];
 
   // Rejtett figurák és érmék
