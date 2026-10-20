@@ -47,6 +47,8 @@
   }
 
   const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+  // a 3D figura elfordítása a nézési irány szerint (0 = szemből)
+  const YAW3D = { down: 0, right: -0.9, left: 0.9, up: Math.PI };
 
   const HELP = [
     { who: 'robin', text: 'Városban: WASD vagy nyilak (telefonon húzd az ujjad bal oldalt), Shift = futás, E vagy az A gomb = beszéd, belépés.' },
@@ -1225,6 +1227,15 @@
       ctx.fillStyle = '#000';
       ctx.fill();
       ctx.restore();
+      if (this.has3d('robin')) {
+        // TT2-es 3D figura: játékfiguraként billegve-ugrálva lépked
+        const hop = pl.moving ? Math.abs(Math.sin(pl.walk)) * 7 : 0;
+        TT.art.drawFigure(ctx, TT.FIG.robin, x, y + 2 - hop, 0.6, {
+          pedestal: false, pose: 'idle', paint: TT.paintOf('robin'), lean: pl.moving ? Math.sin(pl.walk) * 0.07 : 0,
+          yaw3d: YAW3D[pl.dir] || 0, anim3d: { name: 'idle', t: TT.time }, live3d: true,
+        });
+        return;
+      }
       TT.art.drawFigure(ctx, TT.FIG.robin, x, y + 2, 0.6, {
         pedestal: false, pose: pl.moving ? 'walk' : 'idle', walk: pl.walk, paint: TT.paintOf('robin'),
         facing: pl.dir === 'left' ? -1 : 1, back: pl.dir === 'up', noCustom: true,
@@ -1294,6 +1305,10 @@
       }
     },
 
+    has3d(id) {
+      return TT.model3d && TT.settings.fig3d !== false && TT.model3d.has(id);
+    },
+
     drawNpc(ctx, n, x, y) {
       const st = this.npcState[n.id];
       const look = TT.FIG[n.who] || TT.NPC_LOOKS[n.who];
@@ -1305,7 +1320,11 @@
       ctx.fillStyle = '#000';
       ctx.fill();
       ctx.restore();
-      TT.art.drawFigure(ctx, fig, x, y + 2, 0.58, { pedestal: false, facing: st.face === 'left' ? -1 : 1, back: st.face === 'up', t: TT.time + n.x, noCustom: true });
+      if (TT.FIG[n.who] && this.has3d(n.who)) {
+        // álló 3D kép (egyszer rajzolódik, utána csak a tárolt képet tesszük ki), finom lebegéssel
+        const bob = Math.sin(TT.time * 2.2 + n.x) * 1.5;
+        TT.art.drawFigure(ctx, fig, x, y + 2 + bob - 1.5, 0.58, { pedestal: false, pose: 'idle', yaw3d: YAW3D[st.face] || 0, anim3d: { name: 'idle', t: 0 } });
+      } else TT.art.drawFigure(ctx, fig, x, y + 2, 0.58, { pedestal: false, facing: st.face === 'left' ? -1 : 1, back: st.face === 'up', t: TT.time + n.x, noCustom: true });
       // jelzés a fej felett
       if (n.trainer && !TT.save.beaten[n.trainer]) {
         const b = Math.sin(TT.time * 5 + n.x) * 3;

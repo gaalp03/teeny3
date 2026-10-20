@@ -127,6 +127,9 @@
   }
 
   // Szereplő portré-adatok
+  // a 3D portré kivágása: a TT2 figuráknak nagy a fejük, így a felsőtest is belefér
+  const PORTRAIT3D = { y: 182, s: 1.5 };
+
   function speaker(who) {
     if (!who) return null;
     if (typeof who === 'object') return who;
@@ -185,7 +188,14 @@
           ctx.fill();
           ctx.clip();
           D.sunburst(ctx, x + 69, y + 69, 120, 10, '#ffd23f', '#ffe27a', TT.time * 0.3);
-          TT.art.drawFigure(ctx, { look: sp.look }, x + 69, y + 190, 1.55, { pedestal: false, t: TT.time, talk: this.chars < line.text.length });
+          const talking = this.chars < line.text.length;
+          if (sp.id && TT.FIG[sp.id] && TT.model3d && TT.settings.fig3d !== false && TT.model3d.has(sp.id)) {
+            // TT2-es 3D figura közelije (egyszer rajzolódik), beszéd közben enyhén billeg
+            const bob = talking ? Math.abs(Math.sin(TT.time * 9)) * 3 : 0;
+            TT.art.drawFigure(ctx, TT.FIG[sp.id], x + 69, y + PORTRAIT3D.y - bob, PORTRAIT3D.s, {
+              pedestal: false, pose: 'idle', yaw3d: 0.2, anim3d: { name: 'idle', t: 0 }, lean: talking ? Math.sin(TT.time * 6) * 0.03 : 0,
+            });
+          } else TT.art.drawFigure(ctx, { look: sp.look }, x + 69, y + 190, 1.55, { pedestal: false, t: TT.time, talk: talking });
           ctx.restore();
           ctx.lineWidth = 3;
           ctx.strokeStyle = '#120a2c';

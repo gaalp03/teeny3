@@ -346,7 +346,7 @@
       budget[256] = BUDGET[256];
     }
     const prev = list.length && list[list.length - 1];
-    if (prev && prev.canvas.width === res && (budget[res] <= 0 || (res === 256 && now - (lastAt[id] || 0) < SMALL_EVERY))) return prev.canvas;
+    if (prev && prev.canvas.width === res && (budget[res] <= 0 || (res === 256 && !o.live && now - (lastAt[id] || 0) < SMALL_EVERY))) return prev.canvas;
     budget[res]--;
     lastAt[id] = now;
     gl.viewport(0, 0, res, res);

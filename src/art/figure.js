@@ -1817,7 +1817,11 @@
     } else if (r3 && o.yaw3d != null) r3.yaw = o.yaw3d;
     else if (r3 && facing < 0) r3.yaw = -r3.yaw;
     // a kicsiben rajzolt (pl. padon ülő) figurákhoz elég a fele felbontás
-    if (r3) r3.res = Math.abs(scale) < 1.2 ? 256 : 512;
+    if (r3) {
+      r3.res = Math.abs(scale) < 1.2 ? 256 : 512;
+      // élő (folyamatosan animált) kis figura, pl. a városban sétáló játékos: nem ritkítjuk a frissítését
+      r3.live = !!o.live3d;
+    }
     const c3 = r3 && TT.model3d.render(fig.id, r3);
     if (c3) {
       // valódi 3D figura: a közös WebGL vászonról másolva (a figura 1 egység = 104 képpont magas)
