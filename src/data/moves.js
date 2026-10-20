@@ -184,8 +184,8 @@
   M('concrete_crush', 'Betonzúzás', 'slam', 92, 0, 'rock', '#9aa5b1', { super: true });
 
   M('goo', 'Trutyi', 'shot', 12, 2.5, 'blob', '#c45ab3', { eff: [E('slow', 0.3, 3)] });
-  M('absorb', 'Elnyelés', 'self', 0, 10, 'heal', '#c45ab3', { heal: 0.18 });
-  M('sludge', 'Iszapár', 'beam', 42, 8.5, 'blob', '#7bd65b', { eff: [E('poison', 0.5, 4)] });
+  M('absorb', 'Elnyelés', 'self', 0, 10, 'heal', '#c45ab3', { heal: 0.12 });
+  M('sludge', 'Iszapár', 'beam', 38, 9.5, 'blob', '#7bd65b', { eff: [E('poison', 0.4, 4)] });
   M('goo_sea', 'Trutyi-tenger', 'slam', 88, 0, 'blob', '#c45ab3', { super: true, eff: [E('poison', 1, 5)] });
 
   M('nibble', 'Rágcsálás', 'melee', 9, 2.2, 'claw', '#f0e6ff');
@@ -298,7 +298,7 @@
   M('sky_rumble', 'Égzengés', 'beam', 86, 0, 'lightning', '#ffd23f', { super: true, eff: [E('stun', 1, 1.1)] });
 
   M('hot_pudding', 'Forró puding', 'shot', 12, 2.3, 'blob', '#c06bff', { eff: [E('burn', 0.3, 3)] });
-  M('taste_test', 'Kóstoló', 'self', 0, 9.5, 'heal', '#ffd23f', { heal: 0.2 });
+  M('taste_test', 'Kóstoló', 'self', 0, 9.5, 'heal', '#ffd23f', { heal: 0.14 });
   M('pudding_wave', 'Pudingcunami', 'beam', 34, 8, 'blob', '#c06bff', { eff: [E('slow', 0.5, 3)] });
   M('tamaran_feast', 'Tamarani lakoma', 'beam', 74, 0, 'heart', '#ff9ecd', { super: true, eff: [E('weak', 1, 5)] });
 

@@ -310,7 +310,7 @@
       if (f.status.burn) this.damage(f, f.maxHp * 0.025 * dt);
       if (f.status.poison) this.damage(f, f.maxHp * 0.035 * dt);
       if (f.status.regen && f.alive) f.hp = Math.min(f.maxHp, f.hp + f.maxHp * 0.02 * dt);
-      if (f.passive === 'regen' && f.alive) f.hp = Math.min(f.maxHp, f.hp + f.maxHp * 0.01 * dt);
+      if (f.passive === 'regen' && f.alive) f.hp = Math.min(f.maxHp, f.hp + f.maxHp * 0.006 * dt);
     }
 
     update(dt) {

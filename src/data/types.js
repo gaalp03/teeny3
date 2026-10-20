@@ -40,7 +40,7 @@
   TT.PASSIVES = {
     leader: { name: 'Vezér', desc: '+20% szupermérő-töltődés.' },
     armor: { name: 'Páncél', desc: '12%-kal kevesebb sebzést kap.' },
-    regen: { name: 'Regeneráció', desc: 'Harcban másodpercenként 1% HP-t gyógyul.' },
+    regen: { name: 'Regeneráció', desc: 'Harcban másodpercenként 0,6% HP-t gyógyul.' },
     swift: { name: 'Fürgeség', desc: 'A támadások 10%-kal gyorsabban töltődnek.' },
     crit: { name: 'Gyenge pont', desc: '+12% esély kritikus találatra.' },
     thorns: { name: 'Tüskék', desc: 'A közelharci sebzés 15%-át visszaadja.' },
