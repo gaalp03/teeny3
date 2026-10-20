@@ -392,8 +392,10 @@
 
   // ======================= MESTERSÉGES INTELLIGENCIA =======================
   class AI {
-    constructor(skill) {
+    // pilot: a játékos AUTO módja — ugyanaz a döntéshozó, de rendesen védekezik és időben cserél
+    constructor(skill, pilot) {
       this.k = U.clamp(skill, 0, 1);
+      this.pilot = !!pilot;
       this.think = 0.8;
       this.plan = null;
       // (kiegyensúlyozva: korábban az ellenfél az ütések ~40-60%-át blokkolta, és minden feltöltött
@@ -403,6 +405,10 @@
       this.perfectChance = this.k * 0.2;
       this.aggr = 0.35 + this.k * 0.35;
       this.interval = 0.8 - this.k * 0.3;
+      if (pilot) {
+        this.blockChance = 0.55;
+        this.perfectChance = 0.35;
+      }
     }
     update(dt, c, s) {
       const me = c.act(s);
@@ -435,7 +441,7 @@
       if (this.think > 0 || !c.canAct(me)) return;
       this.think = this.interval * U.rand(0.7, 1.4);
       // csere, ha nagy a baj
-      if (me.hp / me.maxHp < 0.28 && side.swapCd <= 0 && Math.random() < this.k * 0.35) {
+      if (me.hp / me.maxHp < 0.28 && side.swapCd <= 0 && Math.random() < (this.pilot ? 0.8 : this.k * 0.35)) {
         const bench = side.fighters.map((f, i) => i).filter((i) => i !== side.active);
         const slot = bench.findIndex((i) => side.fighters[i].alive && side.fighters[i].hp / side.fighters[i].maxHp > 0.5);
         if (slot >= 0 && c.swap(s, slot)) return;
@@ -880,7 +886,7 @@
 
     setAuto(on) {
       this.auto = on;
-      this.c.ai[0] = on ? new AI(0.85) : null;
+      this.c.ai[0] = on ? new AI(0.85, true) : null;
       if (!on) this.c.setBlock(0, false);
       TT.settings.autoBattle = on;
       TT.store.writeSettings();

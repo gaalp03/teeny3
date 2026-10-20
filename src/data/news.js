@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 17;
+  TT.NEWS_VERSION = 18;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 18, who: 'robin', text: 'Az AUTO harc okosabb lett: rendesen védekezik, gyakran tökéletes blokkal, és időben lecseréli a sérült Titánt. Tipp: a gyakorláshoz továbbra is jobb, ha te irányítasz!' },
     { v: 17, who: 'cyborg', text: 'A BLOKK gomb most szól, ha jön a támadás: sárgán villog, és amikor zölden világít, akkor nyomd — az a tökéletes blokk! BOOYAH!' },
     { v: 16, who: 'robin', text: 'Könnyű nehézségen a blokk is megbocsátóbb: sokkal tovább tart a zöld, tökéletes blokk ablak, így könnyebb visszaverni a támadásokat.' },
     { v: 15, who: 'cyborg', text: 'Ha akadozik a játék, a Beállításokban kapcsold be a Takarékos módot: kisebb felbontás, 30 képkocka — sokkal simább gyenge gépen is. Ha nagyon lassú, magától is bekapcsol.' },
