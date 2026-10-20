@@ -370,7 +370,11 @@
       const ser = f.series && TT.SERIES.find((x2) => x2.id === f.series);
       if (ser) {
         const have = ser.ids.filter((sid) => TT.save.owned[sid]).length;
-        D.text(ctx, ser.short + ' ' + have + '/' + ser.ids.length, x + w - 14, y + 106, { size: 12, align: 'right', color: have === ser.ids.length ? '#7bff6b' : '#ff9ecd', lw: 3 });
+        // címke a figura képének alján (a szöveges oszlopban nincs neki hely)
+        const label = ser.short + ' ' + have + '/' + ser.ids.length;
+        const lw2 = D.measure(ctx, label, 12) + 16;
+        D.panel(ctx, x + 6, y + 172, lw2, 20, { fill: 'rgba(27,17,64,0.85)', r: 8, lw: 2, shadow: false, stroke: have === ser.ids.length ? '#7bff6b' : '#ff9ecd' });
+        D.text(ctx, label, x + 6 + lw2 / 2, y + 183, { size: 12, align: 'center', color: have === ser.ids.length ? '#7bff6b' : '#ff9ecd', lw: 3 });
       }
       D.typeIcon(ctx, f.type, tx + 12, y + 84, 11);
       D.text(ctx, TT.TYPES[f.type].name + ' · ' + (TT.TEAM_NAMES[f.team] || ''), tx + 30, y + 85, { size: 14, color: '#e8e2ff', lw: 3, maxWidth: w - 200 });

@@ -572,6 +572,49 @@
       hair: 'puffs', hairColor: '#1d1d2b', mask: '#1d1d2b', eyes: 'lens', mouth: 'grin',
     }, { team: 'villain', short: 'Harley', bio: 'Kalapács, bomba és egy puszi. Kiszámíthatatlanul szórakoztató.' });
 
+  // ---------- DC gonoszok (Teeny Titans 2) ----------
+  F('dc_lex', 'Lex Luthor', 'tech', 'legendary', [130, 15, 13, 10],
+    ['multi_gun', 'krypto_beam', 'rocket_boots'], 'lexbot_army',
+    {
+      skin: SKIN, top: '#3fa34d', sleeves: '#3fa34d', gloves: '#6b3fa0', bottom: '#6b3fa0', boots: '#6b3fa0', belt: '#3fa34d',
+      hair: 'bald', hairColor: SKIN, eyes: 'dot', mouth: 'smirk', chest: { sym: 'L', color: '#6b3fa0', ink: '#4fd36b' },
+    }, { team: 'villain', short: 'Lex', bio: 'Metropolis leggazdagabb zsenije. Szerinte Superman csak egy túlértékelt figura.' });
+
+  F('dc_darkseid', 'Darkseid', 'mystic', 'legendary', [150, 16, 14, 8],
+    ['apokolips_punch', 'dark_glare', 'omega_beams'], 'anti_life',
+    {
+      skin: '#6b6b7a', top: '#2b4a9a', sleeves: '#6b6b7a', gloves: '#2b4a9a', bottom: '#2b4a9a', boots: '#2b4a9a', belt: '#2b4a9a',
+      hair: 'bald', hairColor: '#6b6b7a', eyes: 'glow', eyeColor: '#ff3b3b', mouth: 'frown', scale: 1.08,
+    }, { team: 'villain', bio: 'Apokolipsz ura. Egyetlen pillantása is elég, hogy a figurád elbújjon a doboza mögött.' });
+
+  F('dc_riddler', 'Rébusz', 'tech', 'epic', [100, 13, 11, 13],
+    ['question_cane', 'riddle_hack', 'lucky_guess'], 'riddle_me_this',
+    {
+      skin: SKIN, top: '#3fa34d', sleeves: '#3fa34d', gloves: '#3fa34d', bottom: '#3fa34d', boots: '#2a1a3a', belt: '#6b3fa0',
+      hair: 'short', hairColor: '#ff9a3c', mask: '#6b3fa0', eyes: 'lens', mouth: 'grin', chest: { sym: '?', color: '#3fa34d', ink: '#1d1d2b' }, gear: ['top_hat'], hatColor: '#3fa34d',
+    }, { team: 'villain', bio: 'Mi az: kicsi, zöld és mindig nyer? …Nem, nem Beast Boy. Rébusz!' });
+
+  F('dc_penguin', 'Pingvin', 'tech', 'epic', [115, 13, 12, 9],
+    ['umbrella_gun', 'fish_toss', 'freeze_umbrella'], 'penguin_army',
+    {
+      skin: SKIN, top: '#1d1d2b', sleeves: '#1d1d2b', gloves: '#f4f4f8', bottom: '#1d1d2b', boots: '#1d1d2b', shirt: '#f4f4f8', tie: '#6b3fa0',
+      hair: 'flat', hairColor: '#1d1d2b', eyes: 'dot', mouth: 'smirk', gear: ['top_hat', 'monocle'], hatColor: '#1d1d2b', scale: 0.95,
+    }, { team: 'villain', bio: 'Gotham legelegánsabb gengsztere. Az esernyője többet tud, mint egy svájci bicska.' });
+
+  F('dc_ivy', 'Méregcsók', 'mystic', 'epic', [105, 13, 11, 12],
+    ['vine_lash', 'spore_cloud', 'ivy_kiss'], 'jungle_rage',
+    {
+      skin: '#b8e0a0', top: '#3fa34d', sleeves: '#b8e0a0', gloves: '#3fa34d', bottom: '#3fa34d', boots: '#3fa34d',
+      hair: 'long', hairColor: '#d62828', eyes: 'dot', mouth: 'lips',
+    }, { team: 'villain', short: 'Méregcsók', bio: 'A növények barátja, a figurák ellensége. Ne szagold meg a virágait.' });
+
+  F('dc_bane', 'Bane', 'brawn', 'epic', [140, 14, 13, 8],
+    ['venom_punch', 'back_breaker', 'venom_boost'], 'venom_rampage',
+    {
+      skin: SKIN, top: '#1d1d2b', sleeves: SKIN, gloves: '#1d1d2b', bottom: '#2a1a3a', boots: '#1d1d2b', belt: '#7bd65b',
+      hair: 'bald', hairColor: '#1d1d2b', mask: '#1d1d2b', eyes: 'lens', mouth: 'frown', scale: 1.08,
+    }, { team: 'villain', bio: 'Izom, ész és egy zöld csövecske. A Venom-adag után még a talapzata is megremeg.' });
+
   // Statisztikák kiegyenlítése: minden figura azonos "kerettel" indul, a különbséget
   // a szerep (HP/támadás/védekezés aránya) és a ritkaság adja.
   // (a lista legvégén, hogy a később felvett sorozatokra is vonatkozzon)
@@ -599,6 +642,7 @@
     { id: 'rad', name: 'Radikális sorozat', short: 'Radikális', ids: ['robin_rad', 'raven_rad', 'star_rad', 'bb_rad', 'cyborg_rad', 'silkie_rad'] },
     { id: 'special', name: 'Különleges változatok', short: 'Különleges', ids: ['bb_cat', 'bb_martian', 'aqualad_pirate', 'star_terrible', 'blood_robot', 'robin_nightwing'] },
     { id: 'dc', name: 'DC vendégek', short: 'DC', ids: ['dc_batman', 'dc_batgirl', 'dc_superman', 'dc_wonderwoman', 'dc_joker', 'dc_harley'] },
+    { id: 'dcvillains', name: 'DC gonoszok', short: 'DC gonosz', ids: ['dc_lex', 'dc_darkseid', 'dc_riddler', 'dc_penguin', 'dc_ivy', 'dc_bane'] },
   ];
   for (const ser of TT.SERIES) for (const id of ser.ids) TT.FIG[id].series = ser.id;
 

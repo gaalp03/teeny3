@@ -379,6 +379,32 @@
   M('harley_kiss', 'Puszi', 'shot', 18, 4.2, 'heart', '#ff4f81', { eff: [E('stun', 0.4, 1)] });
   M('mallet_mayhem', 'Kalapács-káosz', 'slam', 84, 0, 'rock', '#d62828', { super: true, eff: [E('stun', 1, 1.2)] });
 
+  // ---------- DC gonoszok (Teeny Titans 2) ----------
+  M('multi_gun', 'Multifegyver', 'multi', 13, 2.4, 'laser', '#4fd36b', { hits: 3 });
+  M('krypto_beam', 'Kriptonit-sugár', 'beam', 30, 6.2, 'laser', '#4fd36b', { eff: [E('weak', 0.6, 4)] });
+  M('rocket_boots', 'Rakétacsizma', 'melee', 36, 7.8, 'rocket', '#9aa5b1');
+  M('lexbot_army', 'Lexbot-sereg', 'multi', 92, 0, 'rocket', '#4fd36b', { super: true, hits: 5, eff: [E('mark', 1, 5)] });
+  M('apokolips_punch', 'Apokolipsz-ütés', 'melee', 15, 2.5, 'punch', '#6b6b7a');
+  M('omega_beams', 'Omega-sugár', 'beam', 34, 6.8, 'laser', '#ff3b3b', { eff: [E('burn', 0.6, 3)] });
+  M('dark_glare', 'Zord tekintet', 'shot', 18, 4.6, 'hex', '#ff3b3b', { eff: [E('slow', 0.6, 3)] });
+  M('anti_life', 'Életellenes egyenlet', 'beam', 96, 0, 'laser', '#ff3b3b', { super: true, eff: [E('stun', 1, 1.3)] });
+  M('question_cane', 'Kérdőjel-bot', 'melee', 15, 2.2, 'staff', '#4fd36b');
+  M('riddle_hack', 'Rejtvény-hack', 'shot', 24, 4.4, 'card', '#4fd36b', { eff: [E('stun', 0.35, 1)] });
+  M('lucky_guess', 'Szerencsés tipp', 'self', 0, 6.5, 'buff', '#4fd36b', { eff: [E('atkUp', 1, 6, { self: true })] });
+  M('riddle_me_this', 'Fejtsd meg!', 'multi', 84, 0, 'card', '#4fd36b', { super: true, hits: 5, eff: [E('weak', 1, 5)] });
+  M('umbrella_gun', 'Esernyő-puska', 'shot', 12, 2.3, 'bomb', '#1d1d2b');
+  M('fish_toss', 'Halhajítás', 'shot', 22, 4.6, 'fish', '#7fd3ff', { eff: [E('slow', 0.5, 3)] });
+  M('freeze_umbrella', 'Fagyasztó esernyő', 'beam', 30, 7, 'wind', '#9be7ff', { eff: [E('slow', 0.8, 4)] });
+  M('penguin_army', 'Pingvin-sereg', 'multi', 84, 0, 'fish', '#1d1d2b', { super: true, hits: 5, eff: [E('slow', 1, 4)] });
+  M('vine_lash', 'Indacsapás', 'melee', 13, 2.3, 'slash', '#4fd36b');
+  M('spore_cloud', 'Spórafelhő', 'shot', 18, 4.4, 'smoke', '#7bd65b', { eff: [E('poison', 0.45, 4)] });
+  M('ivy_kiss', 'Mérgező csók', 'shot', 22, 5, 'heart', '#4fd36b', { eff: [E('stun', 0.4, 1)] });
+  M('jungle_rage', 'Dzsungel haragja', 'slam', 84, 0, 'rock', '#4fd36b', { super: true, eff: [E('poison', 1, 5)] });
+  M('venom_punch', 'Venom-ütés', 'melee', 17, 2.4, 'punch', '#7bd65b');
+  M('back_breaker', 'Gerinctörő', 'slam', 38, 8, 'rock', '#6b6b7a', { eff: [E('stun', 0.45, 1.1)] });
+  M('venom_boost', 'Venom-adag', 'self', 0, 7, 'buff', '#7bd65b', { eff: [E('atkUp', 1, 6, { self: true })] });
+  M('venom_rampage', 'Venom-tombolás', 'multi', 88, 0, 'punch', '#7bd65b', { super: true, hits: 4, melee: true, eff: [E('atkUp', 1, 5, { self: true })] });
+
   // Leírás generálása
   for (const m of Object.values(MOVES)) {
     const parts = [];

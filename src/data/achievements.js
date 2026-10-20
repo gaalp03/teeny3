@@ -63,6 +63,7 @@
     A('seriesRad', 'Totál radikális', 'Gyűjtsd össze a teljes Radikális sorozatot (6 figura).', 1500, (s) => seriesDone(s, 'rad')),
     A('seriesSpecial', 'Különleges kiadás', 'Gyűjtsd össze mind a 6 különleges változatot.', 1200, (s) => seriesDone(s, 'special')),
     A('seriesDC', 'Igazság Ligája', 'Gyűjtsd össze mind a 6 DC vendégfigurát.', 1500, (s) => seriesDone(s, 'dc')),
+    A('seriesDCV', 'Igazságtalanság Ligája', 'Gyűjtsd össze mind a 6 DC gonosz figurát.', 1500, (s) => seriesDone(s, 'dcvillains')),
   ];
 
   // Új teljesítmények ellenőrzése és jutalmazása
