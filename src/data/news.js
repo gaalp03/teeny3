@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 25;
+  TT.NEWS_VERSION = 26;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 26, who: 'beastboy', text: 'A dobozbontás most sokkal menőbb: villanás, és a figura ritkaságának színében ragyog az egész képernyő. Az arany fény legendást jelent, dude!' },
     { v: 25, who: 'starfire', text: 'Nézd, milyen szépek lettünk! A városban és a beszélgetésekben is az igazi TT2-es figuráink látszanak, és ugrálva lépkedünk, mint a játékfigurák!' },
     { v: 24, who: 'cyborg', text: 'Turbó mód, BOOYAH! Harc közben sokkal több a képkocka, eltűnt az idegesítő hibahang, a víz is szebb lett a városban. A tökéletes blokk ablaka szélesebb, és ha túl korán blokkolsz, szólok: nyomd, amikor a kör zöld!' },
     { v: 23, who: 'raven', text: 'A Gonosz, a Menta és a Testvériség Kupa ellenfelei, meg a város erősebb edzői kevésbé ügyesek. Control Freak sem olyan rémes már. Ha mégis elakadsz: jobb figurák a dobozokból, és figyelj a típusokra.' },

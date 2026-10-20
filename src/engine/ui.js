@@ -313,19 +313,32 @@
       draw(ctx) {
         const k = U.clamp(this.t / 0.6, 0, 1);
         ctx.save();
-        ctx.fillStyle = `rgba(10,5,25,${0.75 * Math.min(1, this.t * 4)})`;
+        // sötét háttér, rajta a ritkaság színű, a szélek felé elhalványuló fénysugarak (nincs éles körlap)
+        ctx.fillStyle = `rgba(8,4,20,${0.92 * Math.min(1, this.t * 4)})`;
         ctx.fillRect(0, 0, TT.W, TT.H);
         ctx.globalAlpha = Math.min(1, this.t * 3);
+        const big = fig.rarity === 'legendary' || fig.rarity === 'epic';
         ctx.save();
-        ctx.beginPath();
-        ctx.arc(TT.W / 2, 250, 230, 0, Math.PI * 2);
-        ctx.clip();
-        D.sunburst(ctx, TT.W / 2, 250, 260, 16, U.shade(R.color, -0.35), U.shade(R.color, -0.15), this.t * 0.6);
-        const g = ctx.createRadialGradient(TT.W / 2, 250, 20, TT.W / 2, 250, 230);
-        g.addColorStop(0, 'rgba(255,255,255,0.45)');
-        g.addColorStop(1, 'rgba(10,5,25,0.9)');
+        ctx.globalAlpha *= 0.75;
+        D.sunburst(ctx, TT.W / 2, 250, 760, big ? 20 : 14, U.shade(R.color, -0.25), U.shade(R.color, -0.55), this.t * (big ? 0.45 : 0.3));
+        ctx.restore();
+        const g = ctx.createRadialGradient(TT.W / 2, 250, 10, TT.W / 2, 250, 520);
+        g.addColorStop(0, 'rgba(255,255,255,0.5)');
+        g.addColorStop(0.18, U.shade(R.color, 0.2) + '66');
+        g.addColorStop(0.45, 'rgba(8,4,20,0.25)');
+        g.addColorStop(1, 'rgba(8,4,20,0.97)');
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, TT.W, TT.H);
+        // fényudvar a talapzat alatt
+        ctx.save();
+        ctx.globalAlpha *= 0.55 + Math.sin(TT.time * 3) * 0.1;
+        const pg = ctx.createRadialGradient(TT.W / 2, 330, 4, TT.W / 2, 330, 150);
+        pg.addColorStop(0, R.color);
+        pg.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = pg;
+        ctx.beginPath();
+        ctx.ellipse(TT.W / 2, 330, 150, 46, 0, 0, Math.PI * 2);
+        ctx.fill();
         ctx.restore();
         const sc = U.ease.outBack(k) * 2.2;
         if (sc > 0.01) TT.art.drawFigure(ctx, fig, TT.W / 2, 330, sc, { t: TT.time, pose: this.t > 0.7 ? 'cheer' : 'idle' });
@@ -338,6 +351,14 @@
         }
         if (this.t > 0.9) D.text(ctx, 'Koppints a folytatáshoz', TT.W / 2, 528, { size: 16, align: 'center', color: '#a89cd8', alpha: 0.6 + Math.sin(TT.time * 4) * 0.3 });
         ctx.restore();
+        // a doboz kinyílásának villanása
+        if (this.t < 0.3) {
+          ctx.save();
+          ctx.globalAlpha = (1 - this.t / 0.3) * 0.85;
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, TT.W, TT.H);
+          ctx.restore();
+        }
         TT.fx.draw(ctx, 1);
       },
     };
