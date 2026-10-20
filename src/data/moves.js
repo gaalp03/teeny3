@@ -20,9 +20,9 @@
   const E = (s, p, d, extra) => Object.assign({ s, p, d }, extra || {});
 
   // ---------- Titánok ----------
-  M('bo_staff', 'Bot-csapás', 'melee', 10, 2.2, 'staff', '#ffd23f');
-  M('birdarang', 'Madárrang', 'shot', 20, 4.5, 'bird', '#ffd23f', { eff: [E('stun', 0.25, 0.9)] });
-  M('flying_kick', 'Repülő rúgás', 'melee', 36, 8, 'kick', '#ff6b35');
+  M('bo_staff', 'Bot-csapás', 'melee', 12, 2, 'staff', '#ffd23f');
+  M('birdarang', 'Madárrang', 'shot', 23, 4.5, 'bird', '#ffd23f', { eff: [E('stun', 0.4, 0.9)] });
+  M('flying_kick', 'Repülő rúgás', 'melee', 40, 8, 'kick', '#ff6b35', { crit: 0.2 });
   M('titans_go', 'Titánok, rajta!', 'multi', 72, 0, 'punch', '#ffd23f', { super: true, hits: 4, melee: true });
 
   M('azarath', 'Azarath!', 'shot', 11, 2.4, 'magic', '#8e5cff');
@@ -339,8 +339,8 @@
   M('beatbox_bomb', 'Beatbox-bomba', 'slam', 86, 0, 'note', '#5fe0c8', { super: true, eff: [E('stun', 1, 1.3)] });
 
   // ---------- Különleges TT2-változatok ----------
-  M('cat_scratch', 'Macskakarom', 'melee', 10, 1.9, 'claw', '#7bd65b');
-  M('waffle_toss', 'Gofridobás', 'shot', 22, 4.5, 'pie', '#e8b04b', { eff: [E('slow', 0.35, 3)] });
+  M('cat_scratch', 'Macskakarom', 'melee', 12, 1.9, 'claw', '#7bd65b');
+  M('waffle_toss', 'Gofridobás', 'shot', 27, 4.5, 'pie', '#e8b04b', { eff: [E('slow', 0.35, 3)] });
   M('nine_lives', 'Kilenc élet', 'multi', 78, 0, 'claw', '#7bd65b', { super: true, hits: 6, melee: true, eff: [E('regen', 1, 5, { self: true })] });
   M('martian_beam', 'Marsi sugár', 'beam', 27, 5.5, 'laser', '#4fd36b', { eff: [E('weak', 0.4, 4)] });
   M('martian_morph', 'Marsi átváltozás', 'slam', 80, 0, 'rock', '#4fd36b', { super: true, eff: [E('stun', 1, 1.2)] });

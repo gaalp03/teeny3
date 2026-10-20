@@ -483,16 +483,6 @@
       hair: 'flat', hairColor: '#e8e8f0', eyes: 'dot', mouth: 'smirk', gear: ['top_hat', 'mustache', 'monocle'], hatColor: '#2a9d8f', scale: 1.06,
     }, { team: 'mint', bio: 'A világ legnagyobb gyűjtője. Minden figurát bontatlanul akar — örökre a dobozban.', noBox: true });
 
-  // Statisztikák kiegyenlítése: minden figura azonos "kerettel" indul, a különbséget
-  // a szerep (HP/támadás/védekezés aránya) és a ritkaság adja.
-  for (const f of LIST) {
-    const budget = f.hp / 10 + f.atk + f.def + (f.spd - 10) * 0.5;
-    const k = 44 / budget;
-    f.hp = Math.round(f.hp * k);
-    f.atk = Math.round(f.atk * k * 10) / 10;
-    f.def = Math.round(f.def * k * 10) / 10;
-  }
-
   // Passzív képességek (ahol eltér a típus alapértelmezésétől)
   const PASSIVE = {
     robin: 'leader', robin_ultra: 'leader', robin_pirate: 'leader', mrmint: 'leader',
@@ -581,6 +571,17 @@
       skin: '#f4f4f8', top: '#d62828', sleeves: '#1d1d2b', gloves: '#1d1d2b', bottom: '#1d1d2b', boots: '#d62828', belt: '#1d1d2b',
       hair: 'puffs', hairColor: '#1d1d2b', mask: '#1d1d2b', eyes: 'lens', mouth: 'grin',
     }, { team: 'villain', short: 'Harley', bio: 'Kalapács, bomba és egy puszi. Kiszámíthatatlanul szórakoztató.' });
+
+  // Statisztikák kiegyenlítése: minden figura azonos "kerettel" indul, a különbséget
+  // a szerep (HP/támadás/védekezés aránya) és a ritkaság adja.
+  // (a lista legvégén, hogy a később felvett sorozatokra is vonatkozzon)
+  for (const f of LIST) {
+    const budget = f.hp / 10 + f.atk + f.def + (f.spd - 10) * 0.5;
+    const k = 44 / budget;
+    f.hp = Math.round(f.hp * k);
+    f.atk = Math.round(f.atk * k * 10) / 10;
+    f.def = Math.round(f.def * k * 10) / 10;
+  }
 
   TT.FIG_LIST = LIST;
   TT.FIG = {};
