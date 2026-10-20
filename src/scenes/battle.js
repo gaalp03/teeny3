@@ -884,6 +884,29 @@
       });
     },
 
+    // Vereség utáni tipp: az ellenfél fő típusa ellen erős típus, és egy meglévő figura belőle
+    counterTip() {
+      const count = {};
+      for (const t of this.en.team) {
+        const f = TT.FIG[t.id];
+        if (f) count[f.type] = (count[f.type] || 0) + 1;
+      }
+      const main = Object.keys(count).sort((a, b) => count[b] - count[a])[0];
+      const counter = main && Object.keys(TT.TYPES).find((k) => TT.TYPES[k].beats === main);
+      if (!counter) return null;
+      const s = TT.save;
+      const fits = (id) => TT.FIG[id] && s.owned[id] && TT.FIG[id].type === counter;
+      const pick = s.team.find(fits) || Object.keys(s.owned).filter(fits)
+        .sort((a, b) => TT.power(TT.FIG[b], s.owned[b].lvl) - TT.power(TT.FIG[a], s.owned[a].lvl))[0];
+      const tn = (k) => TT.TYPES[k].name;
+      const az = (w) => (/^[aáeéiíoóöőuúüű]/i.test(w) ? 'az ' : 'a ') + w;
+      let text = `Tipp: az ellenfél csapata főleg ${tn(main)} típusú. Ellenük ${az(tn(counter))} típus 30%-kal többet sebez`;
+      if (!pick) text += ' — ilyen figurát a dobozokból szerezhetsz.';
+      else if (s.team.includes(pick)) text += ` — ${TT.FIG[pick].short} már a csapatodban van, őt küldd elsőnek!`;
+      else text += `. Próbáld ki a csapatodban: ${TT.FIG[pick].short}!`;
+      return text;
+    },
+
     setAuto(on) {
       this.auto = on;
       this.c.ai[0] = on ? new AI(0.85, true) : null;
@@ -1105,6 +1128,14 @@
               }, 'Igen, könnyebben', 'Nem, maradjon');
             });
           }, 1400);
+        } else if (!this.p.tutorial) {
+          const tip = this.counterTip();
+          if (tip) {
+            setTimeout(() => {
+              if (TT.scene !== this || this.state !== 'results') return;
+              TT.ui.say([{ who: 'robin', text: tip }]);
+            }, 1400);
+          }
         }
       }
       if (this.p.onResult) this.p.onResult(won, this);
