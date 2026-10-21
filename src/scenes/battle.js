@@ -5,6 +5,7 @@
   const U = TT.U;
   const D = TT.D;
   const PERFECT_WINDOW = 0.36;
+  const KNOCK_T = 0.3; // találatkor a visszalökés hossza (mp)
   const SWAP_CD = 3.5;
 
   // ======================= LOGIKA =======================
@@ -635,6 +636,8 @@
             // a játékosnak megmutatjuk, miért nem lett tökéletes: túl korán nyomta le
             if (def.side === 0 && d.hitIdx === 0) TT.fx.text(hx, hy - 78, 'Túl korán! Nyomd, amikor zöld', { color: '#ffd23f', tsize: 17, vy: -50 });
             TT.fx.burst(hx - (def.side === 0 ? -1 : 1) * 30, hy, 8, { color: '#d8e0ff', shape: 'spark', speed: 220, size: 5, life: 0.3 });
+            def.kbT = KNOCK_T;
+            def.kbA = 7;
           } else {
             const big = dmg > def.maxHp * 0.12 || crit || a.isSuper;
             TT.audio.sfx(crit ? 'crit' : big ? 'hit2' : 'hit');
@@ -644,6 +647,10 @@
             if (typeM < 1 && d.hitIdx === 0) TT.fx.text(hx, hy - 105, 'Nem túl hatásos…', { color: '#b8c2cc', tsize: 16, vy: -60 });
             this.impact(hx, hy, move, big);
             TT.shake(big ? 9 : 4, big ? 0.3 : 0.15);
+            // az eltalált figura hátracsúszik a talapzaton; kritikusnál és a szuper utolsó ütésénél egy pillanatra megáll az idő
+            def.kbT = KNOCK_T;
+            def.kbA = big ? 30 : 16;
+            if (crit || (a.isSuper && d.last)) TT.slowmo(0.1, 0.07);
             if (broke) {
               TT.audio.sfx('guardbreak');
               TT.fx.text(hx, hy - 120, 'BLOKK TÖRVE!', { color: '#ff4f4f', tsize: 26 });
@@ -1070,6 +1077,7 @@
         f.y = U.lerp(f.y, f.ty, k);
         f.s = U.lerp(f.s, f.ts, k);
         f.hurtT = Math.max(0, f.hurtT - dt);
+        if (f.kbT > 0) f.kbT = Math.max(0, f.kbT - dt);
         f.flashT = Math.max(0, f.flashT - dt);
         if (f.enterT != null) f.enterT += dt;
         f.ghost = f.ghost > f.hp ? Math.max(f.hp, f.ghost - f.maxHp * dt * 0.6) : f.hp;
@@ -1316,6 +1324,13 @@
         }
       } else if (f.stun > 0) pose = 'stun';
       else if (f.blocking) pose = 'block';
+      if (f.kbT > 0 && f.alive && !a) {
+        // visszalökés: gyorsan hátra, majd rugalmasan vissza a helyére
+        const k = 1 - f.kbT / KNOCK_T;
+        const push = k < 0.25 ? U.ease.outCubic(k / 0.25) : 1 - U.ease.inOutQuad((k - 0.25) / 0.75);
+        x -= facing * f.kbA * push;
+        lean -= 0.1 * push * (f.kbA / 30);
+      }
       else if (f.hurtT > 0) pose = 'hurt';
       const over = this.state === 'finish' || this.state === 'results';
       // a harc végén a győztes csapat minden élő figurája ünnepel (a padon ülők is), a vesztesek szédelegnek

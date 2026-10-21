@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 47;
+  TT.NEWS_VERSION = 48;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 48, who: 'cyborg', text: 'Az ütéseknek most súlya van! Aki kap egyet, hátracsúszik a talapzaton, kritikus találatnál és a szuper utolsó csapásánál pedig egy pillanatra megáll az idő. Érzed? Ez a BOOYAH ereje!' },
     { v: 47, who: 'beastboy', text: 'Yo, dude! Sokkal több dumánk van: beszélgetés közben százféleképpen szólunk be, harc előtt jobban felhergeljük magunkat, és ha kipattan egy doboz a boltban, bekiabálunk. Put up dem dukes!' },
     { v: 46, who: 'starfire', text: 'Ó, de jó! Mostantól beszélgetés közben is hallod a hangunkat, mint a TT2-ben: Robin elmélázik, Cyborg BOOYAH-zik, Beast Boy nevet, én pedig örülök. Raven… Raven sóhajt.' },
     { v: 45, who: 'cyborg', text: 'Még többet dumálunk! Ha állsz a városban, beszólunk. Harc előtt felvezetjük a meccset, és Robin örül, ha edzed vagy megveszed a napi ajánlatot. BOOYAH!' },
