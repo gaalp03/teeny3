@@ -5,6 +5,9 @@
   const D = TT.D;
 
   let W; // TT.WORLD
+  // a kiskedvenc: a TT2 Krypto kiegészítő modellje; elforgatás a figurákéhoz hasonlóan (0 = a néző felé)
+  const PET = { id: 'acc_krypto' };
+  const PET_YAW = { down: 0, right: -Math.PI / 2, left: Math.PI / 2, up: Math.PI };
   let solidGrid = null;
   let minimap = null;
 
@@ -1106,6 +1109,7 @@
       this.updatePatrols(dt);
       this.updateCars(dt);
       this.updateNpcs(dt);
+      this.updatePet(dt);
       if (TT.isFading()) return;
 
       // interakció
@@ -1208,6 +1212,7 @@
       }
       const pl = this.pl;
       items.push({ y: pl.y, draw: () => this.drawPlayer(ctx, pl.x - cx, pl.y - cy) });
+      if (this.pet) items.push({ y: this.pet.y, draw: () => this.drawPet(ctx, this.pet.x - cx, this.pet.y - cy) });
       items.sort((a, b) => a.y - b.y);
       for (const it of items) it.draw();
 
@@ -1242,6 +1247,54 @@
       ctx.fill();
       ctx.restore();
       TT.art.drawToy(ctx, TT.FIG.robin, x, y + 2, 0.6, { dir: pl.dir, moving: pl.moving, walk: pl.walk, paint: TT.paintOf('robin'), live: true });
+    },
+
+    // Krypto, a szuperkutya követi a játékost a városban (ha már bevetette a Krypto kelléket, és megvan a TT2-es modellje)
+    updatePet(dt) {
+      if (!TT.save.flags.kryptoPet || !TT.art.has3d(PET.id)) {
+        this.pet = null;
+        return;
+      }
+      const pl = this.pl;
+      const back = { up: [0, 1], down: [0, -1], left: [1, 0], right: [-1, 0] }[pl.dir] || [0, -1];
+      const tx = pl.x + back[0] * 34 + 18, ty = pl.y + back[1] * 26 + 4;
+      if (!this.pet) {
+        this.pet = { x: tx, y: ty, dir: pl.dir, walk: 0, moving: false };
+        if (TT.save.flags.kryptoPetNew) {
+          TT.save.flags.kryptoPetNew = false;
+          TT.ui.toast('Krypto mostantól elkísér a városban!', { color: '#3fa7ff', dur: 3.4 });
+          TT.audio.sfx('krypto');
+        }
+      }
+      const p = this.pet;
+      const dx = tx - p.x, dy = ty - p.y, d = Math.hypot(dx, dy);
+      if (d > 300) {
+        p.x = tx;
+        p.y = ty;
+      } else if (d > 3) {
+        const step = Math.min(d, (pl.moving ? 230 : 140) * dt * Math.min(2, d / 30));
+        p.x += (dx / d) * step;
+        p.y += (dy / d) * step;
+        if (Math.abs(dx) > Math.abs(dy) * 1.2) p.dir = dx > 0 ? 'right' : 'left';
+        else if (Math.abs(dy) > 2) p.dir = dy > 0 ? 'down' : 'up';
+      }
+      p.moving = d > 6;
+      if (p.moving) p.walk += dt * 14;
+    },
+
+    drawPet(ctx, x, y) {
+      const p = this.pet;
+      ctx.save();
+      ctx.globalAlpha = 0.22;
+      ctx.beginPath();
+      ctx.ellipse(x, y + 2, 13, 5, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#000';
+      ctx.fill();
+      ctx.restore();
+      const hop = p.moving ? Math.abs(Math.sin(p.walk)) * 7 : 0;
+      TT.art.drawFigure(ctx, PET, x, y + 2 - hop, 0.42, {
+        pedestal: false, yaw3d: PET_YAW[p.dir] || 0, anim3d: { name: 'idle', t: TT.time }, live3d: true,
+      });
     },
 
     toggleMap() {

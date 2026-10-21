@@ -924,6 +924,7 @@
         if (!v || !(s.items[v] > 0)) return;
         if (this.c.useItem(0, v)) {
           s.items[v]--;
+          if (v === 'krypto' && !s.flags.kryptoPet) s.flags.kryptoPet = s.flags.kryptoPetNew = true;
           s.stats.items = (s.stats.items || 0) + 1;
           this.itemsUsed++;
           TT.store.write();
