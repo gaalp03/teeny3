@@ -178,6 +178,8 @@
     mission: () => arp(['E5', 'G5', 'C6'], 0.07, { type: 'triangle', vol: 0.11 }),
     teleport: () => arp(['C5', 'G5', 'C6', 'G6'], 0.05, { type: 'sine', vol: 0.1 }),
     pause: () => tone(523, 0.1, { type: 'triangle', vol: 0.1 }),
+    krypto: () => { noise(0.12, { vol: 0.12, filter: 'bandpass', freq: 700, q: 2 }); noise(0.12, { vol: 0.12, filter: 'bandpass', freq: 800, q: 2, delay: 0.18 }); },
+    lantern: () => arp(['G4', 'D5', 'G5', 'D6'], 0.06, { type: 'sine', vol: 0.1 }),
     superfull: () => arp(['C5', 'E5', 'G5', 'C6', 'G5', 'C6'], 0.07, { type: 'square', vol: 0.08 }),
     honk: () => { tone(392, 0.16, { type: 'square', vol: 0.05 }); tone(466, 0.16, { type: 'square', vol: 0.05 }); tone(392, 0.2, { type: 'square', vol: 0.05, delay: 0.22 }); tone(466, 0.2, { type: 'square', vol: 0.05, delay: 0.22 }); },
   };

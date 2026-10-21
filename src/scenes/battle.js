@@ -260,6 +260,15 @@
       } else if (item === 'cleanse') {
         for (const k of Object.keys(f.status)) if (!TT.STATUS[k].good) delete f.status[k];
         f.stun = 0;
+      } else if (item === 'krypto') {
+        const e = this.act(1 - s);
+        if (!e || !e.alive) return false;
+        const dmg = this.damage(e, Math.round(e.maxHp * 0.1));
+        this.emit('item', { f, item, target: e, dmg });
+        this.applyStatus(e, 'stun', 0.8, null, 'item');
+        return true;
+      } else if (item === 'lantern') {
+        this.applyStatus(f, 'shield', 12, Math.round(f.maxHp * 0.2), 'item');
       }
       this.emit('item', { f, item });
       return true;
@@ -680,7 +689,16 @@
           break;
         case 'item': {
           const it = TT.ITEMS[d.item];
-          TT.audio.sfx(d.item === 'pizza' ? 'heal' : d.item === 'energy' ? 'buff' : 'shield');
+          TT.audio.sfx({ pizza: 'heal', energy: 'buff', krypto: 'krypto', lantern: 'lantern' }[d.item] || 'shield');
+          if (d.target) {
+            // Krypto beugrik és megharapja az ellenfelet
+            const t = d.target;
+            TT.fx.text(t.x, t.y - 110, String(d.dmg), { color: '#3fa7ff', tsize: 30 });
+            this.impact(t.x, t.y - 70, { color: '#3fa7ff', fx: 'punch' }, true);
+            TT.shake(7, 0.25);
+            t.kbT = KNOCK_T;
+            t.kbA = 26;
+          }
           if (d.item === 'pizza') TT.audio.voice(d.f.id, 'heal', 0.8);
           TT.fx.text(d.f.x, d.f.y - 175, it.name + '!', { color: it.color, tsize: 22, vy: -60 });
           TT.fx.burst(d.f.x, d.f.y - 70, 14, { color: it.color, shape: 'star', speed: 160, size: 6, life: 0.6 });

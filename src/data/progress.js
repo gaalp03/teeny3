@@ -216,6 +216,9 @@
     pizza: { name: 'Pizzaszelet', desc: 'Az aktív figura 30% HP-t gyógyul.', price: 80, color: '#ffcf6b' },
     energy: { name: 'Energiaital', desc: '+50% szupermérő.', price: 120, color: '#7bd65b' },
     cleanse: { name: 'Tisztító spray', desc: 'Leveszi a rossz állapotokat és a kábulatot.', price: 60, color: '#9be7ff' },
+    // a TT2 harci kiegészítői
+    krypto: { name: 'Krypto', desc: 'A szuperkutya rátámad az ellenfélre: 10% HP sebzés és rövid kábulat.', price: 160, color: '#3fa7ff' },
+    lantern: { name: 'Lámpás-gyűrű', desc: 'Zöld energiapajzs: elnyel annyi sebzést, mint a max HP 20%-a.', price: 140, color: '#2ecc71' },
   };
   TT.ITEM_MAX = 9;
   TT.ITEMS_PER_BATTLE = 2;
