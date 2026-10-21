@@ -463,6 +463,7 @@
 
     talkTo(n) {
       const s = TT.save;
+      TT.audio.sfx('npc');
       const TS = W.TS;
       // forduljon a játékos felé
       const dx = this.pl.x - n.x * TS, dy = this.pl.y - n.y * TS;

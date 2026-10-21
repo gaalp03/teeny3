@@ -87,7 +87,7 @@
     if (!msgs.length) return 0;
     TT.store.write();
     msgs.forEach((m, i) => setTimeout(() => {
-      TT.audio.sfx('coin');
+      TT.audio.sfx('mission');
       TT.ui.toast(m, { color: '#9be7ff', dur: 3.4 });
     }, 300 + i * 900));
     return msgs.length;
