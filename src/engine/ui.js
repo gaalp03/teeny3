@@ -262,7 +262,7 @@
     }));
     menu.set(items);
     const o = {
-      kind: 'choice', anim: 0,
+      kind: 'choice', anim: 0, box: { y, h },
       update() {
         const inp = I();
         if (cfg.cancel !== false && inp.hit('back')) {
@@ -389,15 +389,32 @@
   };
 
   ui.drawToasts = function (ctx) {
-    toasts.forEach((t, i) => {
+    // nyitott választóablaknál az üzenet ne takarja a címét: az ablak alá vagy fölé kerül, ahol van hely;
+    // ha egyik sem fér el, csak a legutóbbi látszik kicsiben a képernyő alján
+    const top = stack[stack.length - 1];
+    let list = toasts, y0 = 62, dir = 1, size = 20, th = 38;
+    if (top && top.box && top.box.y < 62 + toasts.length * 46) {
+      const below = top.box.y + top.box.h + 8;
+      if (below + toasts.length * 46 <= TT.H) y0 = below;
+      else if (top.box.y - toasts.length * 46 >= 0) {
+        y0 = top.box.y - 46;
+        dir = -1;
+      } else {
+        list = toasts.slice(-1);
+        y0 = TT.H - 32;
+        size = 15;
+        th = 28;
+      }
+    }
+    list.forEach((t, i) => {
       const inA = U.clamp(t.t / 0.25, 0, 1), outA = U.clamp((t.dur - t.t) / 0.4, 0, 1);
       const a = Math.min(inA, outA);
-      const w = D.measure(ctx, t.text, 20) + 40;
-      const y = 62 + i * 46 - (1 - U.ease.outBack(inA)) * 30;
+      const w = D.measure(ctx, t.text, size) + 40;
+      const y = y0 + dir * i * 46 - (1 - U.ease.outBack(inA)) * 30;
       ctx.save();
       ctx.globalAlpha = a;
-      D.panel(ctx, (TT.W - w) / 2, y, w, 38, { fill: '#1b1140', r: 19, stroke: t.color, lw: 3 });
-      D.text(ctx, t.text, TT.W / 2, y + 20, { size: 20, align: 'center', color: t.color });
+      D.panel(ctx, (TT.W - w) / 2, y, w, th, { fill: '#1b1140', r: th / 2, stroke: t.color, lw: 3 });
+      D.text(ctx, t.text, TT.W / 2, y + th / 2 + 1, { size, align: 'center', color: t.color });
       ctx.restore();
     });
   };
