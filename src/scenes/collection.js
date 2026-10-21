@@ -65,6 +65,8 @@
       s.team[this.slot] = id;
       TT.store.write();
       TT.audio.sfx('swap');
+      // a TT2 karakterválasztó hangja: a Titán örül, hogy beválasztottad
+      TT.audio.voice(id, 'pick', 0.8);
       this.slot = (this.slot + 1) % 3;
     },
 

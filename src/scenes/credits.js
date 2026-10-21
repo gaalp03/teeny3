@@ -27,9 +27,15 @@
       this.leaving = false;
       TT.audio.music('credits');
       this.parade = TT.FIG_LIST.map((f) => f.id);
+      // Raven vagy Cyborg elköszön a TT2 stáblistás szinkronjával (3 és 16 másodpercnél)
+      this.creditVoice = [3, 16];
     },
     update(dt) {
       this.t += dt;
+      if (this.creditVoice.length && this.t > this.creditVoice[0]) {
+        this.creditVoice.shift();
+        TT.audio.voiceFrom(TT.U.shuffle(['raven', 'cyborg']), 'credits', 1);
+      }
       if (this.t > 2 && (TT.input.hit('ok') || TT.input.hit('back') || TT.input.anyTap())) this.done();
       if (this.t > 34) this.done();
     },
