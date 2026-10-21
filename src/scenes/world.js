@@ -860,7 +860,7 @@
       if (ev === 'newgame') {
         TT.ui.say([
           { who: 'robin', text: 'Titánok! Megjelent a… TEENY TITANS 3! Új figurák, új liga, új Csatakupola a belvárosban!' },
-          { who: 'beastboy', text: 'Duuude! Negyvenhárom új figura! Mindet akarom! Kétszer!' },
+          { who: 'beastboy', text: `Duuude! ${TT.FIG_LIST.length} figura! Mindet akarom! Kétszer!` },
           { who: 'cyborg', text: 'És a Teeny Titans 3 Világliga díja egy színarany Ultra Robin figura. BOOYAH!' },
           { who: 'raven', text: 'Remek. Biztos nem lesz belőle semmi baj.' },
           { who: 'mrmint', text: 'Ahem. Jó napot, Jump City. Itt Mr. Mint, a világ legnagyobb gyűjtője.' },
