@@ -291,8 +291,17 @@ def export_model(parts):
     return model, textures
 
 
-# nem bolti figurák, amiket a játék mégis 3D-ben mutat (pl. a Krypto kellék a harcban)
-EXTRA_ROOTS = {'accessory_krypto'}
+# nem bolti figurák, amiket a játék mégis 3D-ben mutat (a harci kellékek): név → a szülő neve, ha
+# több azonos nevű változat van (a lámpásból zöld, lila és piros is)
+EXTRA_ROOTS = {'accessory_krypto': None, 'accessory_lantern': 'lantern_green'}
+
+
+def _parent_name(go):
+    try:
+        tr = _component(go, 'Transform')
+        return tr.m_Father.read().m_GameObject.read().m_Name.lower()
+    except Exception:
+        return ''
 
 
 def render_shop_models(env, save, only=None, save_model=None):
@@ -312,6 +321,8 @@ def render_shop_models(env, save, only=None, save_model=None):
             continue
         name = go.m_Name or ''
         if not (re.search(r'_shop$', name, re.I) or name.lower() in EXTRA_ROOTS) or name.lower() in seen:
+            continue
+        if EXTRA_ROOTS.get(name.lower()) and _parent_name(go) != EXTRA_ROOTS[name.lower()]:
             continue
         if only and name.lower() not in only:
             continue

@@ -11,7 +11,9 @@
   const KNOCK_T = 0.3;
   // Krypto kellék: a TT2 kiegészítő 3D modellje (ha a saját APK-ból megvan), beugrik, harap, elszalad
   const KRYPTO = { id: 'acc_krypto' };
-  const KRYPTO_BITE = 0.28, KRYPTO_DUR = 1.4; // találatkor a visszalökés hossza (mp)
+  const KRYPTO_BITE = 0.28, KRYPTO_DUR = 1.4;
+  // Lámpás-gyűrű: a TT2 zöld lámpása lebeg a figura mellett, amíg a pajzs tart
+  const LANTERN = { id: 'acc_lantern' }; // találatkor a visszalökés hossza (mp)
   const SWAP_CD = 3.5;
 
   // ======================= LOGIKA =======================
@@ -693,6 +695,7 @@
         case 'item': {
           const it = TT.ITEMS[d.item];
           TT.audio.sfx({ pizza: 'heal', energy: 'buff', krypto: 'krypto', lantern: 'lantern' }[d.item] || 'shield');
+          if (d.item === 'lantern') this.lantern = { f: d.f, t: 0 };
           if (d.target) {
             // Krypto beugrik, és a harapás pillanatában jön a sebzés látványa
             const t = d.target;
@@ -1114,6 +1117,11 @@
         f.ghost = f.ghost > f.hp ? Math.max(f.hp, f.ghost - f.maxHp * dt * 0.6) : f.hp;
       }
       if (this.krypto && (this.krypto.t += dt) > KRYPTO_DUR) this.krypto = null;
+      if (this.lantern) {
+        const lf = this.lantern.f;
+        this.lantern.t += dt;
+        if (!lf.alive || !lf.status.shield || lf !== c.act(lf.side)) this.lantern = null;
+      }
       for (const p of this.projectiles) {
         if (p.delay > 0) p.delay -= dt;
         else p.t += dt;
@@ -1254,6 +1262,15 @@
       all.sort((a, b) => (a.active ? 1 : 0) - (b.active ? 1 : 0) || a.f.y - b.f.y);
       for (const o of all) this.drawFighter(ctx, o.f, o.active);
       if (this.krypto) this.drawKrypto(ctx, this.krypto);
+      if (this.lantern && TT.art.has3d(LANTERN.id)) {
+        // a TT2 idle animációja elrepítené és a (fényként rajzolt) csillagot sötéten mutatná: a megjelenés egy kockáján áll
+        const { f, t } = this.lantern;
+        const facing = f.side === 0 ? 1 : -1;
+        const k = U.ease.outBack(U.clamp(t / 0.4, 0, 1));
+        TT.art.drawFigure(ctx, LANTERN, f.x - facing * 70, f.y - 120 + Math.sin(t * 2.5) * 8, 2.2 * k, {
+          pedestal: false, yaw3d: t * 1.2, anim3d: { name: 'enter', t: Math.min(t, 0.2) }, live3d: true,
+        });
+      }
 
       // auras
       for (const a of this.auras) {
