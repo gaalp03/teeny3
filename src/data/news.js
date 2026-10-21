@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 49;
+  TT.NEWS_VERSION = 50;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 50, who: 'raven', text: 'A Blokk-edzés eddig szigorúbb volt, mint az igazi harc. Most pontosan ugyanakkor zöld a kör, mint harcban, és megmondom, ha korán vagy későn nyomtad. Ja, és lift-zene szól. Nem én választottam.' },
     { v: 49, who: 'robin', text: 'Ha visszatérsz, köszöntjük Jump Cityt. Joker ellen Gotham, Lex és Bizarro ellen Metropolis jár a fejünkben, és ezt hangosan is kimondjuk. A Toronyban a vitrinnél pedig elmesélem, mennyire büszke vagyok a gyűjteményünkre!' },
     { v: 48, who: 'cyborg', text: 'Az ütéseknek most súlya van! Aki kap egyet, hátracsúszik a talapzaton, kritikus találatnál és a szuper utolsó csapásánál pedig egy pillanatra megáll az idő. Érzed? Ez a BOOYAH ereje!' },
     { v: 47, who: 'beastboy', text: 'Yo, dude! Sokkal több dumánk van: beszélgetés közben százféleképpen szólunk be, harc előtt jobban felhergeljük magunkat, és ha kipattan egy doboz a boltban, bekiabálunk. Put up dem dukes!' },

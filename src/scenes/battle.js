@@ -5,6 +5,9 @@
   const U = TT.U;
   const D = TT.D;
   const PERFECT_WINDOW = 0.36;
+  const EASY_WINDOW = 0.5;
+  // a tökéletes blokk ablaka a nehézség szerint (a Blokk-edzés is ezt használja, hogy ugyanazt az időzítést tanítsa)
+  TT.perfectWindow = () => (TT.settings.difficulty === 'easy' ? EASY_WINDOW : PERFECT_WINDOW);
   const KNOCK_T = 0.3; // találatkor a visszalökés hossza (mp)
   const SWAP_CD = 3.5;
 
@@ -487,7 +490,7 @@
       this.p = p;
       // nehézség: az ellenfél szintje és ügyessége
       // könnyűn a saját Titánjaid tökéletes blokk ablaka is szélesebb
-      const DIFF = { easy: { lvl: -2, ai: -0.18, xp: 0.9, pw: 0.5 }, normal: { lvl: 0, ai: 0, xp: 1 }, hard: { lvl: 2, ai: 0.12, xp: 1.25 } };
+      const DIFF = { easy: { lvl: -2, ai: -0.18, xp: 0.9, pw: EASY_WINDOW }, normal: { lvl: 0, ai: 0, xp: 1 }, hard: { lvl: 2, ai: 0.12, xp: 1.25 } };
       const df = DIFF[TT.settings.difficulty || 'normal'] || DIFF.normal;
       this.diff = df;
       const en = Object.assign({}, p.enemy, {

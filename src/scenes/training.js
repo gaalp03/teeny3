@@ -4,7 +4,6 @@
   const U = TT.U;
   const D = TT.D;
   const ROUNDS = 15;
-  const PERFECT = 0.28, GOOD = 0.6;
   const DAILY_FULL = 3;
 
   function today() {
@@ -17,6 +16,9 @@
       this.p = p;
       this.t = 0;
       this.state = 'intro';
+      // ugyanaz a tökéletes ablak, mint a harcban; a „jó” blokk még negyed másodperccel korábban is jár
+      this.pw = TT.perfectWindow();
+      this.goodW = this.pw + 0.25;
       this.n = 0;
       this.perfect = 0;
       this.good = 0;
@@ -28,7 +30,7 @@
       this.flash = 0;
       this.pose = 'idle';
       this.poseT = 0;
-      TT.audio.music('battle');
+      TT.audio.music('training');
     },
 
     newAttack() {
@@ -43,7 +45,7 @@
       a.pressed = a.t;
       this.pose = 'block';
       this.poseT = 0.35;
-      if (a.impact - a.t > GOOD) this.resolve('early');
+      if (a.impact - a.t > this.goodW) this.resolve('early');
     },
 
     resolve(kind) {
@@ -55,7 +57,7 @@
         if (a.pressed == null) kind = 'miss';
         else {
           const before = a.impact - a.pressed;
-          kind = before <= PERFECT ? 'perfect' : before <= GOOD ? 'good' : 'early';
+          kind = before <= this.pw ? 'perfect' : before <= this.goodW ? 'good' : 'early';
         }
       }
       if (kind === 'perfect') {
@@ -68,9 +70,11 @@
         this.good++;
         TT.audio.sfx('block');
         TT.fx.text(px, py - 60, 'Jó blokk', { color: '#9be7ff', tsize: 26 });
+        TT.fx.text(px, py - 140, 'Kicsit korán — várd meg a zöldet', { color: '#ffd23f', tsize: 16, vy: -50 });
       } else {
         TT.audio.sfx('hit');
-        TT.fx.text(px, py - 60, kind === 'early' ? 'Túl korai!' : 'Talált!', { color: '#ff8a80', tsize: 26 });
+        TT.fx.text(px, py - 60, kind === 'early' ? 'Túl korai!' : 'Késő!', { color: '#ff8a80', tsize: 26 });
+        TT.fx.text(px, py - 140, kind === 'early' ? 'Csak akkor nyomd, amikor zöld a kör' : 'Nyomd, amint zöldre vált a kör', { color: '#ffd23f', tsize: 16, vy: -50 });
         this.flash = 0.15;
         this.pose = 'hurt';
         this.poseT = 0.3;
@@ -164,10 +168,10 @@
       if (a && !a.done && this.state === 'play') {
         const tt = a.impact - a.t;
         const k = U.clamp(tt / a.impact, 0, 1);
-        const inP = tt <= PERFECT;
+        const inP = tt <= this.pw;
         ctx.save();
         ctx.lineWidth = inP ? 7 : 4;
-        ctx.strokeStyle = inP ? '#7bff6b' : tt < GOOD ? '#ffd23f' : '#ffffff';
+        ctx.strokeStyle = inP ? '#7bff6b' : tt < this.goodW ? '#ffd23f' : '#ffffff';
         ctx.beginPath();
         ctx.arc(300, 328, 46 + k * 110, 0, Math.PI * 2);
         ctx.stroke();
@@ -175,7 +179,7 @@
         ctx.strokeStyle = '#7bff6b';
         ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.arc(300, 328, 46 + (PERFECT / a.impact) * 110, 0, Math.PI * 2);
+        ctx.arc(300, 328, 46 + Math.min(1, this.pw / a.impact) * 110, 0, Math.PI * 2);
         ctx.stroke();
         ctx.restore();
       }
