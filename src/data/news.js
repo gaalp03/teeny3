@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 45;
+  TT.NEWS_VERSION = 46;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 46, who: 'starfire', text: 'Ó, de jó! Mostantól beszélgetés közben is hallod a hangunkat, mint a TT2-ben: Robin elmélázik, Cyborg BOOYAH-zik, Beast Boy nevet, én pedig örülök. Raven… Raven sóhajt.' },
     { v: 45, who: 'cyborg', text: 'Még többet dumálunk! Ha állsz a városban, beszólunk. Harc előtt felvezetjük a meccset, és Robin örül, ha edzed vagy megveszed a napi ajánlatot. BOOYAH!' },
     { v: 44, who: 'beastboy', text: 'Most már a gonoszok is beszélnek! Hood, Bizarro, Slade, Mr. Chibi, Pingvin és még sokan mások a saját TT2-hangjukon szólalnak meg harc közben. Bizarro kacagása a kedvencem, dude.' },
     { v: 43, who: 'raven', text: 'Két új harci aréna a TT2-ből: Wonder Woman ligája Oán, a Zöld Lámpások bolygóján vár, apám pedig mostantól Apokolipsz tűztengere fölött harcol. Kellemes kirándulást.' },

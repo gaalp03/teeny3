@@ -149,6 +149,12 @@
       update(dt) {
         const line = this.lines[this.i];
         const full = line.text.length;
+        if (this.voiced !== this.i) {
+          // a TT2-höz hasonlóan a beszélő Titán rövid csevegőhangot ad (csak ha új szereplő szólal meg)
+          const prev = this.lines[this.i - 1];
+          if (typeof line.who === 'string' && (!prev || prev.who !== line.who)) TT.audio.voice(line.who, 'chat', 0.7);
+          this.voiced = this.i;
+        }
         if (this.chars < full) {
           this.chars = Math.min(full, this.chars + dt * 48);
           this.blip -= dt;
