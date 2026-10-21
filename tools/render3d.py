@@ -291,6 +291,10 @@ def export_model(parts):
     return model, textures
 
 
+# nem bolti figurák, amiket a játék mégis 3D-ben mutat (pl. a Krypto kellék a harcban)
+EXTRA_ROOTS = {'accessory_krypto'}
+
+
 def render_shop_models(env, save, only=None, save_model=None):
     """Minden *_shop objektum lerajzolása; save(név, kép) menti, save_model(név, json, textúrák)
     a 3D hálót. A sikeres renderek számát adja."""
@@ -307,7 +311,7 @@ def render_shop_models(env, save, only=None, save_model=None):
         except Exception:
             continue
         name = go.m_Name or ''
-        if not re.search(r'_shop$', name, re.I) or name.lower() in seen:
+        if not (re.search(r'_shop$', name, re.I) or name.lower() in EXTRA_ROOTS) or name.lower() in seen:
             continue
         if only and name.lower() not in only:
             continue

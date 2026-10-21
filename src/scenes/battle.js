@@ -8,7 +8,10 @@
   const EASY_WINDOW = 0.5;
   // a tökéletes blokk ablaka a nehézség szerint (a Blokk-edzés is ezt használja, hogy ugyanazt az időzítést tanítsa)
   TT.perfectWindow = () => (TT.settings.difficulty === 'easy' ? EASY_WINDOW : PERFECT_WINDOW);
-  const KNOCK_T = 0.3; // találatkor a visszalökés hossza (mp)
+  const KNOCK_T = 0.3;
+  // Krypto kellék: a TT2 kiegészítő 3D modellje (ha a saját APK-ból megvan), beugrik, harap, elszalad
+  const KRYPTO = { id: 'acc_krypto' };
+  const KRYPTO_BITE = 0.28, KRYPTO_DUR = 1.4; // találatkor a visszalökés hossza (mp)
   const SWAP_CD = 3.5;
 
   // ======================= LOGIKA =======================
@@ -691,13 +694,17 @@
           const it = TT.ITEMS[d.item];
           TT.audio.sfx({ pizza: 'heal', energy: 'buff', krypto: 'krypto', lantern: 'lantern' }[d.item] || 'shield');
           if (d.target) {
-            // Krypto beugrik és megharapja az ellenfelet
+            // Krypto beugrik, és a harapás pillanatában jön a sebzés látványa
             const t = d.target;
-            TT.fx.text(t.x, t.y - 110, String(d.dmg), { color: '#3fa7ff', tsize: 30 });
-            this.impact(t.x, t.y - 70, { color: '#3fa7ff', fx: 'punch' }, true);
-            TT.shake(7, 0.25);
-            t.kbT = KNOCK_T;
-            t.kbA = 26;
+            this.krypto = { t: 0, from: d.f.x + 40, to: t.x - 120, y: t.y + 6 };
+            setTimeout(() => {
+              if (TT.scene !== this) return;
+              TT.fx.text(t.x, t.y - 110, String(d.dmg), { color: '#3fa7ff', tsize: 30 });
+              this.impact(t.x, t.y - 70, { color: '#3fa7ff', fx: 'punch' }, true);
+              TT.shake(7, 0.25);
+              t.kbT = KNOCK_T;
+              t.kbA = 26;
+            }, KRYPTO_BITE * 1000);
           }
           if (d.item === 'pizza') TT.audio.voice(d.f.id, 'heal', 0.8);
           TT.fx.text(d.f.x, d.f.y - 175, it.name + '!', { color: it.color, tsize: 22, vy: -60 });
@@ -1106,6 +1113,7 @@
         if (f.enterT != null) f.enterT += dt;
         f.ghost = f.ghost > f.hp ? Math.max(f.hp, f.ghost - f.maxHp * dt * 0.6) : f.hp;
       }
+      if (this.krypto && (this.krypto.t += dt) > KRYPTO_DUR) this.krypto = null;
       for (const p of this.projectiles) {
         if (p.delay > 0) p.delay -= dt;
         else p.t += dt;
@@ -1245,6 +1253,7 @@
       for (const side of c.sides) side.fighters.forEach((f, i) => all.push({ f, active: i === side.active }));
       all.sort((a, b) => (a.active ? 1 : 0) - (b.active ? 1 : 0) || a.f.y - b.f.y);
       for (const o of all) this.drawFighter(ctx, o.f, o.active);
+      if (this.krypto) this.drawKrypto(ctx, this.krypto);
 
       // auras
       for (const a of this.auras) {
@@ -1289,6 +1298,34 @@
       if (this.state === 'finish') this.drawFinish(ctx);
       TT.fx.draw(ctx, 1);
       if (this.state === 'results') this.drawResults(ctx);
+    },
+
+    drawKrypto(ctx, k) {
+      // beugrás → harapás (a TT2 „shoot” animációja) → visszaugrás és elhalványulás
+      let x, alpha = 1, hop = 0;
+      if (k.t < KRYPTO_BITE) {
+        const p = U.ease.outCubic(k.t / KRYPTO_BITE);
+        x = U.lerp(k.from, k.to, p);
+        hop = Math.sin(p * Math.PI) * 50;
+      } else if (k.t < 0.9) x = k.to;
+      else {
+        const p = (k.t - 0.9) / (KRYPTO_DUR - 0.9);
+        x = U.lerp(k.to, k.from - 80, U.ease.inOutQuad(p));
+        hop = Math.sin(p * Math.PI) * 40;
+        alpha = 1 - p;
+      }
+      if (TT.art.has3d(KRYPTO.id)) {
+        const anim3d = k.t < KRYPTO_BITE ? { name: 'enter', t: k.t } : k.t < 0.9 ? { name: 'ability', slot: 0, p: (k.t - KRYPTO_BITE) / (0.9 - KRYPTO_BITE) } : { name: 'idle', t: k.t };
+        TT.art.drawFigure(ctx, KRYPTO, x, k.y - hop, 1.1, { pedestal: false, alpha, yaw3d: k.t < 0.9 ? 0.25 : Math.PI - 0.25, anim3d, live3d: true });
+      } else {
+        // a modell nélkül egy kék csík jelzi a rohamot
+        ctx.save();
+        ctx.globalAlpha = alpha * 0.8;
+        ctx.fillStyle = '#3fa7ff';
+        D.rr(ctx, x - 40, k.y - hop - 60, 80, 26, 13);
+        ctx.fill();
+        ctx.restore();
+      }
     },
 
     drawFighter(ctx, f, active) {

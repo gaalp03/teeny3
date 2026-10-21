@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 55;
+  TT.NEWS_VERSION = 56;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 56, who: 'beastboy', text: 'Krypto most már tényleg ott van! A szuperkutya a saját TT2-es 3D figurájával ugrik be köpenyestül, megharapja az ellenfelet, aztán visszaszalad. Jó kutya! Ki a jó kutya?' },
     { v: 55, who: 'kid_pizza', text: 'Új kellékek a Büfében, egyenesen a TT2-ből! Krypto, a szuperkutya rátámad az ellenfélre és elkábítja, a Lámpás-gyűrű pedig zöld pajzsot von köréd. Mamma mia, micsoda kutya!' },
     { v: 54, who: 'robin', text: 'A térképes gyors utazás most a TT2 teleportjával zúg, a harci szünetnek és a megtelt SZUPER mérőnek is saját, eredeti hangja van. Ha meghallod a töltődést: üss!' },
     { v: 53, who: 'cyborg', text: 'Új TT2-hangeffektek! Csippan, ha megszólítasz valakit a városban, harsan a teljesített napi küldetés, és az égés, a kábulat meg a fagyás is az eredeti tofu-hangokat kapta. Csípős!' },
