@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 59;
+  TT.NEWS_VERSION = 60;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 60, who: 'robin', text: 'Ha a Menü gombon piros felkiáltójelet látsz, aznap még pörgethetsz a Szerencsekeréken! Két új teljesítmény is jár érte: hét napnyi pörgetés és a figura-főnyeremény.' },
     { v: 59, who: 'starfire', text: 'Új a Menüben: a Szerencsekerék! Naponta egyszer ingyen pörgethetsz érméért, kellékért, Kryptóért, és ha nagyon szerencsés vagy, egy figuráért! A kerék a TT2 tofu-rulettjének hangján pörög. Wheeee!' },
     { v: 58, who: 'raven', text: 'A Büfében és a harci kellékmenüben most minden kellék alatt ott áll, hogy mit csinál. Így nem kell kitalálnod, hogy a kutya mire jó. (Harapni. A kutya harapni jó.)' },
     { v: 57, who: 'cyborg', text: 'A Lámpás-gyűrű mellé megjött a lámpás is! Amíg tart a zöld pajzs, a TT2-es Zöld Lámpás forogva lebeg a figurád mellett. Ennél menőbb éjjeli lámpám még nem volt.' },

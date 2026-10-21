@@ -1452,6 +1452,18 @@
         ctx.fillStyle = '#fff';
         ctx.fillRect(L.menu.x + 15, L.menu.y + 13 + i * 8, 24, 4);
       }
+      if (TT.wheelReady && TT.wheelReady() && s.flags.tutorial) {
+        // a Menüben ma még pörgethető a szerencsekerék
+        const bx = L.menu.x + L.menu.w - 2, by = L.menu.y + 2 + Math.sin(TT.time * 5) * 2;
+        ctx.beginPath();
+        ctx.arc(bx, by, 10, 0, Math.PI * 2);
+        ctx.fillStyle = '#ff4f4f';
+        ctx.fill();
+        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = '#120a2c';
+        ctx.stroke();
+        D.text(ctx, '!', bx, by + 1, { size: 15, align: 'center', color: '#ffffff', lw: 3 });
+      }
       D.button(ctx, L.map.x, L.map.y, L.map.w, L.map.h, '', { color: '#3fa7ff', r: 10 });
       ctx.save();
       ctx.strokeStyle = '#fff';

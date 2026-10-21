@@ -100,12 +100,14 @@
       } else {
         const id = TT.rollBox(TT.BOXES[0]);
         const info = TT.grantFigure(id);
+        s.flags.wheelFig = true;
         this.result = `${TT.FIG[id].name}!`;
         TT.store.write();
         setTimeout(() => TT.scene === this && TT.ui.reveal(id, info, () => TT.checkAch()), 500);
       }
       TT.audio.voiceFrom(U.shuffle(s.team.slice()), sg.kind === 'fig' || sg.v >= 300 ? 'offer' : 'chat', 0.8);
       TT.store.write();
+      if (sg.kind !== 'fig') TT.checkAch();
       this.build();
     },
 
