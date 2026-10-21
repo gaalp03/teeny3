@@ -1034,6 +1034,9 @@
           TT.audio.music(this.en.music || 'battle');
           TT.audio.sfx('go');
           TT.audio.voiceFrom(c.sides[0].fighters.map((f) => f.id), 'go', 1);
+          // az ellenfél első figurája is bemutatkozik (pl. Hood, Bizarro, Slade saját TT2-hangján)
+          const foe = c.act(1);
+          setTimeout(() => TT.scene === this && foe && foe.alive && TT.audio.voice(foe.id, 'enter', 1), 1300);
           // harc eleje: az aktív figurák beugranak a talapzatra
           for (const sd of c.sides) sd.fighters[sd.active].enterT = 0;
           if (this.p.tutorial) this.showTip('TÁMADJ! A kártyák feltöltődnek — koppints rájuk, vagy nyomd az 1, 2, 3 gombot!', 6);

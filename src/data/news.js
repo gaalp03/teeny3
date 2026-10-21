@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 43;
+  TT.NEWS_VERSION = 44;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 44, who: 'beastboy', text: 'Most már a gonoszok is beszélnek! Hood, Bizarro, Slade, Mr. Chibi, Pingvin és még sokan mások a saját TT2-hangjukon szólalnak meg harc közben. Bizarro kacagása a kedvencem, dude.' },
     { v: 43, who: 'raven', text: 'Két új harci aréna a TT2-ből: Wonder Woman ligája Oán, a Zöld Lámpások bolygóján vár, apám pedig mostantól Apokolipsz tűztengere fölött harcol. Kellemes kirándulást.' },
     { v: 42, who: 'robin', text: 'Harc előtt most már a TT2 felvezető zenéje szól, és csak a „Rajta!”-nál indul a harci dal. A stáblista végére pedig odatettük a kedvencünket: Night Begins to Shine!' },
     { v: 41, who: 'cyborg', text: 'Új zenék a TT2-ből! Hoodnak saját témája van, Joker Gotham, Lex Metropolis zenéjére harcol, Slade a Legion of Doom dallamára, a Gyűjteményben pedig táncolós zene szól. BOOYAH!' },
