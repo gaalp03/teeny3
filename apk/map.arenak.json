@@ -4,6 +4,8 @@
   "hive": "arena__hive.png",
   "dome": "arena__dome.png",
   "beach": "arena__beach.png",
-  "vault": "arena__vault.png"
+  "vault": "arena__vault.png",
+  "apokolips": "arena__apokolips.png",
+  "oa": "arena__oa.png"
  }
 }
