@@ -83,6 +83,7 @@
           break;
         case 'vitrin':
           this.openVitrin();
+          TT.audio.voice('robin', 'vitrin', 0.8);
           break;
         case 'door':
           this.exitTower();

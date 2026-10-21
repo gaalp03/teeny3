@@ -540,8 +540,11 @@
       this.state = 'vs';
       this.t = 0;
       TT.audio.sfx('crowd');
-      // a VS alatt a csapatod első Titánja felvezeti a harcot (eredeti TT2-szinkron)
-      TT.audio.voiceFrom(this.c.sides[0].fighters.map((f) => f.id), 'prebattle', 0.8);
+      // a VS alatt a csapatod első Titánja felvezeti a harcot (eredeti TT2-szinkron);
+      // Gotham és Metropolis zenéjére a TT2 városos beszólásai jönnek
+      const ids = this.c.sides[0].fighters.map((f) => f.id);
+      const city = /^(gotham|metropolis)/.exec(this.en.music || '');
+      if (!(city && TT.audio.voiceFrom(ids, city[1], 1))) TT.audio.voiceFrom(ids, 'prebattle', 0.8);
     },
 
     // célpozíciók a slotokhoz

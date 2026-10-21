@@ -33,6 +33,8 @@
     cont() {
       TT.store.load();
       TT.go('world', {});
+      // visszatérés Jump Citybe: egy Titán köszönti a várost (TT2-szinkron)
+      setTimeout(() => TT.audio.voiceFrom(U.shuffle(TT.save.team.slice()), 'jumpcity', 1), 900);
     },
 
     newGame() {
