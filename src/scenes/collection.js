@@ -17,7 +17,7 @@
       const first = TT.save.team[0];
       this.sel = first;
       this.list = this.makeList();
-      TT.audio.music('shop');
+      TT.audio.music('collection');
     },
 
     makeList() {
