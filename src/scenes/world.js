@@ -8,6 +8,7 @@
   // a kiskedvenc: a TT2 Krypto kiegészítő modellje; elforgatás a figurákéhoz hasonlóan (0 = a néző felé)
   const PET = { id: 'acc_krypto' };
   const PET_YAW = { down: 0, right: -Math.PI / 2, left: Math.PI / 2, up: Math.PI };
+  const PET_SNIFF = 90;
   let solidGrid = null;
   let minimap = null;
 
@@ -1280,6 +1281,19 @@
       }
       p.moving = d > 6;
       if (p.moving) p.walk += dt * 14;
+      // séta közben Krypto néha kiszimatol pár érmét (kb. másfél percnyi gyaloglásonként)
+      if (pl.moving) p.sniff = (p.sniff || 0) + dt;
+      if (p.sniff > PET_SNIFF) {
+        p.sniff = U.rand(-20, 0);
+        const coins = U.pick([5, 10, 10, 15, 25]);
+        TT.save.coins += coins;
+        TT.store.write();
+        TT.audio.sfx('krypto');
+        setTimeout(() => TT.audio.sfx('coin'), 350);
+        const sx = p.x - this.cam.x, sy = p.y - this.cam.y;
+        TT.fx.text(sx, sy - 50, `Krypto talált +${coins}`, { color: '#ffd23f', tsize: 18, vy: -50, layer: 1 });
+        TT.fx.burst(sx, sy - 20, 10, { colors: ['#ffd23f', '#fff6d8'], shape: 'star', speed: 140, size: 5, life: 0.6, layer: 1 });
+      }
     },
 
     drawPet(ctx, x, y) {

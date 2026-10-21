@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 61;
+  TT.NEWS_VERSION = 62;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 62, who: 'raven', text: 'Krypto szaglászik. Ha sokat sétálsz vele a városban, néha kiás pár érmét, és büszkén megugatja. Ennél hasznosabb háziállatunk még nem volt. Silkie, ez rád is vonatkozik.' },
     { v: 61, who: 'beastboy', text: 'Ha egyszer bevetetted Kryptót harcban, utána a városban is a nyomodban jár! Ugrálva követ mindenhova, mint egy igazi kiskutya. Én is tudok kutya lenni, de ő a kedvenc, mi?' },
     { v: 60, who: 'robin', text: 'Ha a Menü gombon piros felkiáltójelet látsz, aznap még pörgethetsz a Szerencsekeréken! Két új teljesítmény is jár érte: hét napnyi pörgetés és a figura-főnyeremény.' },
     { v: 59, who: 'starfire', text: 'Új a Menüben: a Szerencsekerék! Naponta egyszer ingyen pörgethetsz érméért, kellékért, Kryptóért, és ha nagyon szerencsés vagy, egy figuráért! A kerék a TT2 tofu-rulettjének hangján pörög. Wheeee!' },
