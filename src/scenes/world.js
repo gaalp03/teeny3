@@ -629,9 +629,9 @@
       TT.ui.choose({
         title: 'Büfé',
         text: `Harcban a KELLÉK gombbal (F) használhatod, harconként kettőt. Érméd: ${U.fmt(s.coins)}`,
-        buttonH: 44,
+        buttonH: 52, width: 600, size: 19,
         options: Object.entries(TT.ITEMS).map(([id, it]) => ({
-          label: `${it.name} — ${it.price} érme (${s.items[id] || 0}/${TT.ITEM_MAX})`, value: id,
+          label: `${it.name} — ${it.price} érme (${s.items[id] || 0}/${TT.ITEM_MAX})`, value: id, desc: it.desc,
           disabled: s.coins < it.price || (s.items[id] || 0) >= TT.ITEM_MAX,
           onDisabled: () => TT.ui.toast((s.items[id] || 0) >= TT.ITEM_MAX ? 'Ebből már tele a hátizsák.' : 'Nincs elég érméd!', { color: '#ff8a80' }),
         })).concat([{ label: 'Kész', value: null, color: '#6c5ce7' }]),

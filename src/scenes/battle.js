@@ -915,8 +915,9 @@
       TT.ui.choose({
         title: 'Kellékek',
         text: `Még ${left} használható ebben a harcban. Vásárlás: Pizzéria.`,
+        buttonH: 52, width: 560, size: 19,
         options: Object.entries(TT.ITEMS).map(([id, it]) => ({
-          label: `${it.name} (${s.items[id] || 0} db)`, value: id, disabled: !(s.items[id] > 0), color: '#ff6b35',
+          label: `${it.name} (${s.items[id] || 0} db)`, value: id, desc: it.desc, disabled: !(s.items[id] > 0), color: '#ff6b35',
           onDisabled: () => TT.ui.toast('Nincs ilyen kelléked. A Pizzériában vehetsz.', { color: '#ff8a80' }),
         })).concat([{ label: 'Mégse', value: null }]),
       }, (v) => {

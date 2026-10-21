@@ -276,9 +276,15 @@
     ctx.fillStyle = 'rgba(255,255,255,0.18)';
     ctx.fill();
     ctx.restore();
+    // o.sub: kisebb magyarázó sor a felirat alatt (pl. mit csinál egy kellék)
     if (label) {
-      D.text(ctx, label, x + w / 2 + (o.icon ? 10 : 0), y + h / 2 + press + 1, {
+      D.text(ctx, label, x + w / 2 + (o.icon ? 10 : 0), y + (o.sub ? h * 0.34 : h / 2) + press + 1, {
         size: o.size || Math.min(24, h * 0.45), align: 'center', color: o.disabled ? '#bbb' : o.textColor || '#fff', maxWidth: w - 12,
+      });
+    }
+    if (o.sub) {
+      D.text(ctx, o.sub, x + w / 2, y + h * 0.74 + press, {
+        size: 13, align: 'center', color: o.disabled ? '#aaa' : '#fff6d8', maxWidth: w - 16, lw: 3,
       });
     }
   };

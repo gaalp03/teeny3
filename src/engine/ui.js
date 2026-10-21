@@ -96,7 +96,7 @@
         const focus = (sf || I().hover(b.x, b.y, b.w, b.h)) && i === this.focus && !b.skip;
         const pressed = this.pressedId === b && this.pressT > 0;
         if (b.draw) b.draw(ctx, b, focus, pressed);
-        else D.button(ctx, b.x, b.y, b.w, b.h, b.label, { color: b.color, disabled: b.disabled, focus, pressed, size: b.size, glow: b.glow });
+        else D.button(ctx, b.x, b.y, b.w, b.h, b.label, { color: b.color, disabled: b.disabled, focus, pressed, size: b.size, glow: b.glow, sub: b.desc });
       });
     }
   }
@@ -258,7 +258,7 @@
     const items = opts.map((op, i) => ({
       id: 'o' + i, ...place(op), h: bh,
       label: op.label, color: op.color || (op.value === null ? '#6c5ce7' : '#ff6b35'), disabled: op.disabled, value: op.value,
-      size: cfg.size || 22, onDisabled: op.onDisabled,
+      size: cfg.size || 22, onDisabled: op.onDisabled, desc: op.desc,
     }));
     menu.set(items);
     const o = {
