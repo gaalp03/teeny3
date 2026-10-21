@@ -918,9 +918,10 @@
       TT.audio.sfx('select');
       TT.ui.choose({
         title: 'Menü',
-        buttonH: 40,
+        buttonH: 46, width: 600, columns: 2, size: 19,
         options: [
           { label: 'Csapat és gyűjtemény', value: 'team' },
+          { label: TT.wheelReady() ? 'Szerencsekerék!' : 'Szerencsekerék', value: 'wheel', color: TT.wheelReady() ? '#ffb000' : undefined },
           { label: 'Térkép', value: 'map' },
           { label: 'Napi küldetések', value: 'quests' },
           { label: 'Teljesítmények', value: 'ach' },
@@ -932,6 +933,7 @@
         ],
       }, (v) => {
         if (v === 'team') TT.go('collection', { from: 'world' });
+        else if (v === 'wheel') TT.go('wheel', { back: { x: this.pl.x / W.TS, y: this.pl.y / W.TS } });
         else if (v === 'map') this.toggleMap();
         else if (v === 'save') {
           TT.store.write();

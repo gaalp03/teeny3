@@ -180,6 +180,8 @@
     pause: () => tone(523, 0.1, { type: 'triangle', vol: 0.1 }),
     krypto: () => { noise(0.12, { vol: 0.12, filter: 'bandpass', freq: 700, q: 2 }); noise(0.12, { vol: 0.12, filter: 'bandpass', freq: 800, q: 2, delay: 0.18 }); },
     lantern: () => arp(['G4', 'D5', 'G5', 'D6'], 0.06, { type: 'sine', vol: 0.1 }),
+    wheel: () => arp(['C5', 'D5', 'E5', 'G5'], 0.09, { type: 'triangle', vol: 0.08 }),
+    wheelstop: () => { tone(880, 0.08, { vol: 0.12 }); tone(1320, 0.16, { vol: 0.1, delay: 0.08 }); },
     superfull: () => arp(['C5', 'E5', 'G5', 'C6', 'G5', 'C6'], 0.07, { type: 'square', vol: 0.08 }),
     honk: () => { tone(392, 0.16, { type: 'square', vol: 0.05 }); tone(466, 0.16, { type: 'square', vol: 0.05 }); tone(392, 0.2, { type: 'square', vol: 0.05, delay: 0.22 }); tone(466, 0.2, { type: 'square', vol: 0.05, delay: 0.22 }); },
   };
@@ -200,7 +202,7 @@
     src.buffer = buf;
     src.connect(A.sfxGain);
     src.start();
-    return true;
+    return src;
   }
   A.preloadSfx = function () {
     if (!A.ctx || !TT.custom || !TT.custom.sfx) return;
@@ -307,7 +309,9 @@
     // a hibahang (nem töltött támadás, rossz kvízválasz stb.) zavaró volt, ezért sehol nem szól
     if (name === 'error') return;
     if (!A.ctx || !A.unlocked || A.muted) return;
-    if (customSfx(name)) return;
+    // a saját (TT2) hangnál a lejátszót adja vissza, így egy hosszú hang leállítható (pl. a szerencsekerék pörgése)
+    const src = customSfx(name);
+    if (src) return src;
     const f = SFX[name];
     if (f) {
       try { f(); } catch (e) { /* hang hiba nem állítja meg a játékot */ }
