@@ -25,7 +25,7 @@
     enter() {
       this.t = 0;
       this.leaving = false;
-      TT.audio.music('title');
+      TT.audio.music('credits');
       this.parade = TT.FIG_LIST.map((f) => f.id);
     },
     update(dt) {

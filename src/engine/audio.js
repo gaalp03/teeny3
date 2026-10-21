@@ -441,10 +441,12 @@
   // Ha nincs saját zene és szintetizált dal sincs ilyen néven, ezek helyettesítik
   // saját TT2-zene nélkül ezek a (szintetizált) dalok szólnak helyettük
   const ALIAS = {
-    town_night: 'town', dome: 'shop', collection: 'shop',
+    town_night: 'town', dome: 'shop', collection: 'shop', credits: 'title',
     hood: 'boss', lod: 'boss', gotham_night: 'boss', gotham_day: 'boss', metropolis_night: 'boss', metropolis_day: 'boss',
   };
   A.isBossTune = (name) => name === 'boss' || ALIAS[name] === 'boss';
+  // van-e hozzá saját (TT2-es) zene — ami csak akkor szól, ha megvan (pl. a harc előtti zene)
+  A.hasSampled = (name) => !!sampledUrl(name);
   const ONE_SHOT = new Set(['victory', 'defeat']);
 
   // Saját zenék (assets/custom/music, a saját APK-ból): ha van, az szól a szintetizált dal helyett

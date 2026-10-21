@@ -525,7 +525,8 @@
       this.superCine = null;
       this.blockHeld = false;
       for (let s = 0; s < 2; s++) this.layout(s, true);
-      TT.audio.music(en.music || 'battle');
+      // a bemutatkozás és a VS alatt a TT2 harc előtti zenéje szól (ha megvan), a harc indulásakor vált
+      TT.audio.music(TT.audio.hasSampled('prebattle') ? 'prebattle' : en.music || 'battle');
       if (en.intro && en.intro.length) {
         TT.ui.say(en.intro, () => this.startVs());
       } else this.startVs();
@@ -1030,6 +1031,7 @@
         if (this.t > 1.2 && !c.started) {
           c.started = true;
           this.state = 'fight';
+          TT.audio.music(this.en.music || 'battle');
           TT.audio.sfx('go');
           TT.audio.voiceFrom(c.sides[0].fighters.map((f) => f.id), 'go', 1);
           // harc eleje: az aktív figurák beugranak a talapzatra

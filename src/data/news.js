@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 41;
+  TT.NEWS_VERSION = 42;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 42, who: 'robin', text: 'Harc előtt most már a TT2 felvezető zenéje szól, és csak a „Rajta!”-nál indul a harci dal. A stáblista végére pedig odatettük a kedvencünket: Night Begins to Shine!' },
     { v: 41, who: 'cyborg', text: 'Új zenék a TT2-ből! Hoodnak saját témája van, Joker Gotham, Lex Metropolis zenéjére harcol, Slade a Legion of Doom dallamára, a Gyűjteményben pedig táncolós zene szól. BOOYAH!' },
     { v: 40, who: 'beastboy', text: 'Megnyílt egy kapu a multiverzumba! Átjött rajta egy kék Jinx, egy sötét Silkie és Bwana Beast a méhmalacával. Ez a legfurcsább dolog, amit láttam, dude.' },
     { v: 39, who: 'raven', text: 'A Testvériség Kupa után éjjelente egy csuklyás alak vadászik a parkban. Csuklyás Hood, Rose Wilsonnal és a Másik Mae-Eye-jal. Csak sötétben harcol.' },
