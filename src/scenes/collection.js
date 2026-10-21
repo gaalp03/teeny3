@@ -4,6 +4,8 @@
   const U = TT.U;
   const D = TT.D;
   const COLS = 6, CW = 86, CH = 98, GX = 18, GY = 176, GH = TT.H - GY - 8;
+  const VIEW_BTN = { x: 688, y: 80, w: 42, h: 28 };
+  const inRect = (r, x, y) => x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h;
 
   const scene = {
     enter(p) {
@@ -179,6 +181,7 @@
         items.push({ id: 'add', x: 590, y: 476, w: 168, h: 52, size: 18, label: inTeam >= 0 ? `${inTeam + 1}. helyen` : `Csapatba (${this.slot + 1}.)`, color: '#2ecc71', disabled: inTeam === this.slot, onClick: () => this.setTeam(sel) });
         const maxed = own[sel].lvl >= TT.MAX_LVL;
         items.push({ id: 'train', x: 766, y: 476, w: 178, h: 52, size: 17, label: maxed ? 'Max szint' : `Edzés ${this.trainCost(sel)}`, color: '#ffb000', disabled: maxed, onClick: () => this.train(sel) });
+        if (TT.art.has3d(sel)) items.push({ id: 'view', x: VIEW_BTN.x, y: VIEW_BTN.y, w: VIEW_BTN.w, h: VIEW_BTN.h, size: 13, label: 'Nagy', color: '#3fa7ff', onClick: () => this.openViewer(sel) });
         items.push({ id: 'paint', x: 598, y: 262, w: 64, h: 30, size: 13, label: 'Festés', color: '#ff4fa3', onClick: () => TT.openPaintShop(sel) });
         const hasCustom = TT.custom.figures[sel];
         items.push({
@@ -195,6 +198,10 @@
     update(dt) {
       this.t += dt;
       const I = TT.input;
+      if (this.view) {
+        this.updateViewer(dt);
+        return;
+      }
       if (I.hit('back')) {
         this.leave();
         return;
@@ -266,6 +273,10 @@
     },
 
     draw(ctx) {
+      if (this.view) {
+        this.drawViewer(ctx);
+        return;
+      }
       const g = ctx.createLinearGradient(0, 0, 0, TT.H);
       g.addColorStop(0, '#3a2a7a');
       g.addColorStop(1, '#1b1140');
@@ -315,11 +326,116 @@
         if (b.draw) b.draw(ctx, b, focus);
         else D.button(ctx, b.x, b.y, b.w, b.h, b.label, { color: b.color, disabled: b.disabled, focus, size: b.size });
       };
-      const onDetail = (b) => b.id === 'paint' || b.id === 'img';
+      const onDetail = (b) => b.id === 'paint' || b.id === 'img' || b.id === 'view';
       this.menu.items.forEach((b, i) => !b.id.startsWith('fig_') && !onDetail(b) && btn(b, i));
       this.drawDetail(ctx);
       this.menu.items.forEach((b, i) => onDetail(b) && btn(b, i));
       TT.fx.draw(ctx, 1);
+    },
+
+    // Nagy nézegető: a TT2-es 3D figura teljes képernyőn, ujjal forgatható, és bemutatja a mozdulatait
+    openViewer(id) {
+      const f = TT.FIG[id];
+      this.view = { id, yaw: this.yaw == null ? 0.3 : this.yaw, act: null, at: 0, slot: 0, drag: {} };
+      this.vmenu = new TT.ui.Menu();
+      const acts = [
+        { id: 'atk', label: 'Támadás', color: '#ff6b35' },
+        { id: 'sup', label: 'Szuper', color: '#9d4edd' },
+        { id: 'dance', label: 'Tánc', color: '#ff4fa3' },
+        { id: 'hurt', label: 'Sérülés', color: '#e84545' },
+        { id: 'ko', label: 'Kiesés', color: '#6c5ce7' },
+        { id: 'close', label: 'Bezár', color: '#3a3a52' },
+      ];
+      const bw = 138, gap = 12, x0 = (TT.W - acts.length * bw - (acts.length - 1) * gap) / 2;
+      this.vmenu.set(acts.map((a, i) => ({
+        id: a.id, x: x0 + i * (bw + gap), y: TT.H - 70, w: bw, h: 52, size: 18, label: a.label, color: a.color,
+        onClick: () => (a.id === 'close' ? this.closeViewer() : this.viewAct(a.id, f)),
+      })));
+      TT.audio.sfx('select');
+    },
+
+    closeViewer() {
+      this.yaw = this.view.yaw;
+      this.view = null;
+      TT.input.consumeTaps();
+    },
+
+    viewAct(kind, f) {
+      const v = this.view;
+      const DUR = { atk: 1.3, sup: 1.8, dance: 2.6, hurt: 0.7, ko: 1.8 };
+      v.act = kind;
+      v.at = 0;
+      v.dur = DUR[kind];
+      if (kind === 'atk') {
+        v.cur = v.slot;
+        const mv = TT.MOVES[f.moves[v.slot % f.moves.length]];
+        v.slot = (v.slot + 1) % f.moves.length;
+        if (!TT.audio.move(mv)) TT.audio.sfx('whoosh');
+        TT.audio.voice(f.id, 'attack', 0.6);
+      } else if (kind === 'sup') {
+        if (!TT.audio.move(TT.MOVES[f.sup])) TT.audio.sfx('super');
+        TT.audio.voice(f.id, 'attack', 1);
+      } else if (kind === 'dance') TT.audio.voice(f.id, 'dance', 1);
+      else if (kind === 'hurt') {
+        TT.audio.sfx('hit');
+        TT.audio.voice(f.id, 'hurt', 1);
+      } else if (kind === 'ko') {
+        TT.audio.sfx('ko');
+        TT.audio.voice(f.id, 'ko', 1);
+      }
+    },
+
+    updateViewer(dt) {
+      const I = TT.input;
+      const v = this.view;
+      if (I.hit('back')) {
+        TT.audio.sfx('back');
+        this.closeViewer();
+        return;
+      }
+      this.vmenu.update();
+      if (!this.view) return;
+      // húzással forgatás (a gombsoron kívül)
+      let held = false;
+      for (const p of I.pointers.values()) {
+        if (p.sy > TT.H - 80) continue;
+        held = true;
+        const last = v.drag[p.id];
+        if (last != null) v.yaw += (p.x - last) * 0.02;
+        v.drag[p.id] = p.x;
+      }
+      for (const r of I.releases) delete v.drag[r.id];
+      if (v.act) {
+        v.at += dt;
+        if (v.at >= v.dur) v.act = null;
+      }
+      if (!held && !v.act) v.yaw += dt * 0.35;
+    },
+
+    drawViewer(ctx) {
+      const v = this.view;
+      const f = TT.FIG[v.id];
+      const R = TT.RARITY[f.rarity];
+      const g = ctx.createRadialGradient(TT.W / 2, 300, 40, TT.W / 2, 300, 560);
+      g.addColorStop(0, U.shade(R.ring, -0.25));
+      g.addColorStop(1, '#120a2c');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, TT.W, TT.H);
+      D.sunburst(ctx, TT.W / 2, 300, 620, 16, 'rgba(255,255,255,0.05)', 'rgba(255,255,255,0)', TT.time * 0.15);
+      let anim3d = { name: 'idle', t: TT.time };
+      if (v.act === 'atk') anim3d = { name: 'ability', slot: v.cur, p: v.at / v.dur };
+      else if (v.act === 'sup') anim3d = { name: 'ability', slot: 'super', p: v.at / v.dur };
+      else if (v.act === 'dance') anim3d = { name: 'cheer', t: v.at };
+      else if (v.act === 'hurt') anim3d = { name: 'hurt', t: v.at };
+      else if (v.act === 'ko') anim3d = { name: 'ko', t: v.at };
+      TT.art.drawFigure(ctx, f, TT.W / 2, 440, 2.7, { t: TT.time, paint: TT.paintOf(v.id), yaw3d: v.yaw, anim3d, pedestal: true });
+      D.text(ctx, f.name, TT.W / 2, 40, { size: 34, align: 'center' });
+      D.rarityStars(ctx, f.rarity, TT.W / 2, 74, 16, 'center');
+      if (v.act === 'atk' || v.act === 'sup') {
+        const mv = TT.MOVES[v.act === 'sup' ? f.sup : f.moves[v.cur % f.moves.length]];
+        D.text(ctx, mv.name, TT.W / 2, 108, { size: 22, align: 'center', color: v.act === 'sup' ? '#ffd23f' : '#ffffff' });
+      } else D.text(ctx, 'Húzd ujjal a forgatáshoz', TT.W / 2, 108, { size: 16, align: 'center', color: '#c8b8f0', stroke: false });
+      this.vmenu.draw(ctx);
     },
 
     // 3D figura az adatlapon: lassan forog, húzással körbe forgatható, koppintásra táncol
@@ -339,7 +455,7 @@
       }
       for (const r of I.releases) {
         delete this.spinDrag[r.id];
-        if (r.sx >= ax && r.sx <= ax + aw && r.sy >= ay && r.sy <= ay + ah && Math.hypot(r.x - r.sx, r.y - r.sy) < 8 && TT.model3d && TT.model3d.has(this.sel)) {
+        if (r.sx >= ax && r.sx <= ax + aw && r.sy >= ay && r.sy <= ay + ah && !inRect(VIEW_BTN, r.sx, r.sy) && Math.hypot(r.x - r.sx, r.y - r.sy) < 8 && TT.model3d && TT.model3d.has(this.sel)) {
           this.dance = 2.6;
           TT.audio.sfx('select');
           TT.audio.voice(this.sel, 'dance', 1);
