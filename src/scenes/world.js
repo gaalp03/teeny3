@@ -1277,7 +1277,7 @@
 
     fastTravel(b) {
       this.showMap = false;
-      TT.audio.sfx('door');
+      TT.audio.sfx('teleport');
       TT.go('world', { pos: { x: b.door[0], y: b.door[1] + 1.15 }, dir: 'down' });
     },
 

@@ -733,7 +733,7 @@
           break;
         case 'superReady':
           if (d.f.side === 0) {
-            TT.audio.sfx('levelup');
+            TT.audio.sfx('superfull');
             if (!this.tipsShown.super && (this.p.tutorial || TT.save.stats.wins < 2)) {
               this.tipsShown.super = true;
               this.showTip('A SZUPER mérő megtelt! Nyomd meg a SZUPER gombot (R / 4) egy hatalmas támadásért!', 5);
@@ -1019,7 +1019,7 @@
     },
 
     pause() {
-      TT.audio.sfx('select');
+      TT.audio.sfx('pause');
       TT.ui.choose({
         title: 'Szünet',
         options: [{ label: 'Folytatás', value: 'go' }, { label: this.p.noForfeit ? 'Feladás (nem lehet)' : 'Feladás', value: 'quit', color: '#e84545', disabled: !!this.p.noForfeit }],
