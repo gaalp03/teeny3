@@ -199,6 +199,8 @@
           TT.fx.burst(TT.W / 2, 300, 40, { colors: ['#ffffff', op.box.color, '#ffd23f'], shape: 'star', speed: 520, size: 10, life: 0.9, layer: 1 });
           TT.fx.ring(TT.W / 2, 290, { color: '#ffffff', size: 20, size2: 300, life: 0.5, lw: 10, layer: 1 });
           TT.shake(10, 0.3);
+          // a doboz kipattan: egy Titán bekiabál, ahogy a TT2-ben a figura kirepül
+          TT.audio.voiceFrom(U.shuffle(TT.save.team.slice()), 'open', 0.9);
           setTimeout(() => {
             TT.ui.reveal(op.id, op.info, () => {
               this.opening = null;
