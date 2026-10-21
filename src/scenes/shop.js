@@ -159,6 +159,7 @@
       const info = TT.grantFigure(off.id);
       TT.store.write();
       TT.audio.sfx('buy');
+      TT.audio.voiceFrom(s.team.slice(), 'offer', 1);
       TT.ui.reveal(off.id, info, () => {
         this.build();
         TT.checkAch();

@@ -1043,6 +1043,13 @@
       }
       const mag = Math.hypot(mx, my);
       pl.moving = mag > 0.1 && !TT.ui.overlayActive() && !TT.isFading();
+      // ha a játékos egy ideig áll, a csapatból valaki beszól (eredeti TT2-szinkron)
+      if (pl.moving || TT.ui.overlayActive()) this.idleT = 0;
+      else if ((this.idleT = (this.idleT || 0) + dt) > (this.idleWait || 25)) {
+        this.idleT = 0;
+        this.idleWait = U.rand(35, 60);
+        TT.audio.voiceFrom(U.shuffle(TT.save.team.slice()), 'idle', 1);
+      }
       if (pl.moving) {
         const run = I.act('run') || mag > 0.95 && (jx || jy);
         const sp = (run ? 230 : 150) * Math.min(1, mag);

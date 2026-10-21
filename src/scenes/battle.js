@@ -539,6 +539,8 @@
       this.state = 'vs';
       this.t = 0;
       TT.audio.sfx('crowd');
+      // a VS alatt a csapatod első Titánja felvezeti a harcot (eredeti TT2-szinkron)
+      TT.audio.voiceFrom(this.c.sides[0].fighters.map((f) => f.id), 'prebattle', 0.8);
     },
 
     // célpozíciók a slotokhoz

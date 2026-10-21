@@ -117,6 +117,7 @@
       const ups = TT.addXp(id, 100);
       TT.store.write();
       TT.audio.sfx(ups ? 'levelup' : 'buy');
+      TT.audio.voice(id, 'train', 0.8);
       if (ups) TT.checkAch();
       TT.fx.text(760, 200, ups ? 'SZINTLÉPÉS!' : '+100 XP', { color: ups ? '#7bff6b' : '#c8b8f0', tsize: 26, layer: 1 });
     },
