@@ -184,6 +184,31 @@
       g.fillRect(0, 352, W, H - 352);
       stage(g, '#9ef0cf', '#2a9d8f', '#ffd23f');
     },
+    // Darkseid világa: vörös kupola, sárga tűztenger, lebegő kék kőplatform
+    apokolips(g) {
+      sky(g, '#7a1040', '#e0304a');
+      const lava = g.createLinearGradient(0, 300, 0, H);
+      lava.addColorStop(0, '#ffb000');
+      lava.addColorStop(1, '#ff6b00');
+      g.fillStyle = lava;
+      g.fillRect(0, 300, W, H - 300);
+      stage(g, '#a8d8f0', '#7a3fb0', '#4fd36b');
+    },
+    // Oa, a Zöld Lámpások bolygója: sötétzöld város, világító zöld platform
+    oa(g) {
+      sky(g, '#0d2a16', '#1f5a2e');
+      const rnd = U.rng(9);
+      for (let i = 0; i < 16; i++) {
+        const w = 30 + rnd() * 40, h = 120 + rnd() * 160, x = i * 62 + rnd() * 20;
+        g.fillStyle = '#163d22';
+        g.fillRect(x, 330 - h, w, h);
+        g.fillStyle = '#4fd36b';
+        for (let k = 0; k < 4; k++) g.fillRect(x + 6, 340 - h + k * 28, w - 12, 4);
+      }
+      g.fillStyle = '#0a1f10';
+      g.fillRect(0, 330, W, H - 330);
+      stage(g, '#7bff6b', '#2a7a3a', '#c8ffc0');
+    },
   };
 
   BD.draw = function (ctx, kind, t) {

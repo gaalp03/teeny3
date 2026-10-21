@@ -1,6 +1,6 @@
 'use strict';
 // Offline gyorsítótár: a játék internet nélkül is fut, ha egyszer betöltötted.
-const CACHE = 'tt3-60e8878f51';
+const CACHE = 'tt3-aee43a3fdb';
 const FILES = [
   "./",
   "index.html",

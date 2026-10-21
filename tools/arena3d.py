@@ -98,6 +98,8 @@ ARENAS = {
     'dome': ('HallofJusticeArena', (24, 7, 0), (0, 4.5, 0), 50),
     'beach': ('Arena_Themyscira', (-24, 7, 0), (0, 4.5, 0), 50),
     'vault': ('BatCaveArena', (-24, 7, 0), (0, 4.5, 0), 50),
+    'apokolips': ('Apokolips_Arena', (-38, 11, 0), (0, 9, 0), 50),
+    'oa': ('Arena_Oa', (0, 11, 38), (0, 9, 0), 50),
 }
 
 
