@@ -769,6 +769,7 @@
           break;
         case 'swap':
           TT.audio.sfx('swap');
+          setTimeout(() => TT.scene === this && TT.audio.sfx('land'), 180);
           TT.audio.voice(d.to.id, 'enter', 0.8);
           this.layout(d.side);
           TT.fx.burst(d.to.tx, d.to.ty - 50, 12, { color: '#ffffff', shape: 'circle', speed: 160, size: 6, life: 0.4 });
@@ -1101,6 +1102,7 @@
           setTimeout(() => TT.scene === this && foe && foe.alive && TT.audio.voice(foe.id, 'enter', 1), 1300);
           // harc eleje: az aktív figurák beugranak a talapzatra
           for (const sd of c.sides) sd.fighters[sd.active].enterT = 0;
+          TT.audio.sfx('land');
           if (this.p.tutorial) this.showTip('TÁMADJ! A kártyák feltöltődnek — koppints rájuk, vagy nyomd az 1, 2, 3 gombot!', 6);
         }
       } else if (this.state === 'fight') {
