@@ -1638,6 +1638,7 @@
       } else if (this.t < 8 && TT.save.playTime < 120) {
         D.text(ctx, 'Mozgás: WASD / nyilak · Futás: Shift · Beszéd: E', TT.W / 2, TT.H - 24, { size: 16, align: 'center', alpha: 0.9 });
       }
+      this.toastY = null;
       if (this.showMap) this.drawMap(ctx);
     },
 
@@ -1686,6 +1687,21 @@
         ctx.fillStyle = '#ff9ecd';
         ctx.fill();
       }
+      // az aktuális cél (a fenti feladatszöveg helye)
+      const goal = TT.objectiveTarget();
+      if (goal) {
+        const gx = x + goal.x * TS * k, gy = y + goal.y * TS * k;
+        const pulse = 1 + Math.sin(TT.time * 5) * 0.15;
+        D.star(ctx, gx, gy, 11 * pulse, 5 * pulse, 5);
+        ctx.fillStyle = '#ffd23f';
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#1d1433';
+        ctx.stroke();
+        D.text(ctx, 'CÉL', gx, gy + 20, { size: 12, align: 'center', color: '#ffd23f', lw: 3 });
+      }
+      // nyitott térképnél az értesítések a térkép alá kerülnek
+      this.toastY = y + mh + 22;
       const px = x + this.pl.x * k, py = y + this.pl.y * k;
       ctx.beginPath();
       ctx.arc(px, py, 6 + Math.sin(TT.time * 6) * 1.5, 0, Math.PI * 2);
@@ -1694,7 +1710,7 @@
       ctx.lineWidth = 2;
       ctx.strokeStyle = '#1d1433';
       ctx.stroke();
-      D.text(ctx, 'Piros: edző · Rózsaszín: Silkie játéka · Sárga: te · Kék névre koppintva: gyors utazás · M: bezár', TT.W / 2, y + mh + 2, { size: 13, align: 'center', color: '#c8b8f0', lw: 3 });
+      D.text(ctx, 'Csillag: cél · Piros: edző · Rózsaszín: Silkie játéka · Sárga: te · Kék névre: gyors utazás · M: bezár', TT.W / 2, y + mh + 2, { size: 13, align: 'center', color: '#c8b8f0', lw: 3 });
     },
   };
 

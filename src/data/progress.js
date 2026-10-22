@@ -375,4 +375,23 @@
     if (!s.beaten.trigon) return 'Raven nyugtalan… Trigon kapuja a Torony szigetén nyílik. Állítsd meg!';
     return 'Győztél! Próbáld ki a Végtelen Arénát, és gyűjtsd össze mind a ' + TT.FIG_LIST.length + ' figurát!';
   };
+
+  // Az aktuális cél helye a városban (mezőben), a térképen csillag jelöli
+  TT.objectiveTarget = function () {
+    const s = TT.save;
+    const W = TT.WORLD;
+    if (!s || !W) return null;
+    const npc = (tr) => W.npcs.find((n) => n.trainer === tr);
+    const door = (id) => {
+      const b = W.buildings.find((x) => x.id === id);
+      return b && { x: b.door[0], y: b.door[1] };
+    };
+    if (!s.flags.tutorial) return npc('tutorial');
+    if (!TT.cupDone('rookie') || !TT.cupDone('east') || !TT.cupDone('villain')) return door('dome');
+    if (!TT.cupDone('mint')) return door('vault');
+    if (!TT.cupDone('brotherhood')) return door('dome');
+    if (!s.beaten.redx) return npc('redx');
+    if (!s.beaten.trigon) return npc('trigon');
+    return null;
+  };
 })(window.TT);
