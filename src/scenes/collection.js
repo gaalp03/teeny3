@@ -515,7 +515,7 @@
       const beats = TT.TYPES[f.type].beats;
       D.text(ctx, 'Erős: ' + TT.TYPES[beats].name + ' ellen', tx, y + 106, { size: 13, color: TT.TYPES[beats].color, lw: 3 });
       if (!own) {
-        const lines = D.wrap(ctx, 'Még nincs meg ez a figura. Vegyél dobozt a Játékboltban, győzz le edzőket, vagy keresd a csillogó helyeket a városban!', w - 30, 15);
+        const lines = D.wrap(ctx, 'Még nincs meg ez a figura. Hol szerezhető: ' + TT.figSource(id), w - 30, 15);
         lines.forEach((l, i) => D.text(ctx, l, x + 16, y + 216 + i * 20, { size: 15, color: '#c8b8f0', stroke: false }));
         return;
       }

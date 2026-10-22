@@ -211,6 +211,27 @@
     return TT.U.weighted(weighted);
   };
 
+  // Honnan szerezhető meg egy figura (a Gyűjteményben a hiányzóknál)
+  TT.figSource = function (id) {
+    const f = TT.FIG[id];
+    const az = (w) => (/^[aáeéiíoóöőuúüű]/i.test(w) ? 'Az ' : 'A ') + w;
+    const cup = TT.CUPS.find((c) => c.reward && c.reward.fig === id);
+    if (cup) return `${az(cup.name)} megnyerésének jutalma a Csatakupolában.`;
+    const tr = Object.values(TT.TRAINERS).find((t) => t.reward && t.reward.figs && t.reward.figs.includes(id));
+    if (tr) return `Jutalom ${tr.name} legyőzéséért.`;
+    const ev = (TT.EVENTS || []).find((e) => e.reward === id);
+    if (ev) return `${az(ev.name)} esemény jutalma (gyűjts 10 ${ev.itemAcc} a városban).`;
+    if (TT.WORLD && TT.WORLD.hidden.some((h) => h.fig === id)) return 'Elrejtve valahol a városban. Keresd a csillogó helyeket!';
+    if (id === 'silkie_gold') return 'Silkie hálája, ha megtalálod az összes elveszett játékát a városban.';
+    if (id === 'trigon') return 'A Végtelen Aréna 10. győzelméért a Csatakupolában.';
+    if (f && !f.noBox) {
+      const boxes = TT.BOXES.filter((b) => b.odds[f.rarity]).map((b) => b.name);
+      const ser = f.series && TT.SERIES.find((x) => x.id === f.series);
+      return `Vakdobozban: ${boxes.join(', ')}${ser ? ', vagy a Sorozat-dobozban (' + ser.short + ')' : ''}. Játékbolt.`;
+    }
+    return 'Különleges jutalom. Járd be a várost és a Csatakupolát!';
+  };
+
   // Harci kellékek (harconként legfeljebb 2 használható)
   TT.ITEMS = {
     pizza: { name: 'Pizzaszelet', desc: 'Az aktív figura 30% HP-t gyógyul.', price: 80, color: '#ffcf6b' },

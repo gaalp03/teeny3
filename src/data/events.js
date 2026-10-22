@@ -4,13 +4,13 @@
   TT.EVENTS = [
     {
       id: 'halloween', name: 'Halloween', from: [10, 15], to: [11, 5], color: '#ff8c1a',
-      item: 'tök', itemName: 'Tök', reward: 'robin_vamp', coins: 500,
+      item: 'tök', itemName: 'Tök', itemAcc: 'tököt', reward: 'robin_vamp', coins: 500,
       spots: [[10, 28], [24, 31], [28, 38], [31, 50], [44, 44], [55, 25], [58, 36], [72, 47], [82, 40], [85, 24]],
       intro: 'Halloween van Jump Cityben! Gyűjts össze 10 tököt a városban egy Vámpír Robin figuráért!',
     },
     {
       id: 'xmas', name: 'Karácsony', from: [12, 10], to: [1, 6], color: '#d62828',
-      item: 'ajándék', itemName: 'Ajándék', reward: 'bb_reindeer', coins: 500,
+      item: 'ajándék', itemName: 'Ajándék', itemAcc: 'ajándékot', reward: 'bb_reindeer', coins: 500,
       spots: [[14, 31], [20, 44], [31, 24], [40, 47], [48, 28], [55, 50], [58, 22], [66, 31], [78, 44], [85, 52]],
       intro: 'Karácsony van! Mr. Mint becsomagolta a város ajándékait. Szerezz vissza 10-et egy Rénszarvas Beast Boy figuráért!',
     },
