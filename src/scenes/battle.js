@@ -2009,6 +2009,36 @@
           D.bar(ctx, bx + 46, by + 25, 68, 10, bf.hp / bf.maxHp, { color: '#4cd964' });
           if (!bf.alive) D.text(ctx, 'K.O.', bx + 80, by + 30, { size: 15, align: 'center', color: '#ff4f4f' });
           ctx.restore();
+          // típus-előny a mostani ellenféllel szemben: zöld fel-nyíl, ha erős ellene, piros le-nyíl, ha gyenge
+          const foe = this.c.act(1 - s);
+          if (s === 0 && bf.alive && foe && foe.alive) {
+            const up = TT.typeMult(bf.fig.type, foe.fig.type) > 1, down = TT.typeMult(foe.fig.type, bf.fig.type) > 1;
+            if (up || down) {
+              const ax = bx + 36, ay = by + 34;
+              ctx.save();
+              ctx.beginPath();
+              ctx.arc(ax, ay, 9, 0, Math.PI * 2);
+              ctx.fillStyle = up ? '#2ecc71' : '#e84545';
+              ctx.fill();
+              ctx.lineWidth = 2;
+              ctx.strokeStyle = '#120a2c';
+              ctx.stroke();
+              ctx.beginPath();
+              if (up) {
+                ctx.moveTo(ax, ay - 5);
+                ctx.lineTo(ax + 5, ay + 3);
+                ctx.lineTo(ax - 5, ay + 3);
+              } else {
+                ctx.moveTo(ax, ay + 5);
+                ctx.lineTo(ax + 5, ay - 3);
+                ctx.lineTo(ax - 5, ay - 3);
+              }
+              ctx.closePath();
+              ctx.fillStyle = '#ffffff';
+              ctx.fill();
+              ctx.restore();
+            }
+          }
           if (s === 0 && this.state === 'fight') {
             D.keycap(ctx, k === 0 ? 'Q' : 'E', bx + 112, by + 4, { size: 11 });
             if (side.swapCd > 0 && bf.alive) {

@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 72;
+  TT.NEWS_VERSION = 73;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 73, who: 'robin', text: 'Taktikai tipp: harcban a cserére váró figuráid portréján zöld nyíl jelzi, ha erős a mostani ellenfél ellen, piros, ha gyenge. Cserélj okosan!' },
     { v: 72, who: 'raven', text: 'Ha nem látod a következő célt, a képernyő szélén egy sárga nyíl mutatja, merre menj. Most már tényleg nem tévedhetsz el. Beast Boy, rólad beszélek.' },
     { v: 71, who: 'cyborg', text: 'Eltévedtél? A térképen (M) egy sárga csillag mutatja, hová kell menned a következő feladatért: a Csatakupolához, Mr. Mint trezorjához, vagy oda, ahol Red X és Trigon les rád. BOOYAH, GPS!' },
     { v: 70, who: 'robin', text: 'Nyomozói tipp: a Gyűjteményben egy még hiányzó figurára koppintva megtudod, hol szerezheted meg: melyik dobozban, melyik edzőnél, melyik kupán vagy eseményen, vagy hogy el van rejtve a városban.' },
