@@ -1530,8 +1530,41 @@
       D.text(ctx, label, touch ? x : x + 12, y + b, { size: 16, align: 'center', color: '#1b1140', stroke: false });
     },
 
+    // a képernyőn kívüli célra mutató sárga nyíl a képernyő szélén
+    drawGoalArrow(ctx) {
+      const goal = TT.objectiveTarget();
+      if (!goal || this.showMap || TT.ui.overlayActive()) return;
+      const TS = W.TS;
+      const gx = goal.x * TS - this.cam.x, gy = goal.y * TS - this.cam.y;
+      const m = 40;
+      if (gx > m && gx < TT.W - m && gy > m + 60 && gy < TT.H - m) return;
+      const cx = TT.W / 2, cy = TT.H / 2;
+      const ang = Math.atan2(gy - cy, gx - cx);
+      // a képernyő szélére vetítve (a felső sávot és az alsó gombokat kihagyva)
+      const hw = TT.W / 2 - 46, hh = TT.H / 2 - 70;
+      const t = Math.min(hw / Math.abs(Math.cos(ang) || 1e-6), hh / Math.abs(Math.sin(ang) || 1e-6));
+      const ax = cx + Math.cos(ang) * t, ay = cy + 10 + Math.sin(ang) * t;
+      const bob = Math.sin(TT.time * 5) * 4;
+      ctx.save();
+      ctx.translate(ax + Math.cos(ang) * bob, ay + Math.sin(ang) * bob);
+      ctx.rotate(ang);
+      ctx.beginPath();
+      ctx.moveTo(22, 0);
+      ctx.lineTo(-10, -15);
+      ctx.lineTo(-4, 0);
+      ctx.lineTo(-10, 15);
+      ctx.closePath();
+      ctx.fillStyle = '#ffd23f';
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#1d1433';
+      ctx.stroke();
+      ctx.restore();
+    },
+
     drawHud(ctx) {
       const s = TT.save;
+      this.drawGoalArrow(ctx);
       // érme
       D.panel(ctx, 12, 12, 150, 40, { fill: '#2b1e5c', r: 12, lw: 2.5 });
       D.coin(ctx, 34, 32, 12);

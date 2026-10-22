@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 71;
+  TT.NEWS_VERSION = 72;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 72, who: 'raven', text: 'Ha nem látod a következő célt, a képernyő szélén egy sárga nyíl mutatja, merre menj. Most már tényleg nem tévedhetsz el. Beast Boy, rólad beszélek.' },
     { v: 71, who: 'cyborg', text: 'Eltévedtél? A térképen (M) egy sárga csillag mutatja, hová kell menned a következő feladatért: a Csatakupolához, Mr. Mint trezorjához, vagy oda, ahol Red X és Trigon les rád. BOOYAH, GPS!' },
     { v: 70, who: 'robin', text: 'Nyomozói tipp: a Gyűjteményben egy még hiányzó figurára koppintva megtudod, hol szerezheted meg: melyik dobozban, melyik edzőnél, melyik kupán vagy eseményen, vagy hogy el van rejtve a városban.' },
     { v: 69, who: 'starfire', text: 'A Gyűjteményben a „Mutat” gombbal most már csak a hiányzó figurákat is megnézheted! A „Rend: Sorozat” mellett rögtön látod, melyik sorozatból kell még gyűjtened. Glorious!' },
