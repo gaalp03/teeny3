@@ -528,6 +528,15 @@
               D.text(ctx, 'Szint ' + t.lvl, fx, fy - 140, { size: 15, align: 'center', color: '#ffd23f' });
               D.typeIcon(ctx, TT.FIG[t.id].type, fx + 44, fy - 140, 10);
             });
+            // típus-tipp az ellenfél csapata ellen (a heti kihívásnál ott a csapat-sor)
+            const ct = !wk && TT.counterType(m.team);
+            if (ct) {
+              const T = TT.TYPES[ct.counter];
+              const tip = `Tipp: ${T.name} típus ellenük +30%`;
+              const tw = D.measure(ctx, tip, 14);
+              D.text(ctx, tip, px + pw - 22, py + 136, { size: 14, align: 'right', color: T.color, lw: 3 });
+              D.typeIcon(ctx, ct.counter, px + pw - 34 - tw, py + 135, 8);
+            }
             // heti kihívás: ki harcol a szabály szerint
             if (wk) {
               const wt = weeklyTeam();

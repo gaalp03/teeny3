@@ -952,14 +952,9 @@
 
     // Vereség utáni tipp: az ellenfél fő típusa ellen erős típus, és egy meglévő figura belőle
     counterTip() {
-      const count = {};
-      for (const t of this.en.team) {
-        const f = TT.FIG[t.id];
-        if (f) count[f.type] = (count[f.type] || 0) + 1;
-      }
-      const main = Object.keys(count).sort((a, b) => count[b] - count[a])[0];
-      const counter = main && Object.keys(TT.TYPES).find((k) => TT.TYPES[k].beats === main);
-      if (!counter) return null;
+      const ct = TT.counterType(this.en.team);
+      if (!ct) return null;
+      const { main, counter } = ct;
       const s = TT.save;
       const fits = (id) => TT.FIG[id] && s.owned[id] && TT.FIG[id].type === counter;
       const pick = s.team.find(fits) || Object.keys(s.owned).filter(fits)

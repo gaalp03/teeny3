@@ -8,6 +8,18 @@
     mystic: { name: 'Misztikus', color: '#a35cff', beats: 'speed' },
     speed: { name: 'Gyorsaság', color: '#f2b705', beats: 'brawn' },
   };
+  // egy csapat fő típusa és az, ami ellene hatásos ({main, counter}, vagy null)
+  TT.counterType = function (team) {
+    const count = {};
+    for (const t of team) {
+      const f = TT.FIG[t.id || t];
+      if (f) count[f.type] = (count[f.type] || 0) + 1;
+    }
+    const main = Object.keys(count).sort((a, b) => count[b] - count[a])[0];
+    const counter = main && Object.keys(TT.TYPES).find((k) => TT.TYPES[k].beats === main);
+    return counter ? { main, counter } : null;
+  };
+
   TT.typeMult = function (atk, def) {
     if (!atk || !def) return 1;
     if (TT.TYPES[atk].beats === def) return 1.3;
