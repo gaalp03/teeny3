@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 66;
+  TT.NEWS_VERSION = 67;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 67, who: 'cyborg', text: 'A kiskedvenced most már a Toronyba is bejön veled! Csak vigyázz, Silkie féltékeny, és Krypto folyton a kanapén akar aludni. BOOYAH!' },
     { v: 66, who: 'beastboy', text: 'A kiskedvenced most már a harcokra is elkísér! Ott ül a padunk előtt, és ha nyerünk, örömében körbe-körbe ugrál. Krypto, a pingvin… mindenki szurkol nekünk, dude!' },
     { v: 65, who: 'raven', text: 'Túl sokat beszélünk? A Beállításokban mostantól külön állíthatod a Szinkron (beszéd) hangerejét, a zenétől és a hangeffektektől függetlenül. Végre csend lehet. Kérlek, próbáld ki.' },
     { v: 64, who: 'starfire', text: 'Új kiskedvenc! Ha legyőzöd Lex Luthort, a Pingvin itt hagyja a cilinderes kis pingvinjét, és mostantól az is veled sétál. A Menüben a Kiskedvenc gombbal választhatsz közte és Krypto között. Ó, milyen aranyos!' },

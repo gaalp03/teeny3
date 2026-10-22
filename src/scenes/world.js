@@ -20,6 +20,40 @@
   };
   const PET_YAW = { down: 0, right: -Math.PI / 2, left: Math.PI / 2, up: Math.PI };
   const PET_SNIFF = 90;
+  // a kiskedvenc követi a játékost (k: méretarány, a Toronyban nagyobbak a figurák)
+  TT.petStep = function (p, pl, dt, k) {
+    k = k || 1;
+    const back = { up: [0, 1], down: [0, -1], left: [1, 0], right: [-1, 0] }[pl.dir] || [0, -1];
+    const tx = pl.x + (back[0] * 34 + 18) * k, ty = pl.y + (back[1] * 26 + 4) * k;
+    const dx = tx - p.x, dy = ty - p.y, d = Math.hypot(dx, dy);
+    if (d > 300 * k) {
+      p.x = tx;
+      p.y = ty;
+    } else if (d > 3) {
+      const step = Math.min(d, (pl.moving ? 230 : 140) * k * dt * Math.min(2, d / (30 * k)));
+      p.x += (dx / d) * step;
+      p.y += (dy / d) * step;
+      if (Math.abs(dx) > Math.abs(dy) * 1.2) p.dir = dx > 0 ? 'right' : 'left';
+      else if (Math.abs(dy) > 2) p.dir = dy > 0 ? 'down' : 'up';
+    }
+    p.moving = d > 6 * k;
+    if (p.moving) p.walk += dt * 14;
+  };
+  TT.drawPet = function (ctx, p, x, y, k) {
+    k = k || 1;
+    ctx.save();
+    ctx.globalAlpha = 0.22;
+    ctx.beginPath();
+    ctx.ellipse(x, y + 2, 13 * k, 5 * k, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#000';
+    ctx.fill();
+    ctx.restore();
+    const pet = PETS[p.key];
+    const hop = p.moving ? Math.abs(Math.sin(p.walk)) * pet.hop * k : 0;
+    TT.art.drawFigure(ctx, pet, x, y + 2 - hop, pet.scale * k, {
+      pedestal: false, yaw3d: PET_YAW[p.dir] || 0, anim3d: { name: 'idle', t: TT.time }, live3d: true,
+    });
+  };
   let solidGrid = null;
   let minimap = null;
 
@@ -1278,10 +1312,8 @@
         return;
       }
       const pl = this.pl;
-      const back = { up: [0, 1], down: [0, -1], left: [1, 0], right: [-1, 0] }[pl.dir] || [0, -1];
-      const tx = pl.x + back[0] * 34 + 18, ty = pl.y + back[1] * 26 + 4;
       if (!this.pet || this.pet.key !== key) {
-        this.pet = { key, x: tx, y: ty, dir: pl.dir, walk: 0, moving: false };
+        this.pet = { key, x: pl.x + 18, y: pl.y - 22, dir: pl.dir, walk: 0, moving: false };
         const fresh = key === 'krypto' ? 'kryptoPetNew' : key === 'penguin' ? 'penguinPetNew' : null;
         if (fresh && s.flags[fresh]) {
           s.flags[fresh] = false;
@@ -1290,19 +1322,7 @@
         }
       }
       const p = this.pet;
-      const dx = tx - p.x, dy = ty - p.y, d = Math.hypot(dx, dy);
-      if (d > 300) {
-        p.x = tx;
-        p.y = ty;
-      } else if (d > 3) {
-        const step = Math.min(d, (pl.moving ? 230 : 140) * dt * Math.min(2, d / 30));
-        p.x += (dx / d) * step;
-        p.y += (dy / d) * step;
-        if (Math.abs(dx) > Math.abs(dy) * 1.2) p.dir = dx > 0 ? 'right' : 'left';
-        else if (Math.abs(dy) > 2) p.dir = dy > 0 ? 'down' : 'up';
-      }
-      p.moving = d > 6;
-      if (p.moving) p.walk += dt * 14;
+      TT.petStep(p, pl, dt);
       // séta közben Krypto néha kiszimatol pár érmét (kb. másfél percnyi gyaloglásonként)
       if (pl.moving) p.sniff = (p.sniff || 0) + dt;
       if (p.sniff > PET_SNIFF) {
@@ -1335,19 +1355,7 @@
     },
 
     drawPet(ctx, x, y) {
-      const p = this.pet;
-      ctx.save();
-      ctx.globalAlpha = 0.22;
-      ctx.beginPath();
-      ctx.ellipse(x, y + 2, 13, 5, 0, 0, Math.PI * 2);
-      ctx.fillStyle = '#000';
-      ctx.fill();
-      ctx.restore();
-      const hop = p.moving ? Math.abs(Math.sin(p.walk)) * 7 : 0;
-      const pet = PETS[p.key];
-      TT.art.drawFigure(ctx, pet, x, y + 2 - hop * pet.hop / 7, pet.scale, {
-        pedestal: false, yaw3d: PET_YAW[p.dir] || 0, anim3d: { name: 'idle', t: TT.time }, live3d: true,
-      });
+      TT.drawPet(ctx, this.pet, x, y);
     },
 
     toggleMap() {

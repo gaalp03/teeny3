@@ -4,6 +4,7 @@
   const U = TT.U;
   const D = TT.D;
   const FLOOR = { x0: 60, x1: 900, y0: 318, y1: 512 };
+  const PET_K = 1.5; // a Toronyban a figurák másfélszer akkorák, mint a városban
 
   const QUIPS = {
     cyborg: [
@@ -213,6 +214,13 @@
       }
       const mag = Math.hypot(mx, my);
       pl.moving = mag > 0.1 && !TT.ui.overlayActive();
+      // a kiskedvenc a Toronyban is a nyomodban jár
+      const pk = TT.petOf && TT.petOf(TT.save);
+      if (!pk || !TT.art.has3d(TT.PETS[pk].id)) this.pet = null;
+      else {
+        if (!this.pet || this.pet.key !== pk) this.pet = { key: pk, x: pl.x + 30, y: pl.y - 30, dir: pl.dir, walk: 0, moving: false };
+        TT.petStep(this.pet, pl, dt, PET_K);
+      }
       if (pl.moving) {
         const sp = 170 * Math.min(1, mag);
         pl.x = U.clamp(pl.x + (mx / Math.max(1, mag)) * sp * dt, FLOOR.x0, FLOOR.x1);
@@ -364,6 +372,8 @@
         },
       });
       const pl = this.pl;
+      const pet = this.pet;
+      if (pet) items.push({ y: pet.y, draw: () => TT.drawPet(ctx, pet, pet.x, pet.y, PET_K) });
       items.push({
         y: pl.y, draw: () => {
           ctx.save();
