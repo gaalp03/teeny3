@@ -33,8 +33,11 @@
         comp.connect(A.master);
         A.musicGain = A.ctx.createGain();
         A.sfxGain = A.ctx.createGain();
+        // a szinkronhangok (Titánok, gonoszok, bemondó) külön hangerőn
+        A.voiceGain = A.ctx.createGain();
         A.musicGain.connect(comp);
         A.sfxGain.connect(comp);
+        A.voiceGain.connect(comp);
         const len = A.ctx.sampleRate;
         A.noiseBuf = A.ctx.createBuffer(1, len, A.ctx.sampleRate);
         const d = A.noiseBuf.getChannelData(0);
@@ -56,12 +59,14 @@
     const s = TT.settings || {};
     A.musicVol = s.music != null ? s.music : 0.5;
     A.sfxVol = s.sfx != null ? s.sfx : 0.7;
+    A.voiceVol = s.voice != null ? s.voice : A.sfxVol;
     A.muted = !!s.muted;
     if (!A.ctx) return;
     const t = A.ctx.currentTime;
     A.master.gain.setTargetAtTime(A.muted ? 0 : 1, t, 0.02);
     A.musicGain.gain.setTargetAtTime(A.musicVol * 0.85, t, 0.05);
     A.sfxGain.gain.setTargetAtTime(A.sfxVol * 0.9, t, 0.02);
+    A.voiceGain.gain.setTargetAtTime(A.voiceVol * 0.9, t, 0.02);
   };
 
   A.setHidden = function (hidden) {
@@ -261,7 +266,7 @@
     if (!buf) return false;
     const src = A.ctx.createBufferSource();
     src.buffer = buf;
-    src.connect(A.sfxGain);
+    src.connect(A.voiceGain);
     src.start();
     voiceUntil = now + buf.duration + 0.4;
     return true;
@@ -279,7 +284,7 @@
     if (!buf) return;
     const src = A.ctx.createBufferSource();
     src.buffer = buf;
-    src.connect(A.sfxGain);
+    src.connect(A.voiceGain);
     src.start();
     voiceUntil = A.ctx.currentTime + buf.duration + 0.4;
   };

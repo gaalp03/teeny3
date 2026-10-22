@@ -1702,10 +1702,11 @@
     const has3d = !!(TT.model3d && Object.keys(TT.model3d.models).length);
     TT.ui.choose({
       title: 'Beállítások',
-      buttonH: has3d ? 31 : 34,
+      buttonH: 40, width: 680, columns: 2, size: 17,
       options: [
         { label: 'Zene: ' + pct(st.music), value: 'music' },
         { label: 'Hangeffektek: ' + pct(st.sfx), value: 'sfx' },
+        { label: 'Szinkron (beszéd): ' + pct(st.voice != null ? st.voice : st.sfx), value: 'voice' },
         { label: 'Képernyőrázás: ' + (st.shake ? 'Be' : 'Ki'), value: 'shake' },
         { label: 'Nehézség: ' + ({ easy: 'Könnyű', normal: 'Normál', hard: 'Nehéz' }[st.difficulty || 'normal']), value: 'diff' },
         { label: 'Napszak: ' + (st.dayNight === 'day' ? 'mindig nappal' : 'valós idő'), value: 'daynight' },
@@ -1720,6 +1721,7 @@
       if (!v) return;
       if (v === 'music') st.music = cycle(st.music);
       if (v === 'sfx') st.sfx = cycle(st.sfx);
+      if (v === 'voice') st.voice = cycle(st.voice != null ? st.voice : st.sfx);
       if (v === 'shake') st.shake = !st.shake;
       if (v === 'fig3d') {
         st.fig3d = st.fig3d === false;
