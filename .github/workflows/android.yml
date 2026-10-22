@@ -32,7 +32,28 @@ jobs:
       - name: Függőségek
         run: npm ci --no-audit --no-fund
 
+      # A kinyerés (8–20 perc) eredménye gyorsítótárba kerül: csak akkor fut újra, ha az apk-forras ág
+      # (párosítások, csomag), a kiadáshoz csatolt csomagok vagy a kinyerő eszközök megváltoztak
+      - name: Kinyerés kulcsa
+        id: key
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          AF=$(git ls-remote origin refs/heads/apk-forras | cut -f1)
+          REL=$(gh release view apk-forras --json assets -q '.assets[] | .name + ":" + (.size|tostring)' 2>/dev/null | sort || true)
+          K=$(printf '%s\n%s\n%s\n' "$AF" "$REL" "${{ hashFiles('tools/*.py') }}" | sha256sum | cut -c1-40)
+          echo "key=$K" >> "$GITHUB_OUTPUT"
+          echo "Kinyerés kulcsa: $K (apk-forras: $AF)"
+
+      - name: Kinyert tartalom a gyorsítótárból
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: assets/custom
+          key: tt2-custom-${{ steps.key.outputs.key }}
+
       - name: Saját textúrák (APK az apk-forras ágon vagy az apk-forras kiadásban)
+        if: steps.cache.outputs.cache-hit != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
