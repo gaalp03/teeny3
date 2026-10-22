@@ -1284,6 +1284,7 @@
       all.sort((a, b) => (a.active ? 1 : 0) - (b.active ? 1 : 0) || a.f.y - b.f.y);
       for (const o of all) this.drawFighter(ctx, o.f, o.active);
       if (this.krypto) this.drawKrypto(ctx, this.krypto);
+      this.drawPet(ctx);
       if (this.lantern && TT.art.has3d(LANTERN.id)) {
         // a TT2 idle animációja elrepítené és a (fényként rajzolt) csillagot sötéten mutatná: a megjelenés egy kockáján áll
         const { f, t } = this.lantern;
@@ -1337,6 +1338,18 @@
       if (this.state === 'finish') this.drawFinish(ctx);
       TT.fx.draw(ctx, 1);
       if (this.state === 'results') this.drawResults(ctx);
+    },
+
+    // a városi kiskedvenc a harcban is ott ül a padon ülők előtt, győzelemkor ugrál örömében
+    drawPet(ctx) {
+      const key = TT.petOf && TT.petOf(TT.save);
+      const pet = key && TT.PETS[key];
+      if (!pet || !TT.art.has3d(pet.id) || (this.p && this.p.playerTeam)) return;
+      const won = (this.state === 'finish' || this.state === 'results') && this.c.winner === 0;
+      const hop = won ? Math.abs(Math.sin(TT.time * 7)) * 16 : Math.abs(Math.sin(TT.time * 1.6)) * 2;
+      TT.art.drawFigure(ctx, pet, 108, 420 - hop, pet.scale * 1.15, {
+        pedestal: false, yaw3d: won ? TT.time * 4 : -0.7, anim3d: { name: 'idle', t: won ? TT.time : 0 }, live3d: won,
+      });
     },
 
     drawKrypto(ctx, k) {
