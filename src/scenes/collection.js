@@ -26,6 +26,7 @@
       const own = TT.save.owned;
       let l = TT.FIG_LIST.slice();
       if (this.filter === 'own') l = l.filter((f) => own[f.id]);
+      if (this.filter === 'missing') l = l.filter((f) => !own[f.id]);
       const sort = TT.settings.collSort || 'base';
       const idx = new Map(TT.FIG_LIST.map((f, i) => [f.id, i]));
       const serIdx = new Map();
@@ -134,12 +135,21 @@
       const s = TT.save;
       const items = [];
       items.push({ id: 'back', x: 16, y: 10, w: 120, h: 44, label: 'Vissza', color: '#6c5ce7', size: 20, onClick: () => this.leave() });
-      items.push({ id: 'f_all', x: 150, y: 10, w: 100, h: 44, label: 'Mind', size: 18, color: this.filter === 'all' ? '#ff6b35' : '#4a3a8c', onClick: () => { this.filter = 'all'; this.list = this.makeList(); this.scroll = 0; } });
-      items.push({ id: 'f_own', x: 258, y: 10, w: 120, h: 44, label: 'Megvan', size: 18, color: this.filter === 'own' ? '#ff6b35' : '#4a3a8c', onClick: () => { this.filter = 'own'; this.list = this.makeList(); this.scroll = 0; } });
+      // szűrő: mind → megvan → hiányzik (a gyűjtés befejezéséhez)
+      const FILTERS = [['all', 'Mind'], ['own', 'Megvan'], ['missing', 'Hiányzik']];
+      const fi = Math.max(0, FILTERS.findIndex((x) => x[0] === this.filter));
+      items.push({
+        id: 'filter', x: 150, y: 10, w: 170, h: 44, size: 17, label: 'Mutat: ' + FILTERS[fi][1], color: this.filter === 'all' ? '#4a3a8c' : '#ff6b35',
+        onClick: () => {
+          this.filter = FILTERS[(fi + 1) % FILTERS.length][0];
+          this.list = this.makeList();
+          this.scroll = 0;
+        },
+      });
       const SORTS = [['base', 'Alap'], ['lvl', 'Szint'], ['rarity', 'Ritkaság'], ['type', 'Típus'], ['team', 'Csapat'], ['series', 'Sorozat']];
       const cur = SORTS.findIndex((x) => x[0] === (TT.settings.collSort || 'base'));
       items.push({
-        id: 'sort', x: 386, y: 10, w: 150, h: 44, size: 16, label: 'Rend: ' + SORTS[cur][1], color: '#4a3a8c',
+        id: 'sort', x: 330, y: 10, w: 160, h: 44, size: 16, label: 'Rend: ' + SORTS[cur][1], color: '#4a3a8c',
         onClick: () => {
           TT.settings.collSort = SORTS[(cur + 1) % SORTS.length][0];
           TT.store.writeSettings();

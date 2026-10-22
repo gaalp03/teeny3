@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 68;
+  TT.NEWS_VERSION = 69;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 69, who: 'starfire', text: 'A Gyűjteményben a „Mutat” gombbal most már csak a hiányzó figurákat is megnézheted! A „Rend: Sorozat” mellett rögtön látod, melyik sorozatból kell még gyűjtened. Glorious!' },
     { v: 68, who: 'robin', text: 'Blokk-tipp: amíg nem csináltál 10 tökéletes blokkot (vagy Könnyű fokozaton játszol), a figurád fölött felvillan a MOST! felirat, és csippan egyet, amikor zöld a kör. Akkor nyomd a BLOKK-ot!' },
     { v: 67, who: 'cyborg', text: 'A kiskedvenced most már a Toronyba is bejön veled! Csak vigyázz, Silkie féltékeny, és Krypto folyton a kanapén akar aludni. BOOYAH!' },
     { v: 66, who: 'beastboy', text: 'A kiskedvenced most már a harcokra is elkísér! Ott ül a padunk előtt, és ha nyerünk, örömében körbe-körbe ugrál. Krypto, a pingvin… mindenki szurkol nekünk, dude!' },
