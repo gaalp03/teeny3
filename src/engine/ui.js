@@ -149,6 +149,10 @@
       update(dt) {
         const line = this.lines[this.i];
         const full = line.text.length;
+        if (!this.opened) {
+          this.opened = true;
+          TT.audio.sfx('dlgopen');
+        }
         if (this.voiced !== this.i) {
           // a TT2-höz hasonlóan a beszélő Titán rövid csevegőhangot ad (csak ha új szereplő szólal meg)
           const prev = this.lines[this.i - 1];
@@ -171,6 +175,7 @@
             this.chars = 0;
             if (this.i >= this.lines.length) {
               close(this);
+              TT.audio.sfx('dlgclose');
               if (onDone) onDone();
             } else TT.audio.sfx('next');
           }

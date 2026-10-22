@@ -560,6 +560,8 @@
       // a bemutatkozás és a VS alatt a TT2 harc előtti zenéje szól (ha megvan), a harc indulásakor vált
       TT.audio.music(TT.audio.hasSampled('prebattle') ? 'prebattle' : en.music || 'battle');
       if (en.intro && en.intro.length) {
+        // főellenfél előtt drámai „dum-dum-dum” (TT2)
+        if (TT.audio.isBossTune(en.music)) TT.audio.sfx('dramatic');
         TT.ui.say(en.intro, () => this.startVs());
       } else this.startVs();
       if (p.tutorial) this.c.aiPaused = true;

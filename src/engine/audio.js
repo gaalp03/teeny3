@@ -181,6 +181,9 @@
     // TT2-hanggal felülírhatók: NPC megszólítása, teljesített küldetés
     npc: () => tone(740, 0.07, { type: 'triangle', vol: 0.1 }),
     mission: () => arp(['E5', 'G5', 'C6'], 0.07, { type: 'triangle', vol: 0.11 }),
+    dlgopen: () => tone(660, 0.07, { type: 'triangle', vol: 0.07 }),
+    dlgclose: () => tone(495, 0.07, { type: 'triangle', vol: 0.06 }),
+    dramatic: () => { tone(147, 0.3, { type: 'square', vol: 0.06 }); tone(139, 0.3, { type: 'square', vol: 0.06, delay: 0.4 }); tone(110, 0.8, { type: 'square', vol: 0.07, delay: 0.8 }); },
     teleport: () => arp(['C5', 'G5', 'C6', 'G6'], 0.05, { type: 'sine', vol: 0.1 }),
     pause: () => tone(523, 0.1, { type: 'triangle', vol: 0.1 }),
     krypto: () => { noise(0.12, { vol: 0.12, filter: 'bandpass', freq: 700, q: 2 }); noise(0.12, { vol: 0.12, filter: 'bandpass', freq: 800, q: 2, delay: 0.18 }); },
