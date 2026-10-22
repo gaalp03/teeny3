@@ -394,11 +394,13 @@
     const top = stack[stack.length - 1];
     // egy jelenet lejjebb kérheti az üzeneteket (pl. a harc eredménye a „GYŐZELEM!” szalag alá)
     let list = toasts, y0 = (TT.scene && TT.scene.toastY) || 62, dir = 1, size = 20, th = 38;
-    if (top && top.box && top.box.y < 62 + toasts.length * 46) {
-      const below = top.box.y + top.box.h + 8;
+    // a méret nélküli egyedi panelek (profil, teljesítmények, küldetések…) szinte az egész képernyőt kitöltik
+    const box = top && (top.box || (top.kind !== 'dialog' ? { y: 12, h: TT.H - 40 } : null));
+    if (box && box.y < 62 + toasts.length * 46) {
+      const below = box.y + box.h + 8;
       if (below + toasts.length * 46 <= TT.H) y0 = below;
-      else if (top.box.y - toasts.length * 46 >= 0) {
-        y0 = top.box.y - 46;
+      else if (box.y - toasts.length * 46 >= 0) {
+        y0 = box.y - 46;
         dir = -1;
       } else {
         list = toasts.slice(-1);
