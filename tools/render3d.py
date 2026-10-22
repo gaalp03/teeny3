@@ -293,7 +293,7 @@ def export_model(parts):
 
 # nem bolti figurák, amiket a játék mégis 3D-ben mutat (a harci kellékek): név → a szülő neve, ha
 # több azonos nevű változat van (a lámpásból zöld, lila és piros is)
-EXTRA_ROOTS = {'accessory_krypto': None, 'accessory_lantern': 'lantern_green'}
+EXTRA_ROOTS = {'accessory_krypto': None, 'accessory_lantern': 'lantern_green', 'accessory_penguin': 'lilpenguin'}
 
 
 def _parent_name(go):

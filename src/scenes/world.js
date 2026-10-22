@@ -6,7 +6,18 @@
 
   let W; // TT.WORLD
   // a kiskedvenc: a TT2 Krypto kiegészítő modellje; elforgatás a figurákéhoz hasonlóan (0 = a néző felé)
-  const PET = { id: 'acc_krypto' };
+  // kiskedvencek: a TT2 kiegészítőinek 3D modelljei; elforgatás a figurákéhoz hasonlóan (0 = a néző felé)
+  const PETS = {
+    krypto: { id: 'acc_krypto', name: 'Krypto', scale: 0.42, sfx: 'krypto', hop: 7, unlocked: (s) => !!s.flags.kryptoPet },
+    penguin: { id: 'acc_penguin', name: 'Kis pingvin', scale: 0.5, sfx: 'penguin', hop: 4, unlocked: (s) => !!s.beaten.lex },
+  };
+  TT.PETS = PETS;
+  // a kiválasztott kiskedvenc (ha még nem választott, az első megszerzett); 'none' = nincs
+  TT.petOf = (s) => {
+    if (s.pet === 'none') return null;
+    if (s.pet && PETS[s.pet] && PETS[s.pet].unlocked(s)) return s.pet;
+    return Object.keys(PETS).find((k) => PETS[k].unlocked(s)) || null;
+  };
   const PET_YAW = { down: 0, right: -Math.PI / 2, left: Math.PI / 2, up: Math.PI };
   const PET_SNIFF = 90;
   let solidGrid = null;
@@ -534,6 +545,11 @@
           if (!won || !first) return;
           s.beaten[n.trainer] = true;
           if (n.trainer === 'tutorial') s.flags.tutorial = true;
+          // a Pingvin itt hagyja a kis pingvinjét
+          if (n.trainer === 'lex') {
+            s.flags.penguinPetNew = true;
+            s.pet = 'penguin';
+          }
         },
         after: (won) => {
           let ev = null;
@@ -927,6 +943,7 @@
           { label: 'Csapat és gyűjtemény', value: 'team' },
           { label: TT.wheelReady() ? 'Szerencsekerék!' : 'Szerencsekerék', value: 'wheel', color: TT.wheelReady() ? '#ffb000' : undefined },
           { label: 'Térkép', value: 'map' },
+          ...(TT.petOf(TT.save) || TT.save.pet === 'none' ? [{ label: 'Kiskedvenc', value: 'pet' }] : []),
           { label: 'Napi küldetések', value: 'quests' },
           { label: 'Teljesítmények', value: 'ach' },
           { label: 'Profil és rekordok', value: 'profile' },
@@ -939,6 +956,7 @@
         if (v === 'team') TT.go('collection', { from: 'world' });
         else if (v === 'wheel') TT.go('wheel', { back: { x: this.pl.x / W.TS, y: this.pl.y / W.TS } });
         else if (v === 'map') this.toggleMap();
+        else if (v === 'pet') this.choosePet();
         else if (v === 'save') {
           TT.store.write();
           TT.ui.toast('Játék elmentve!');
@@ -1250,21 +1268,25 @@
       TT.art.drawToy(ctx, TT.FIG.robin, x, y + 2, 0.6, { dir: pl.dir, moving: pl.moving, walk: pl.walk, paint: TT.paintOf('robin'), live: true });
     },
 
-    // Krypto, a szuperkutya követi a játékost a városban (ha már bevetette a Krypto kelléket, és megvan a TT2-es modellje)
+    // A kiskedvenc követi a játékost a városban (Krypto az első bevetett Krypto kellék után,
+    // a kis pingvin Lex legyőzése után), ha megvan a TT2-es modellje
     updatePet(dt) {
-      if (!TT.save.flags.kryptoPet || !TT.art.has3d(PET.id)) {
+      const s = TT.save;
+      const key = TT.petOf(s);
+      if (!key || !TT.art.has3d(PETS[key].id)) {
         this.pet = null;
         return;
       }
       const pl = this.pl;
       const back = { up: [0, 1], down: [0, -1], left: [1, 0], right: [-1, 0] }[pl.dir] || [0, -1];
       const tx = pl.x + back[0] * 34 + 18, ty = pl.y + back[1] * 26 + 4;
-      if (!this.pet) {
-        this.pet = { x: tx, y: ty, dir: pl.dir, walk: 0, moving: false };
-        if (TT.save.flags.kryptoPetNew) {
-          TT.save.flags.kryptoPetNew = false;
-          TT.ui.toast('Krypto mostantól elkísér a városban!', { color: '#3fa7ff', dur: 3.4 });
-          TT.audio.sfx('krypto');
+      if (!this.pet || this.pet.key !== key) {
+        this.pet = { key, x: tx, y: ty, dir: pl.dir, walk: 0, moving: false };
+        const fresh = key === 'krypto' ? 'kryptoPetNew' : key === 'penguin' ? 'penguinPetNew' : null;
+        if (fresh && s.flags[fresh]) {
+          s.flags[fresh] = false;
+          TT.ui.toast(`${PETS[key].name} mostantól elkísér a városban!`, { color: '#3fa7ff', dur: 3.4 });
+          TT.audio.sfx(PETS[key].sfx);
         }
       }
       const p = this.pet;
@@ -1288,12 +1310,28 @@
         const coins = U.pick([5, 10, 10, 15, 25]);
         TT.save.coins += coins;
         TT.store.write();
-        TT.audio.sfx('krypto');
+        TT.audio.sfx(PETS[key].sfx);
         setTimeout(() => TT.audio.sfx('coin'), 350);
         const sx = p.x - this.cam.x, sy = p.y - this.cam.y;
-        TT.fx.text(sx, sy - 50, `Krypto talált +${coins}`, { color: '#ffd23f', tsize: 18, vy: -50, layer: 1 });
+        TT.fx.text(sx, sy - 50, `${PETS[key].name} talált +${coins}`, { color: '#ffd23f', tsize: 18, vy: -50, layer: 1 });
         TT.fx.burst(sx, sy - 20, 10, { colors: ['#ffd23f', '#fff6d8'], shape: 'star', speed: 140, size: 5, life: 0.6, layer: 1 });
       }
+    },
+
+    choosePet() {
+      const s = TT.save;
+      const cur = TT.petOf(s) || 'none';
+      TT.ui.choose({
+        title: 'Kiskedvenc',
+        text: 'Ki kísérjen a városban?',
+        options: Object.keys(PETS).filter((k) => PETS[k].unlocked(s)).map((k) => ({ label: PETS[k].name + (cur === k ? ' (most)' : ''), value: k, color: '#3fa7ff' }))
+          .concat([{ label: 'Senki' + (cur === 'none' ? ' (most)' : ''), value: 'none', color: '#6c5ce7' }, { label: 'Mégse', value: null }]),
+      }, (v) => {
+        if (!v) return;
+        s.pet = v;
+        TT.store.write();
+        if (v !== 'none') TT.audio.sfx(PETS[v].sfx);
+      });
     },
 
     drawPet(ctx, x, y) {
@@ -1306,7 +1344,8 @@
       ctx.fill();
       ctx.restore();
       const hop = p.moving ? Math.abs(Math.sin(p.walk)) * 7 : 0;
-      TT.art.drawFigure(ctx, PET, x, y + 2 - hop, 0.42, {
+      const pet = PETS[p.key];
+      TT.art.drawFigure(ctx, pet, x, y + 2 - hop * pet.hop / 7, pet.scale, {
         pedestal: false, yaw3d: PET_YAW[p.dir] || 0, anim3d: { name: 'idle', t: TT.time }, live3d: true,
       });
     },

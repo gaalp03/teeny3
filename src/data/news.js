@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 63;
+  TT.NEWS_VERSION = 64;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 64, who: 'starfire', text: 'Új kiskedvenc! Ha legyőzöd Lex Luthort, a Pingvin itt hagyja a cilinderes kis pingvinjét, és mostantól az is veled sétál. A Menüben a Kiskedvenc gombbal választhatsz közte és Krypto között. Ó, milyen aranyos!' },
     { v: 63, who: 'cyborg', text: 'Figyelem! A főellenfelek is rájöttek a pizza titkára. Ha erősebb vagy náluk (vagy Nehéz fokozaton játszol), egyszer megeszik a pizzájukat, amikor bajban vannak. Szóval tartsd meg a szuperedet a végére!' },
     { v: 62, who: 'raven', text: 'Krypto szaglászik. Ha sokat sétálsz vele a városban, néha kiás pár érmét, és büszkén megugatja. Ennél hasznosabb háziállatunk még nem volt. Silkie, ez rád is vonatkozik.' },
     { v: 61, who: 'beastboy', text: 'Ha egyszer bevetetted Kryptót harcban, utána a városban is a nyomodban jár! Ugrálva követ mindenhova, mint egy igazi kiskutya. Én is tudok kutya lenni, de ő a kedvenc, mi?' },

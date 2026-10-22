@@ -179,6 +179,7 @@
     teleport: () => arp(['C5', 'G5', 'C6', 'G6'], 0.05, { type: 'sine', vol: 0.1 }),
     pause: () => tone(523, 0.1, { type: 'triangle', vol: 0.1 }),
     krypto: () => { noise(0.12, { vol: 0.12, filter: 'bandpass', freq: 700, q: 2 }); noise(0.12, { vol: 0.12, filter: 'bandpass', freq: 800, q: 2, delay: 0.18 }); },
+    penguin: () => { tone(620, 0.08, { type: 'square', vol: 0.06 }); tone(520, 0.12, { type: 'square', vol: 0.06, delay: 0.09 }); },
     lantern: () => arp(['G4', 'D5', 'G5', 'D6'], 0.06, { type: 'sine', vol: 0.1 }),
     wheel: () => arp(['C5', 'D5', 'E5', 'G5'], 0.09, { type: 'triangle', vol: 0.08 }),
     wheelstop: () => { tone(880, 0.08, { vol: 0.12 }); tone(1320, 0.16, { vol: 0.1, delay: 0.08 }); },
