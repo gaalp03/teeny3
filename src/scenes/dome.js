@@ -170,9 +170,17 @@
       items.push({ id: 'fight', x: 600, y: 456, w: 330, h: 64, label, color: '#ff4f4f', size: 30, disabled: !ok,
         onDisabled: () => TT.ui.toast(sv ? 'A mai tornának vége. Holnap újra próbálhatod!' : wk ? 'Az e heti kihívást már teljesítetted. Hétfőn új jön!' : c && TT.cupDone(c.id) ? 'Ezt a kupát már megnyerted!' : 'Ez a kupa még zárva van.', { color: '#ff8a80' }),
         onClick: () => this.fight(), glow: ok });
-      items.push({ id: 'team', x: 350, y: 456, w: 230, h: 64, label: 'Csapat', color: '#3fa7ff', onClick: () => TT.go('collection', { from: 'dome', venue: this.venue, back: this.p.back, sel: this.sel }) });
+      items.push({ id: 'team', x: 350, y: 456, w: 230, h: 64, label: 'Csapat', color: '#3fa7ff', onClick: () => TT.go('collection', { from: 'dome', venue: this.venue, back: this.p.back, sel: this.sel, foe: this.foeTeam() }) });
       items.push({ id: 'back', x: 20, y: 470, w: 160, h: 52, label: 'Vissza', color: '#6c5ce7', sfx: 'back', onClick: () => TT.go('world', { pos: this.p.back, dir: 'down' }) });
       this.menu.set(items);
+    },
+
+    // a kiválasztott versenyben a következő ellenfél figurái (a csapatszerkesztő ehhez igazítja a „legjobb csapatot”)
+    foeTeam() {
+      const c = this.cups()[this.sel];
+      if (!c || !this.unlocked(c)) return null;
+      const m = this.nextMatch(c).m;
+      return m && m.team && m.team.length ? m.team.map((t) => t.id) : null;
     },
 
     nextMatch(c) {

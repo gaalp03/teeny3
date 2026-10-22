@@ -75,7 +75,11 @@
     // a csapatbónusszal és a kombókkal együtt pontozva.
     bestTeam() {
       const s = TT.save;
-      const score = (id) => TT.power(TT.FIG[id], s.owned[id].lvl) * (1 + TT.starsOf(id) * TT.STAR_BONUS);
+      // a Csatakupolából nyitva a következő ellenfél típusaihoz is igazít (támadó előny / védekező hátrány)
+      const foe = (this.p.foe || []).filter((id) => TT.FIG[id]);
+      const avg = (fn) => foe.reduce((a, fid) => a + fn(TT.FIG[fid].type), 0) / foe.length;
+      const vsFoe = (id) => (foe.length ? avg((ft) => TT.typeMult(TT.FIG[id].type, ft)) / avg((ft) => TT.typeMult(ft, TT.FIG[id].type)) : 1);
+      const score = (id) => TT.power(TT.FIG[id], s.owned[id].lvl) * (1 + TT.starsOf(id) * TT.STAR_BONUS) * vsFoe(id);
       const top = Object.keys(s.owned).filter((id) => TT.FIG[id]).sort((a, b) => score(b) - score(a)).slice(0, 8);
       if (top.length < 3) return null;
       let best = null, bestV = -1;
@@ -98,7 +102,7 @@
       const s = TT.save;
       if (!best) return;
       if (best.every((id) => s.team.includes(id))) {
-        TT.ui.toast('Már a legerősebb csapatod áll ki!', { color: '#7bff6b' });
+        TT.ui.toast(this.p.foe ? 'Már a legjobb csapatod áll ki ellenük!' : 'Már a legerősebb csapatod áll ki!', { color: '#7bff6b' });
         TT.audio.sfx('select');
         return;
       }
@@ -156,7 +160,7 @@
           this.list = this.makeList();
         },
       });
-      items.push({ id: 'best', x: 764, y: 10, w: 180, h: 44, size: 15, label: 'Legerősebb csapat', color: '#2ecc71', onClick: () => this.autoTeam() });
+      items.push({ id: 'best', x: 764, y: 10, w: 180, h: 44, size: 15, label: this.p.foe ? 'Legjobb ellenük' : 'Legerősebb csapat', color: '#2ecc71', onClick: () => this.autoTeam() });
       // csapat helyek
       s.team.forEach((id, i) => {
         items.push({
