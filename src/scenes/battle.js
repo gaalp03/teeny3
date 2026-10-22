@@ -1344,7 +1344,7 @@
     drawPet(ctx) {
       const key = TT.petOf && TT.petOf(TT.save);
       const pet = key && TT.PETS[key];
-      if (!pet || !TT.art.has3d(pet.id) || (this.p && this.p.playerTeam)) return;
+      if (!pet || !TT.art.has3d(pet.id)) return;
       const won = (this.state === 'finish' || this.state === 'results') && this.c.winner === 0;
       const hop = won ? Math.abs(Math.sin(TT.time * 7)) * 16 : Math.abs(Math.sin(TT.time * 1.6)) * 2;
       TT.art.drawFigure(ctx, pet, 108, 420 - hop, pet.scale * 1.15, {
