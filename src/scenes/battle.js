@@ -416,6 +416,8 @@
       this.pilot = !!pilot;
       this.think = 0.8;
       this.plan = null;
+      // kellékek (pizzaszelet): a főellenfelek kapnak egyet, ha nagy a baj, megeszik
+      this.items = 0;
       // (kiegyensúlyozva: korábban az ellenfél az ütések ~40-60%-át blokkolta, és minden feltöltött
       // támadását azonnal elsütötte — embernek túl nehéz volt)
       this.react = 0.6 - this.k * 0.3;
@@ -458,6 +460,10 @@
       this.think -= dt;
       if (this.think > 0 || !c.canAct(me)) return;
       this.think = this.interval * U.rand(0.7, 1.4);
+      if (this.items > 0 && me.hp / me.maxHp < 0.3 && Math.random() < 0.5 && c.useItem(s, 'pizza')) {
+        this.items--;
+        return;
+      }
       // csere, ha nagy a baj
       if (me.hp / me.maxHp < 0.28 && side.swapCd <= 0 && Math.random() < (this.pilot ? 0.8 : this.k * 0.35)) {
         const bench = side.fighters.map((f, i) => i).filter((i) => i !== side.active);
@@ -518,7 +524,14 @@
       const pteam = (p.playerTeam || TT.save.team).filter((id) => TT.save.owned[id]).map((id) => ({ id, lvl: TT.save.owned[id].lvl, stars: TT.starsOf(id) }));
       this.c = new Combat(pteam, en.team, { ai: en.ai }, (type, d) => this.onEvent(type, d));
       if (df.pw && !p.tutorial) for (const f of this.c.sides[0].fighters) f.pw = df.pw;
-      if (TT.audio.isBossTune(en.music)) for (const f of this.c.sides[1].fighters) if (f.id === en.who) f.boss = true;
+      if (TT.audio.isBossTune(en.music)) {
+        for (const f of this.c.sides[1].fighters) if (f.id === en.who) f.boss = true;
+        // a főellenfél egy pizzaszeletet is hozott magával: nehéz fokozaton mindig, normálon csak akkor,
+        // ha a csapatod szintje legalább akkora, mint az övé (hogy ne nehezítse a már amúgy is kemény harcokat)
+        const avg = (arr) => arr.reduce((a, t) => a + t.lvl, 0) / arr.length;
+        const diff = TT.settings.difficulty || 'normal';
+        if (!p.tutorial && (diff === 'hard' || (diff === 'normal' && avg(pteam) >= avg(en.team)))) this.c.ai[1].items = 1;
+      }
       if (p.hpFrac) {
         for (const f of this.c.sides[0].fighters) {
           const fr = p.hpFrac[f.id];
@@ -696,6 +709,7 @@
           const it = TT.ITEMS[d.item];
           TT.audio.sfx({ pizza: 'heal', energy: 'buff', krypto: 'krypto', lantern: 'lantern' }[d.item] || 'shield');
           if (d.item === 'lantern') this.lantern = { f: d.f, t: 0 };
+          if (d.f.side === 1) this.banners.push({ f: d.f, text: d.f.fig.short + ' megette a pizzáját!', t: 0, dur: 1.8, color: '#ffcf6b' });
           if (d.target) {
             // Krypto beugrik, és a harapás pillanatában jön a sebzés látványa
             const t = d.target;
