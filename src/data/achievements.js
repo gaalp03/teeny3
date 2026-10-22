@@ -37,6 +37,8 @@
     A('event1', 'Ünnepi gyűjtő', 'Teljesíts egy szezonális eseményt (Halloween vagy Karácsony).', 300, (s) => Object.values(s.events || {}).some((e) => e.done)),
     A('train15', 'Hibátlan edzés', 'Blokk-edzésen mind a 15 támadást tökéletesen blokkold.', 500, (s) => !!s.flags.trainPerfect),
     A('factory', 'Gyárbezáró', 'Ürítsd ki a Menta Gyár mindhárom szintjét.', 600, (s) => !!(s.factory && s.factory.done)),
+    A('pet1', 'Kutyabarát', 'Vesd be Kryptót harcban: utána kiskedvencként követ a városban.', 150, (s) => !!s.flags.kryptoPet),
+    A('pet2', 'Pingvingazdi', 'Győzd le Lex Luthort, és a Pingvin rád bízza a kis pingvinjét.', 250, (s) => !!s.beaten.lex),
     A('spin7', 'Szerencsés hét', 'Pörgesd meg a Szerencsekereket 7 különböző napon.', 300, (s) => (s.stats.spins || 0) >= 7),
     A('jackpot', 'Főnyeremény', 'Nyerj figurát a Szerencsekeréken.', 200, (s) => !!s.flags.wheelFig),
     A('friend1', 'Barátságos meccs', 'Győzd le egy barátod csapatát csapatkóddal.', 200, (s) => (s.flags.friendWins || 0) >= 1),
