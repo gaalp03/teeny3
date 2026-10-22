@@ -1903,6 +1903,18 @@
       // felkiáltójel az ellenfél feje felett
       const bob = Math.sin(TT.time * 14) * 3;
       D.text(ctx, '!', en.x, en.y - 190 + bob, { size: 46, align: 'center', color: a.isSuper ? '#ffd23f' : '#ff4f4f', lw: 8 });
+      // tanulóidőben (az első 10 tökéletes blokkig, vagy könnyű fokozaton) a zöld ablak elején „MOST!” és egy csippanás
+      const learning = (TT.save.stats.perfects || 0) < 10 || TT.settings.difficulty === 'easy';
+      if (learning && inPerfect && !me.blocking) {
+        const key = a.hi + ':' + a.hits[a.hi];
+        if (this.cue !== a || this.cueKey !== key) {
+          this.cue = a;
+          this.cueKey = key;
+          TT.audio.sfx('cue');
+        }
+        const pulse = 1 + Math.sin(TT.time * 20) * 0.06;
+        D.text(ctx, 'MOST!', me.x, me.y - 215, { size: 40 * pulse, align: 'center', color: '#7bff6b', lw: 8 });
+      }
     },
 
     drawBanner(ctx, b) {

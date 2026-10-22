@@ -181,6 +181,7 @@
     // TT2-hanggal felülírhatók: NPC megszólítása, teljesített küldetés
     npc: () => tone(740, 0.07, { type: 'triangle', vol: 0.1 }),
     mission: () => arp(['E5', 'G5', 'C6'], 0.07, { type: 'triangle', vol: 0.11 }),
+    cue: () => tone(1046, 0.09, { type: 'sine', vol: 0.12 }),
     land: () => { noise(0.08, { vol: 0.08, filter: 'lowpass', freq: 500 }); tone(196, 0.08, { type: 'triangle', vol: 0.08 }); },
     dlgopen: () => tone(660, 0.07, { type: 'triangle', vol: 0.07 }),
     dlgclose: () => tone(495, 0.07, { type: 'triangle', vol: 0.06 }),
