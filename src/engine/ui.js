@@ -392,7 +392,8 @@
     // nyitott választóablaknál az üzenet ne takarja a címét: az ablak alá vagy fölé kerül, ahol van hely;
     // ha egyik sem fér el, csak a legutóbbi látszik kicsiben a képernyő alján
     const top = stack[stack.length - 1];
-    let list = toasts, y0 = 62, dir = 1, size = 20, th = 38;
+    // egy jelenet lejjebb kérheti az üzeneteket (pl. a harc eredménye a „GYŐZELEM!” szalag alá)
+    let list = toasts, y0 = (TT.scene && TT.scene.toastY) || 62, dir = 1, size = 20, th = 38;
     if (top && top.box && top.box.y < 62 + toasts.length * 46) {
       const below = top.box.y + top.box.h + 8;
       if (below + toasts.length * 46 <= TT.H) y0 = below;

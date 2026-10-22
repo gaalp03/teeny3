@@ -507,6 +507,7 @@
 
   const scene = {
     enter(p) {
+      this.toastY = null;
       this.p = p;
       // nehézség: az ellenfél szintje és ügyessége
       // könnyűn a saját Titánjaid tökéletes blokk ablaka is szélesebb
@@ -1162,6 +1163,7 @@
 
     // ---------- Eredmények ----------
     buildResults() {
+      this.toastY = 146;
       const c = this.c;
       const won = c.winner === 0;
       const s = TT.save;
