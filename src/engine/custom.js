@@ -50,6 +50,8 @@
     const models = Object.entries(man.models || {});
     if (models.length && TT.model3d) {
       Promise.all(models.map(([id, path]) => TT.model3d.load(id, 'assets/custom/' + path))).then(() => {
+        // TT2-ben nem létező változatok: az alapfigura modellje átszínezve (src/data/skins3d.js)
+        for (const [id, sk] of Object.entries(TT.SKINS3D || {})) TT.model3d.derive(id, sk.base, sk.map);
         if (TT.art) TT.art.clearCache();
       });
     }

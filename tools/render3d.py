@@ -20,6 +20,11 @@ SS = 2              # élsimítás: ennyiszer nagyobb belső felbontás
 OUTLINE = '#1d1433'
 # a talapzatot a játék maga rajzolja: Base, raven_base, gizmo_Base_mesh, ShopBase_v01:Base, bumbleBee_platform_mesh…
 BASE_RE = re.compile(r'(^|[_:])(base|platform)(_mesh(_new)?)?$', re.I)
+# a harci prefabból vett modellek kellékei (pl. a gorilla banánja) messze a figurától lógnak
+# a gyökér maga a harci prefab: az animációit is tőle vesszük
+SELF_RIG = {'beastboygorilla'}
+ABILITY_FIX = {'beastboygorilla': ['power punch']}
+SKIP_RE = re.compile(r'^beastboy_gorilla_extras$', re.I)
 LIGHT = (0.35, 0.55, 0.75)
 
 
@@ -126,7 +131,7 @@ def _mesh_parts(root_tr):
             go = tr.m_GameObject.read()
         except Exception:
             continue
-        if not go.m_IsActive or BASE_RE.search(go.m_Name or ''):
+        if not go.m_IsActive or BASE_RE.search(go.m_Name or '') or SKIP_RE.search(go.m_Name or ''):
             continue
         stack.extend((c, m) for c in _children(tr))
         rend = _component(go, 'MeshRenderer') or _component(go, 'SkinnedMeshRenderer')
@@ -293,7 +298,7 @@ def export_model(parts):
 
 # nem bolti figurák, amiket a játék mégis 3D-ben mutat (a harci kellékek): név → a szülő neve, ha
 # több azonos nevű változat van (a lámpásból zöld, lila és piros is)
-EXTRA_ROOTS = {'accessory_krypto': None, 'accessory_lantern': 'lantern_green', 'accessory_penguin': 'lilpenguin'}
+EXTRA_ROOTS = {'accessory_krypto': None, 'accessory_lantern': 'lantern_green', 'accessory_penguin': 'lilpenguin', 'beastboygorilla': None}
 
 
 def _parent_name(go):
@@ -343,9 +348,11 @@ def render_shop_models(env, save, only=None, save_model=None):
         try:
             import anim3d
             names = set()
-            for _, _, f in shops:
+            for nm, _, f in shops:
                 if f is not None:
                     names.add(f.m_GameObject.read().m_Name)
+                elif nm.lower() in SELF_RIG:
+                    names.add(nm)
             rigs = anim3d.find_rig_roots(env, names, _component)
         except Exception as e:
             print(f'  ! animált modellek keresése nem sikerült: {e}')
@@ -380,9 +387,15 @@ def render_shop_models(env, save, only=None, save_model=None):
             try:
                 data, textures = export_model(parts)
                 if data:
-                    rig = _export_rig(rigs, father)
+                    rig = _export_rig(rigs, father) if name.lower() not in SELF_RIG else _export_self_rig(rigs, name, tr)
                     if rig:
                         data['rig'], rig_tex = rig
+                        if name.lower() in ABILITY_FIX:
+                            # a gorilla „visszaváltozás Beast Boyjá” mozdulatai harc közben furák lennének
+                            keep = ABILITY_FIX[name.lower()]
+                            drop = set(data['rig'].get('abilities', [])) - set(keep)
+                            data['rig']['abilities'] = keep
+                            data['rig']['clips'] = {k: v for k, v in data['rig']['clips'].items() if k not in drop}
                         textures.update(rig_tex)
                     save_model(name, json.dumps(data, separators=(',', ':')), textures)
             except Exception as e:
@@ -390,6 +403,20 @@ def render_shop_models(env, save, only=None, save_model=None):
         n += 1
     _fallback_tex = None
     return n
+
+
+def _export_self_rig(rigs, name, tr):
+    """Ha maga a gyökér a harci prefab (nincs külön bolti modell), az ő animációi."""
+    import anim3d
+    for root in rigs.get(anim3d.rig_key(name), []):
+        if root.object_reader.path_id != tr.object_reader.path_id:
+            continue
+        try:
+            rig, tex = anim3d.export_rig(root, _component, _children, _main_texture)
+            return (rig, tex) if rig else None
+        except Exception as e:
+            print(f'  ! animáció kihagyva ({name}): {e}')
+    return None
 
 
 def _export_rig(rigs, father):

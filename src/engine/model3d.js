@@ -113,7 +113,7 @@
       const names = [...new Set(all.map((p) => p.tex).filter(Boolean))];
       const imgs = {};
       await Promise.all(names.map((n) => loadImage(base + n).then((img) => { imgs[n] = img; })));
-      M.models[id] = { data, imgs, gpu: null, width: data.width || 1 };
+      M.models[id] = { data, imgs, src: imgs, gpu: null, width: data.width || 1 };
       return true;
     } catch (e) {
       return false;
@@ -121,6 +121,95 @@
       M.pending--;
     }
   };
+
+  // Átszínezett változat egy meglévő modellből (pl. Nindzsa Robin = Robin fekete-piros textúrával).
+  // A háló és az animációk közösek, csak a textúra másolata más színű.
+  // map: [['#honnan', '#hová', tűrés?], ...] pontos színcserék, vagy { hue: [tól, ig], to: '#hová' } színárnyalat-sáv
+  M.derive = function (id, baseId, map) {
+    const base = M.models[baseId];
+    if (M.models[id] || !base || !base.src) return false;
+    const imgs = {};
+    for (const [n, img] of Object.entries(base.src)) imgs[n] = img && recolor(img, map || []);
+    M.models[id] = { data: base.data, imgs, src: imgs, gpu: null, width: base.width };
+    return true;
+  };
+
+  function rgbOf(hex) {
+    const n = parseInt(hex.slice(1), 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+  function hsv(r, g, b) {
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+    let h = 0;
+    if (d) {
+      if (mx === r) h = ((g - b) / d) % 6;
+      else if (mx === g) h = (b - r) / d + 2;
+      else h = (r - g) / d + 4;
+      h = (h * 60 + 360) % 360;
+    }
+    return [h, mx ? d / mx : 0, mx / 255];
+  }
+  function fromHsv(h, s, v) {
+    const c = v * s, x = c * (1 - Math.abs(((h / 60) % 2) - 1)), m = v - c;
+    const k = Math.floor(h / 60) % 6;
+    const [r, g, b] = [[c, x, 0], [x, c, 0], [0, c, x], [0, x, c], [x, 0, c], [c, 0, x]][k];
+    return [(r + m) * 255, (g + m) * 255, (b + m) * 255];
+  }
+
+  function recolor(img, map) {
+    const c = document.createElement('canvas');
+    c.width = img.width;
+    c.height = img.height;
+    const g = c.getContext('2d');
+    g.drawImage(img, 0, 0);
+    if (!map.length) return c;
+    const id = g.getImageData(0, 0, c.width, c.height);
+    const px = id.data;
+    const exact = [], hues = [];
+    for (const r of map) {
+      if (Array.isArray(r)) exact.push({ f: rgbOf(r[0]), t: rgbOf(r[1]), tol: r[2] || 40 });
+      else hues.push({ a: r.hue[0], b: r.hue[1], minS: r.minS != null ? r.minS : 0.18, t: hsv(...rgbOf(r.to)) });
+    }
+    const memo = new Map();
+    for (let i = 0; i < px.length; i += 4) {
+      if (!px[i + 3]) continue;
+      const key = (px[i] << 16) | (px[i + 1] << 8) | px[i + 2];
+      let out = memo.get(key);
+      if (out === undefined) {
+        out = null;
+        const r = px[i], gg = px[i + 1], b = px[i + 2];
+        let best = null, bd = 1e9;
+        for (const e of exact) {
+          const d = Math.hypot(r - e.f[0], gg - e.f[1], b - e.f[2]);
+          if (d < e.tol && d < bd) {
+            bd = d;
+            best = e;
+          }
+        }
+        if (best) {
+          // a színfolt árnyalatai (élsimítás, átmenet) megmaradnak: az eltolás ugyanannyi
+          out = [best.t[0] + r - best.f[0], best.t[1] + gg - best.f[1], best.t[2] + b - best.f[2]];
+        } else {
+          const [h, sat, v] = hsv(r, gg, b);
+          for (const e of hues) {
+            const inside = e.a <= e.b ? h >= e.a && h <= e.b : h >= e.a || h <= e.b;
+            if (inside && sat >= e.minS) {
+              out = fromHsv(e.t[0], e.t[1], Math.min(1, v * e.t[2]));
+              break;
+            }
+          }
+        }
+        memo.set(key, out);
+      }
+      if (out) {
+        px[i] = out[0];
+        px[i + 1] = out[1];
+        px[i + 2] = out[2];
+      }
+    }
+    g.putImageData(id, 0, 0);
+    return c;
+  }
 
   M.has = (id) => !!(M.models[id] && M.ok !== false && init());
 
@@ -189,7 +278,7 @@
       model.mats = {};
       model.rigKey = null;
     }
-    model.imgs = null; // a képek már a GPU-n vannak
+    model.imgs = null; // a képek már a GPU-n vannak (az eredetiket a src őrzi az átszínezett változatokhoz)
   }
 
   // félpontos (16 bites) lebegőpontos számok visszaalakítása
