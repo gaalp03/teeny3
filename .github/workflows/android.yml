@@ -139,10 +139,13 @@ jobs:
 
       - name: APK feltöltése (artifact)
         uses: actions/upload-artifact@v4
+        # a telefonos letöltés a kiadásból megy; ha a tárhelykvóta betelt, attól még legyen kiadás
+        continue-on-error: true
         with:
           name: teeny-titans-3-apk
           path: TeenyTitans3.apk
           if-no-files-found: error
+          retention-days: 1
 
       - name: Legújabb kiadás frissítése (közvetlen letöltés telefonra)
         env:
