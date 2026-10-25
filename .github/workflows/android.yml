@@ -154,14 +154,24 @@ jobs:
           # mi került az APK-ba a saját fájlokból (így a kiadás oldalán látszik, működött-e a párosítás)
           TARTALOM=$(python3 -c "import json; m=json.load(open('assets/custom/manifest.json')); v=m.get('voice',{}); print('Saját TT2-tartalom: %d figura, %d 3D modell, %d harci háttér, %d zene, %d hangeffekt, %d támadáshang, %d bemondott név, %d szinkronhang.' % (len([k for k in m.get('figures',{}) if not k.startswith('acc_')]), len([k for k in m.get('models',{}) if not k.startswith('acc_')]), len(m.get('backgrounds',{})), len(m.get('music',{})), len(m.get('sfx',{})), len(m.get('moves',{})), sum(1 for k in v.values() if 'name' in k), sum(len(l) for k in v.values() for n, l in k.items() if n != 'name')))" 2>/dev/null || echo "Saját TT2-tartalom nélkül készült.")
           echo "$TARTALOM"
+          # egyben letölthető csomag: az APK és egy rövid telepítési leírás
+          mkdir -p csomag/TeenyTitans3
+          cp TeenyTitans3.apk csomag/TeenyTitans3/
+          printf '%s\n' 'Teeny Titans 3 (1.${{ github.run_number }})' '' \
+            'Telepítés telefonra:' \
+            '1. Másold át a TeenyTitans3.apk fájlt a telefonra (vagy nyisd meg ott).' \
+            '2. Koppints rá, és engedélyezd az "ismeretlen forrásból" telepítést, ha kéri.' \
+            '3. Ha már fent van egy régebbi verzió, a frissítés megtartja a mentést.' '' \
+            "$TARTALOM" > csomag/TeenyTitans3/OLVASS_EL.txt
+          (cd csomag && zip -q -r ../TeenyTitans3.zip TeenyTitans3)
           for i in 1 2 3; do
             gh release delete legujabb --cleanup-tag -y || true
             sleep 3
-            if gh release create legujabb TeenyTitans3.apk \
+            if gh release create legujabb TeenyTitans3.apk TeenyTitans3.zip \
               --prerelease \
               --target "$GITHUB_SHA" \
               --title "Teeny Titans 3 – legújabb (1.${{ github.run_number }})" \
-              --notes "Automatikus build a(z) ${GITHUB_REF_NAME} ágról. Telefonon: töltsd le a TeenyTitans3.apk-t és telepítsd. A frissítés megtartja a mentést. $TARTALOM"; then
+              --notes "Automatikus build a(z) ${GITHUB_REF_NAME} ágról. Telefonon: töltsd le a TeenyTitans3.apk-t és telepítsd (vagy a TeenyTitans3.zip-et, abban az APK és egy leírás van). A frissítés megtartja a mentést. $TARTALOM"; then
               # a gh piszkozatként hozza létre és utólag teszi közzé; ha ez elmaradt, közzétesszük
               sleep 3
               if [ "$(gh release view legujabb --json isDraft -q .isDraft)" = "true" ]; then
