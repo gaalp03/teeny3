@@ -1769,7 +1769,7 @@
         { label: 'Napszak: ' + (st.dayNight === 'day' ? 'mindig nappal' : 'valós idő'), value: 'daynight' },
         { label: 'Időjárás: ' + (st.weather === 'off' ? 'mindig derült' : 'változó (eső, vihar)'), value: 'weather' },
         ...(has3d ? [{ label: '3D figurák: ' + (st.fig3d === false ? 'Ki (képek)' : 'Be'), value: 'fig3d' }] : []),
-        { label: 'Harci zene: ' + (TT.custom.userMusic.battle ? 'saját' : 'eredeti'), value: 'battlemusic' },
+        { label: 'Harci zene: ' + (TT.custom.userMusic.battle ? 'saját' : st.battleMix === false ? 'egy szám' : 'vegyes (TT2)'), value: 'battlemusic' },
         { label: 'Takarékos mód (gyenge gépre): ' + (st.lite ? 'Be' : 'Ki'), value: 'lite' },
         { label: 'Teljes képernyő', value: 'fs' },
         { label: 'Mentés exportálása', value: 'export' },
@@ -1800,25 +1800,33 @@
       }
       if (v === 'battlemusic') {
         const C = TT.custom;
-        if (C.userMusic.battle) {
-          TT.ui.choose({
-            title: 'Harci zene',
-            text: 'Most ez szól harcban: ' + C.userMusicName.battle,
-            options: [
-              { label: 'Másik zene választása', value: 'pick' },
-              { label: 'Vissza az eredetire', value: 'off' },
-              { label: 'Mégse', value: null, color: '#6c5ce7' },
-            ],
-          }, (w) => {
-            if (w === 'pick') C.pickMusic('battle', (ok, name) => ok && TT.ui.toast('Harci zene: ' + name + ' (a következő harctól)'));
-            if (w === 'off') C.removeMusic('battle').then(() => TT.ui.toast('Újra az eredeti harci zene szól.'));
-            TT.openSettings();
-          });
-          return;
-        }
-        // ha a fájlválasztót bezárják, nem jön visszajelzés: a beállítások addig is nyitva maradnak
-        C.pickMusic('battle', (ok, name) => ok && TT.ui.toast('Harci zene: ' + name + ' (a következő harctól)'));
-        TT.openSettings();
+        const own = C.userMusic.battle;
+        TT.ui.choose({
+          title: 'Harci zene',
+          text: own ? 'Most ez szól harcban: ' + C.userMusicName.battle : 'Minden harc elején másik TT2-s harci szám szól.',
+          options: [
+            { label: 'Vegyes: a TT2 harci számai', value: 'mix' },
+            { label: 'Mindig ugyanaz az egy szám', value: 'one' },
+            { label: own ? 'Másik saját zene a telefonról' : 'Saját zene a telefonról', value: 'pick' },
+            ...(own ? [{ label: 'Saját zene törlése', value: 'del' }] : []),
+            { label: 'Mégse', value: null, color: '#6c5ce7' },
+          ],
+        }, (w) => {
+          if (w === 'mix' || w === 'one') {
+            st.battleMix = w === 'mix';
+            const done = () => {
+              TT.store.writeSettings();
+              TT.ui.toast(w === 'mix' ? 'Vegyes harci zene (a következő harctól)' : 'Mindig ugyanaz a harci szám');
+              TT.openSettings();
+            };
+            if (own) C.removeMusic('battle').then(done);
+            else done();
+            return;
+          }
+          if (w === 'pick') C.pickMusic('battle', (ok, name) => ok && TT.ui.toast('Harci zene: ' + name + ' (a következő harctól)'));
+          if (w === 'del') C.removeMusic('battle').then(() => TT.ui.toast('Újra a TT2 harci zenéi szólnak.'));
+          TT.openSettings();
+        });
         return;
       }
       if (v === 'export') {

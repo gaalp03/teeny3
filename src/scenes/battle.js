@@ -559,7 +559,9 @@
       this.blockHeld = false;
       for (let s = 0; s < 2; s++) this.layout(s, true);
       // a bemutatkozás és a VS alatt a TT2 harc előtti zenéje szól (ha megvan), a harc indulásakor vált
-      TT.audio.music(TT.audio.hasSampled('prebattle') ? 'prebattle' : en.music || 'battle');
+      // melyik szám szól a harcban (a TT2 harci számai között váltakozik)
+      this.tune = TT.audio.pickBattle(en.music);
+      TT.audio.music(TT.audio.hasSampled('prebattle') ? 'prebattle' : this.tune);
       if (en.intro && en.intro.length) {
         // főellenfél előtt drámai „dum-dum-dum” (TT2)
         if (TT.audio.isBossTune(en.music)) TT.audio.sfx('dramatic');
@@ -1091,7 +1093,7 @@
         if (this.t > 1.2 && !c.started) {
           c.started = true;
           this.state = 'fight';
-          TT.audio.music(this.en.music || 'battle');
+          TT.audio.music(this.tune || this.en.music || 'battle');
           TT.audio.sfx('go');
           TT.audio.voiceFrom(c.sides[0].fighters.map((f) => f.id), 'go', 1);
           // az ellenfél első figurája is bemutatkozik (pl. Hood, Bizarro, Slade saját TT2-hangján)

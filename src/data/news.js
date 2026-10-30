@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 77;
+  TT.NEWS_VERSION = 78;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 78, who: 'beastboy', text: 'Dude, végre nem ugyanaz a szám szól minden harcban! Minden harc elején másik TT2-s harci zene indul, és egymás után sosem ugyanaz. A Beállítások → Harci zene gombbal átkapcsolhatod egyetlen számra, vagy a saját zenédre.' },
     { v: 77, who: 'cyborg', text: 'BOOYAH! A Beállításokban a „Harci zene” gombbal kiválaszthatsz egy zenét a telefonodról, és minden harcban az szól. Bármikor visszaállíthatod az eredetire.' },
     { v: 76, who: 'robin', text: 'Új szabály: a ritkaság is számít! Gyakori > Legendás > Epikus > Ritka > Gyakori. Aki erős a másik ritkasága ellen, +15%-ot sebez, fordítva −10%-ot. Egy gyakori figura is megleckéztethet egy legendást!' },
     { v: 75, who: 'beastboy', text: 'Dude! Most már MINDEN figura igazi 3D játékfigura: Gorilla-énem, Nindzsa Robin, Mumbo, Kitten, Plasmus, Mr. Mint, sőt a városi srácok is. Nézd meg őket a Gyűjteményben!' },

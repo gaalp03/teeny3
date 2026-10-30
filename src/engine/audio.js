@@ -468,6 +468,25 @@
     hood: 'boss', lod: 'boss', gotham_night: 'boss', gotham_day: 'boss', metropolis_night: 'boss', metropolis_day: 'boss',
   };
   A.isBossTune = (name) => name === 'boss' || ALIAS[name] === 'boss';
+  // A TT2 harci számai: minden harc elején ezekből választ (nem ismétli kétszer ugyanazt egymás után).
+  // Az edzők saját zenéje (pl. Slade: lod, Joker: gotham_night) marad, csak az általános harci és főellenség-zene vált.
+  const BATTLE_MIX = {
+    battle: ['battle', 'dome', 'metropolis_day', 'gotham_day', 'metropolis_night'],
+    boss: ['boss', 'lod', 'hood', 'gotham_night'],
+  };
+  const MIX_NAMES = new Set([].concat(...Object.values(BATTLE_MIX)));
+  A.pickBattle = function (name) {
+    const key = name || 'battle';
+    const own = TT.custom && TT.custom.userMusic && TT.custom.userMusic.battle;
+    const pool = !own && TT.settings.battleMix !== false && BATTLE_MIX[key] ? BATTLE_MIX[key].filter((n) => sampledUrl(n)) : null;
+    if (!pool || pool.length < 2) return key;
+    const last = A.lastBattle && A.lastBattle[key];
+    const choices = pool.filter((n) => n !== last);
+    const n = choices[Math.floor(Math.random() * choices.length)];
+    A.lastBattle = A.lastBattle || {};
+    A.lastBattle[key] = n;
+    return n;
+  };
   // van-e hozzá saját (TT2-es) zene — ami csak akkor szól, ha megvan (pl. a harc előtti zene)
   A.hasSampled = (name) => !!sampledUrl(name);
   const ONE_SHOT = new Set(['victory', 'defeat']);
@@ -503,6 +522,17 @@
         g.disconnect();
         A.current = startSong(SONGS[name] ? name : ALIAS[name]);
         return;
+      }
+      if (MIX_NAMES.has(name)) {
+        // egyforma hangosság: a számok között akár háromszoros a különbség
+        const ch = buf.getChannelData(0);
+        let sum = 0, n = 0;
+        for (let i = 0; i < ch.length; i += 16) {
+          sum += ch[i] * ch[i];
+          n++;
+        }
+        const rms = Math.sqrt(sum / Math.max(1, n));
+        if (rms > 0.005) g.gain.value = Math.min(3.2, Math.max(0.8, 0.19 / rms));
       }
       const src = A.ctx.createBufferSource();
       src.buffer = buf;
