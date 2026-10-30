@@ -45,6 +45,7 @@
     shrinkwrap: { base: 'terra', map: [['#ffff6d', '#4fd6a8'], ['#ffffb0', '#9af0d0'], ['#ffc30c', '#2ab88a'], { hue: [300, 340], to: '#8fc7e0', minS: 0.4 }, ['#945a29', '#5aa0c0'], ['#ae7441', '#6ab4d4']] },
     mintguard: { base: 'blood_robot', map: [{ hue: [345, 15], to: '#3fd0a0', minS: 0.5 }, ['#ffcdb2', '#c8f5e0'], ['#ffdec1', '#d8fbe8']] },
     boxbot: { base: 'cyborg', map: [[CY.metal, '#c8a165'], [CY.metal2, '#a8844c'], [CY.grey, '#9a7840'], ['#ad6958', '#b89058'], [CY.blue, '#ff4f4f'], [CY.blue2, '#ff2a2a']] },
+    blood_headmaster: { base: 'bloodbrother', map: [['#ff367d', '#e0a800'], ['#ff728e', '#ffc93c'], ['#eb2049', '#b88400'], ['#d360be', '#2a2a3a'], ['#793e7d', '#1d1d2b'], ['#493849', '#15151f']] },
     // városi szereplők (src/data/world.js NPC_LOOKS)
     kid_pete: { base: 'aqualad', map: [['#30bbfb', '#ff6b35'], ['#5092e5', '#ff8c55'], ['#286482', '#3b5998'], ['#144c65', '#2a4478']] },
     kid_ann: { base: 'terra', map: [['#ffff6d', '#ff7b1c'], ['#ffffb0', '#ffa45c'], ['#ffc30c', '#d05800'], { hue: [300, 340], to: '#7bd65b', minS: 0.4 }, ['#945a29', '#e0b030'], ['#ae7441', '#f4d35e']] },

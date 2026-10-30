@@ -321,6 +321,13 @@
       hair: 'flat', hairColor: '#1d1d2b', eyes: 'glow', eyeColor: '#ff2a2a', mouth: 'smirk', gear: ['collar'],
     }, { team: 'hive', short: 'B. Blood', bio: 'A H.I.V.E. Akadémia igazgatója. Mindenkit irányítani akar.' });
 
+  F('blood_headmaster', 'Blood igazgató', 'mystic', 'legendary', [130, 16, 13, 11],
+    ['blood_bolt', 'mind_control', 'chant'], 'hive_judgement',
+    {
+      skin: SKIN, top: '#e0a800', bottom: '#2a2a3a', boots: '#1d1d2b', gloves: '#e0a800', cape: '#1d1d2b', capeIn: '#ffd23f', belt: '#ffd23f',
+      hair: 'flat', hairColor: '#1d1d2b', eyes: 'glow', eyeColor: '#ffd23f', mouth: 'smirk', gear: ['collar'], gold: true,
+    }, { team: 'hive', short: 'B. igazgató', noBox: true, passive: 'leader', bio: 'Csak az kapja meg, aki kitűnőre vizsgázik a H.I.V.E. Akadémián. Az igazgató személyesen gratulál.' });
+
   F('slade', 'Slade', 'brawn', 'legendary', [120, 15, 13, 12],
     ['staff_strike', 'smoke_grenade', 'master_combo'], 'true_evil',
     {

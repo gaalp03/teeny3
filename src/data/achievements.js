@@ -49,6 +49,8 @@
     A('cup4', 'Kibontva!', 'Győzd le Mr. Mintet.', 500, () => TT.cupDone('mint')),
     A('cup5', 'Testvériség-törő', 'Nyerd meg a Testvériség Kupát.', 800, () => TT.cupDone('brotherhood')),
     A('trigon', 'Démonverő', 'Győzd le Trigont a Torony szigetén.', 1500, (s) => !!s.beaten.trigon),
+    A('hiveExam', 'Kitűnő tanuló', 'Teljesítsd a H.I.V.E. Akadémia vizsgáját.', 1000, (s) => !!(s.hive && s.hive.clears)),
+    A('hiveDetention', 'Bukott diák', 'Győzd le Kyd Wykkydot a Büntetőteremben 5 különböző napon.', 600, (s) => !!(s.hive && s.hive.detentions >= 5)),
     A('redx', 'X jelöli a helyet', 'Győzd le Red X-et éjjel a kikötőben.', 1000, (s) => !!s.beaten.redx),
     A('endless5', 'Kitartó', 'Juss el az 5. hullámig a Végtelen Arénában.', 500, (s) => (s.endless || 0) >= 5),
     A('endless15', 'Végtelen bajnok', 'Juss el a 15. hullámig a Végtelen Arénában.', 1500, (s) => (s.endless || 0) >= 15),

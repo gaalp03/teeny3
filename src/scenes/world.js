@@ -635,8 +635,8 @@
           TT.go('factory', { back });
           break;
         case 'hive':
-          TT.ui.say(s.beaten.blood ? [{ who: 'kid_hive', text: 'Az Akadémia ma zárva. Az igazgató úr… figurázik.' }] :
-            [{ who: 'kid_hive', text: 'Csak az léphet be, aki legyőzi Brother Bloodot. Ott áll az ajtó mellett.' }]);
+          if (s.beaten.blood) TT.go('academy', { back });
+          else TT.ui.say([{ who: 'kid_hive', text: 'Csak az léphet be, aki legyőzi Brother Bloodot. Ott áll az ajtó mellett.' }]);
           break;
         default:
           break;
