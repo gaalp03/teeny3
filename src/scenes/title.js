@@ -50,13 +50,62 @@
     },
 
     importSave() {
-      const code = window.prompt('Illeszd be a mentéskódot:');
-      if (!code) return;
-      if (TT.store.importString(code)) {
-        TT.ui.toast('Mentés betöltve!');
-        this.hasSave = true;
-        this.build();
-      } else TT.ui.toast('Hibás mentéskód', { color: '#ff8a80' });
+      const apply = (box) => {
+        const code = (box.text || '').replace(/\s+/g, '');
+        if (!code) {
+          box.say('Még üres. Illeszd be a mentéskódot.', true);
+          return false;
+        }
+        if (TT.store.importString(code)) {
+          TT.ui.toast('Mentés betöltve!');
+          this.hasSave = true;
+          this.build();
+          return true;
+        }
+        box.say('Hibás mentéskód. A teljes kódot másold be, a végén lévő = jelekkel együtt.', true);
+        return false;
+      };
+      TT.ui.codeBox({
+        title: 'Mentés betöltése',
+        hint: 'Illeszd be a mentéskódot (Beállítások → Mentés exportálása).',
+        actions: [
+          { label: 'Betöltés', primary: true, keepOpen: true, run: (box) => apply(box) && box.close() },
+          {
+            label: 'Beillesztés',
+            keepOpen: true,
+            run: (box) => {
+              try {
+                navigator.clipboard.readText().then((t) => {
+                  box.text = t || '';
+                  box.say(t ? 'Beillesztve (' + t.length + ' karakter). Nyomd meg a Betöltést!' : 'A vágólap üres.', !t);
+                }, () => box.say('A vágólap nem olvasható: nyomj hosszan a dobozra, és válaszd a Beillesztést.', true));
+              } catch (e) {
+                box.say('A vágólap nem olvasható: nyomj hosszan a dobozra, és válaszd a Beillesztést.', true);
+              }
+            },
+          },
+          {
+            label: 'Fájlból',
+            keepOpen: true,
+            run: (box) => {
+              const inp = document.createElement('input');
+              inp.type = 'file';
+              inp.accept = 'text/plain,.txt';
+              inp.onchange = () => {
+                const f = inp.files && inp.files[0];
+                if (!f) return;
+                const r = new FileReader();
+                r.onload = () => {
+                  box.text = String(r.result || '');
+                  box.say('Fájl beolvasva. Nyomd meg a Betöltést!');
+                };
+                r.readAsText(f);
+              };
+              inp.click();
+            },
+          },
+        ],
+      });
     },
 
     update(dt) {

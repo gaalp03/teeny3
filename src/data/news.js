@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 79;
+  TT.NEWS_VERSION = 80;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 80, who: 'raven', text: 'A mentéskód betöltése és exportálása új ablakot kapott: a gombok mindig látszanak, a hosszú kód pedig egy görgethető dobozban van. Beillesztés gombbal és fájlból is betölthető.' },
     { v: 79, who: 'starfire', text: 'A „Night Begins To Shine” most a harci zenék között is szerepel! A Beállítások → Harci zene gombbal beállíthatod, hogy harcban mindig ez szóljon. Ez dicsőséges!' },
     { v: 78, who: 'beastboy', text: 'Dude, végre nem ugyanaz a szám szól minden harcban! Minden harc elején másik TT2-s harci zene indul, és egymás után sosem ugyanaz. A Beállítások → Harci zene gombbal átkapcsolhatod egyetlen számra, vagy a saját zenédre.' },
     { v: 77, who: 'cyborg', text: 'BOOYAH! A Beállításokban a „Harci zene” gombbal kiválaszthatsz egy zenét a telefonodról, és minden harcban az szól. Bármikor visszaállíthatod az eredetire.' },

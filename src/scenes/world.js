@@ -1832,12 +1832,21 @@
       }
       if (v === 'export') {
         const code = TT.store.exportString();
-        const manual = () => window.prompt('Mentéskód (másold ki):', code);
-        try {
-          navigator.clipboard.writeText(code).then(() => TT.ui.toast('Mentéskód a vágólapra másolva!'), manual);
-        } catch (e) {
-          manual();
-        }
+        const copy = (box) => {
+          try {
+            navigator.clipboard.writeText(code).then(() => box.say('A vágólapra másolva! Illeszd be egy jegyzetbe.'), () => box.say('Nem sikerült a másolás: nyomj hosszan a dobozra, és válaszd a Másolást.', true));
+          } catch (e) {
+            box.say('Nem sikerült a másolás: nyomj hosszan a dobozra, és válaszd a Másolást.', true);
+          }
+        };
+        const box = TT.ui.codeBox({
+          title: 'Mentéskód',
+          hint: 'Másold ki az egészet, és tedd el egy jegyzetbe. (' + code.length + ' karakter)',
+          text: code,
+          readonly: true,
+          actions: [{ label: 'Másolás', primary: true, keepOpen: true, run: copy }],
+        });
+        if (box) copy(box);
       }
       TT.store.writeSettings();
       TT.audio.sfx('select');

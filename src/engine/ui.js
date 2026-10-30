@@ -431,5 +431,63 @@
     stack.length = 0;
   };
 
+  // Szövegdoboz hosszú szövegekhez (pl. mentéskód): a gombok fent vannak, így a hosszú szöveg sosem takarja el őket,
+  // a szöveg egy külön görgethető dobozban van. A telefon beépített bevitelablaka (prompt) ilyenkor kilóg a képernyőről.
+  // o: { title, hint, text, readonly, actions: [{ label, primary, keepOpen, run(box) }], onClose }
+  ui.codeBox = function (o) {
+    if (typeof document === 'undefined') return null;
+    const back = document.createElement('div');
+    back.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(13,8,32,0.88);display:flex;align-items:center;justify-content:center;padding:8px;box-sizing:border-box;touch-action:auto;-webkit-user-select:text;user-select:text;font-family:"TT3 Display",system-ui,sans-serif';
+    const card = document.createElement('div');
+    card.style.cssText = 'width:min(640px,100%);max-height:100%;display:flex;flex-direction:column;gap:8px;background:#2b1e5c;border:4px solid #1d1433;border-radius:16px;padding:12px;box-sizing:border-box;color:#fff;overflow:hidden';
+    const title = document.createElement('div');
+    title.textContent = o.title || '';
+    title.style.cssText = 'font-size:22px;color:#ffd23f;text-align:center;flex:none';
+    const bar = document.createElement('div');
+    bar.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;justify-content:center;flex:none';
+    const hint = document.createElement('div');
+    hint.textContent = o.hint || '';
+    hint.style.cssText = 'font-size:14px;color:#c8b8f0;text-align:center;flex:none;min-height:18px';
+    const ta = document.createElement('textarea');
+    ta.value = o.text || '';
+    ta.readOnly = !!o.readonly;
+    ta.spellcheck = false;
+    ta.autocapitalize = 'off';
+    ta.setAttribute('autocomplete', 'off');
+    // legfeljebb a képernyő harmada: a gombok és a felirat mindig látszanak, a kód a dobozban görgethető
+    ta.style.cssText = 'width:100%;box-sizing:border-box;height:min(30vh,150px);min-height:64px;resize:none;overflow:auto;word-break:break-all;font:13px/1.3 monospace;background:#120a2c;color:#e8e2ff;border:3px solid #6c5ce7;border-radius:10px;padding:8px;-webkit-user-select:text;user-select:text;touch-action:pan-y';
+    // a játék gombjai (WASD, nyilak, szóköz) ne zavarják a szövegbevitelt
+    for (const ev of ['keydown', 'keyup', 'keypress']) ta.addEventListener(ev, (e) => e.stopPropagation());
+    const box = {
+      el: back, ta,
+      get text() { return ta.value; },
+      set text(v) { ta.value = v; },
+      say(msg, bad) {
+        hint.textContent = msg;
+        hint.style.color = bad ? '#ff8a80' : '#7bff6b';
+      },
+      close() {
+        if (back.parentNode) back.parentNode.removeChild(back);
+        if (o.onClose) o.onClose();
+      },
+    };
+    const mk = (label, primary, fn) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = label;
+      b.style.cssText = `flex:1 1 130px;min-height:48px;font:inherit;font-size:17px;color:#fff;background:${primary ? '#2ecc71' : '#6c5ce7'};border:3px solid #1d1433;border-radius:12px;padding:6px 10px;touch-action:manipulation`;
+      b.addEventListener('click', fn);
+      bar.appendChild(b);
+    };
+    for (const a of o.actions || []) mk(a.label, a.primary, () => { a.run(box); if (!a.keepOpen) box.close(); });
+    mk('Mégse', false, () => box.close());
+    card.append(title, bar, hint, ta);
+    back.appendChild(card);
+    document.body.appendChild(back);
+    if (!o.readonly) setTimeout(() => ta.focus(), 50);
+    else ta.select();
+    return box;
+  };
+
   TT.ui = ui;
 })(window.TT);
