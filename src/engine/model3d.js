@@ -376,17 +376,32 @@
     const clip = rig.clips[pick.name] || rig.clips.idle;
     const name = rig.clips[pick.name] ? pick.name : 'idle';
     const n = clip.n;
-    let f;
-    if (pick.p != null) f = Math.round(Math.min(1, Math.max(0, pick.p)) * (n - 1));
+    // A TT2 animációi 15 képkocka/s-esek: két kocka között átmenetet számolunk (SUB lépésben),
+    // így folyamatosabb a mozgás (takarékos módban marad a sima kockaváltás)
+    const SUB = TT.settings && TT.settings.lite ? 1 : 2;
+    let ft;
+    if (pick.p != null) ft = Math.min(1, Math.max(0, pick.p)) * (n - 1);
     else {
-      f = Math.floor(Math.max(0, pick.t) * rig.fps);
-      f = pick.once ? Math.min(n - 1, f) : f % n;
+      ft = Math.max(0, pick.t) * rig.fps;
+      ft = pick.once ? Math.min(n - 1, ft) : ft % n;
     }
-    const key = name + ':' + f;
+    const f = Math.floor(ft);
+    const sub = Math.floor((ft - f) * SUB) / SUB;
+    const loops = pick.p == null && !pick.once;
+    const f1 = f + 1 < n ? f + 1 : loops ? 0 : f;
+    const key = name + ':' + f + ':' + sub;
     if (model.rigKey === key) return;
     model.rigKey = key;
-    const M4 = clipMats(model, name);
-    const base = f * rig.slots * 12;
+    let M4 = clipMats(model, name);
+    let base = f * rig.slots * 12;
+    if (sub > 0 && f1 !== f) {
+      // a két szomszédos kocka csontmátrixainak keveréke
+      const len = rig.slots * 12, b0 = base, b1 = f1 * len;
+      const mix = model.mixBuf && model.mixBuf.length === len ? model.mixBuf : (model.mixBuf = new Float32Array(len));
+      for (let k = 0; k < len; k++) mix[k] = M4[b0 + k] + (M4[b1 + k] - M4[b0 + k]) * sub;
+      M4 = mix;
+      base = 0;
+    }
     const gl = M.gl;
     const m = new Float32Array(12);
     for (const p of model.rigGpu) {
@@ -452,9 +467,10 @@
   let cached = 0;
   // Képkockánkénti újrarajzolási keret: egy képkockán legfeljebb ennyi figura kap új képet, a többi
   // a legutóbbi (egy kockával régebbi) képét mutatja — így 6 animált figura sem fogja vissza az FPS-t.
-  // A kis (padon ülő) figurák külön, kisebb keretből és ritkábban frissülnek, hogy ne vegyék el a
-  // helyet a harcoló figurák elől.
-  const BUDGET = { 512: 1, 256: 1 }, SMALL_EVERY = 0.5;
+  // Képkockánként ennyi figura renderelhető újra: a két harcoló figura (512) felváltva, egyenként
+  // ~30-szor frissül másodpercenként (MIN_DT), a mozgó kicsik (256, pl. a városban sétáló játékos) is.
+  // A nem élő kis figurák (padon, városban álló szereplők) ritkábban frissülnek. Takarékos módban szűkebb a keret.
+  const BUDGET = { 512: 1, 256: 2 }, BUDGET_LITE = { 512: 1, 256: 1 }, SMALL_EVERY = 0.5, MIN_DT = 1 / 32;
   const budget = { 512: 0, 256: 0 };
   let budgetT = -1;
   const lastAt = {};
@@ -478,11 +494,14 @@
     const now = TT.rtime || 0;
     if (now !== budgetT) {
       budgetT = now;
-      budget[512] = BUDGET[512];
-      budget[256] = BUDGET[256];
+      const B = TT.settings && TT.settings.lite ? BUDGET_LITE : BUDGET;
+      budget[512] = B[512];
+      budget[256] = B[256];
     }
     const prev = list.length && list[list.length - 1];
-    if (prev && prev.canvas.width === res && (budget[res] <= 0 || (res === 256 && !o.live && now - (lastAt[id] || 0) < SMALL_EVERY))) return prev.canvas;
+    // egy figura legfeljebb ~30-szor frissül másodpercenként (az átmenetes animációhoz ennyi elég, és olcsóbb)
+    const since = now - (lastAt[id] || 0);
+    if (prev && prev.canvas.width === res && (budget[res] <= 0 || since < MIN_DT || (res === 256 && !o.live && since < SMALL_EVERY))) return prev.canvas;
     budget[res]--;
     lastAt[id] = now;
     gl.viewport(0, 0, res, res);

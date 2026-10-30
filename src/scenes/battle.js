@@ -1463,9 +1463,12 @@
       else if (pose === 'cheer') anim3d = { name: 'cheer', t: TT.time + f.idx * 0.37 };
       else if (pose === 'stun') anim3d = { name: 'stun', t: TT.time + f.idx * 0.37 };
       else if (active && f.enterT != null && f.enterT < 0.9) anim3d = { name: 'enter', t: f.enterT };
+      // a padon ülők nyugodt, álló pózban várnak (csak a rajz ring finoman): a ritkán frissülő kis kép
+      // így nem lépked, és a harcoló figurák gyorsabban frissülhetnek
+      if (!active && f.alive && pose === 'idle') anim3d = { name: 'idle', t: 0.4 + f.idx * 0.37 };
       TT.art.drawFigure(ctx, f.fig, x, y, f.s, {
         facing, pose, lean, anim3d, flash: f.flashT > 0 ? 1 : 0, t: TT.time + f.idx,
-        pedestal: true, paint: f.side === 0 ? TT.paintOf(f.id) : null,
+        pedestal: true, paint: f.side === 0 ? TT.paintOf(f.id) : null, live3d: !active && f.alive && pose !== 'idle',
       });
       ctx.restore();
       if (pose === 'ko' && active && f.koT < 1.2) {
