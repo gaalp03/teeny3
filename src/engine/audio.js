@@ -471,9 +471,10 @@
   // A TT2 harci számai: minden harc elején ezekből választ (nem ismétli kétszer ugyanazt egymás után).
   // Az edzők saját zenéje (pl. Slade: lod, Joker: gotham_night) marad, csak az általános harci és főellenség-zene vált.
   // (a 'credits' a TT2 „Night Begins To Shine” száma, a stáblistán kívül itt is szól)
+  // A városok (Gotham, Metropolis, Jump City) háttérzenéi nem harci számok, azok itt nem szerepelnek.
   const BATTLE_MIX = {
-    battle: ['battle', 'credits', 'dome', 'metropolis_day', 'gotham_day', 'metropolis_night'],
-    boss: ['boss', 'credits', 'lod', 'hood', 'gotham_night'],
+    battle: ['battle', 'credits', 'dome'],
+    boss: ['boss', 'credits', 'lod', 'hood'],
   };
   const MIX_NAMES = new Set([].concat(...Object.values(BATTLE_MIX)));
   A.pickBattle = function (name) {
