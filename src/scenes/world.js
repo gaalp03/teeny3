@@ -1769,7 +1769,7 @@
         { label: 'Napszak: ' + (st.dayNight === 'day' ? 'mindig nappal' : 'valós idő'), value: 'daynight' },
         { label: 'Időjárás: ' + (st.weather === 'off' ? 'mindig derült' : 'változó (eső, vihar)'), value: 'weather' },
         ...(has3d ? [{ label: '3D figurák: ' + (st.fig3d === false ? 'Ki (képek)' : 'Be'), value: 'fig3d' }] : []),
-        { label: 'Harci zene: ' + (TT.custom.userMusic.battle ? 'saját' : st.battleMix === false ? 'egy szám' : 'vegyes (TT2)'), value: 'battlemusic' },
+        { label: 'Harci zene: ' + (TT.custom.userMusic.battle ? 'saját' : st.battleMix === false ? 'egy szám' : st.battleMix === 'nbts' ? 'Night Begins To Shine' : 'vegyes (TT2)'), value: 'battlemusic' },
         { label: 'Takarékos mód (gyenge gépre): ' + (st.lite ? 'Be' : 'Ki'), value: 'lite' },
         { label: 'Teljes képernyő', value: 'fs' },
         { label: 'Mentés exportálása', value: 'export' },
@@ -1806,17 +1806,18 @@
           text: own ? 'Most ez szól harcban: ' + C.userMusicName.battle : 'Minden harc elején másik TT2-s harci szám szól.',
           options: [
             { label: 'Vegyes: a TT2 harci számai', value: 'mix' },
+            ...(TT.audio.hasSampled('credits') ? [{ label: 'Mindig: Night Begins To Shine', value: 'nbts' }] : []),
             { label: 'Mindig ugyanaz az egy szám', value: 'one' },
             { label: own ? 'Másik saját zene a telefonról' : 'Saját zene a telefonról', value: 'pick' },
             ...(own ? [{ label: 'Saját zene törlése', value: 'del' }] : []),
             { label: 'Mégse', value: null, color: '#6c5ce7' },
           ],
         }, (w) => {
-          if (w === 'mix' || w === 'one') {
-            st.battleMix = w === 'mix';
+          if (w === 'mix' || w === 'one' || w === 'nbts') {
+            st.battleMix = w === 'nbts' ? 'nbts' : w === 'mix';
             const done = () => {
               TT.store.writeSettings();
-              TT.ui.toast(w === 'mix' ? 'Vegyes harci zene (a következő harctól)' : 'Mindig ugyanaz a harci szám');
+              TT.ui.toast(w === 'mix' ? 'Vegyes harci zene (a következő harctól)' : w === 'nbts' ? 'Night Begins To Shine szól harcban (a következő harctól)' : 'Mindig ugyanaz a harci szám');
               TT.openSettings();
             };
             if (own) C.removeMusic('battle').then(done);

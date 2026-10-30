@@ -470,15 +470,18 @@
   A.isBossTune = (name) => name === 'boss' || ALIAS[name] === 'boss';
   // A TT2 harci számai: minden harc elején ezekből választ (nem ismétli kétszer ugyanazt egymás után).
   // Az edzők saját zenéje (pl. Slade: lod, Joker: gotham_night) marad, csak az általános harci és főellenség-zene vált.
+  // (a 'credits' a TT2 „Night Begins To Shine” száma, a stáblistán kívül itt is szól)
   const BATTLE_MIX = {
-    battle: ['battle', 'dome', 'metropolis_day', 'gotham_day', 'metropolis_night'],
-    boss: ['boss', 'lod', 'hood', 'gotham_night'],
+    battle: ['battle', 'credits', 'dome', 'metropolis_day', 'gotham_day', 'metropolis_night'],
+    boss: ['boss', 'credits', 'lod', 'hood', 'gotham_night'],
   };
   const MIX_NAMES = new Set([].concat(...Object.values(BATTLE_MIX)));
   A.pickBattle = function (name) {
     const key = name || 'battle';
     const own = TT.custom && TT.custom.userMusic && TT.custom.userMusic.battle;
-    const pool = !own && TT.settings.battleMix !== false && BATTLE_MIX[key] ? BATTLE_MIX[key].filter((n) => sampledUrl(n)) : null;
+    // „mindig Night Begins To Shine” (az általános harci és főellenség-zene helyett)
+    if (!own && TT.settings.battleMix === 'nbts' && BATTLE_MIX[key] && sampledUrl('credits')) return 'credits';
+    const pool = !own && TT.settings.battleMix !== false && TT.settings.battleMix !== 'nbts' && BATTLE_MIX[key] ? BATTLE_MIX[key].filter((n) => sampledUrl(n)) : null;
     if (!pool || pool.length < 2) return key;
     const last = A.lastBattle && A.lastBattle[key];
     const choices = pool.filter((n) => n !== last);

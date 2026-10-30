@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 78;
+  TT.NEWS_VERSION = 79;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 79, who: 'starfire', text: 'A „Night Begins To Shine” most a harci zenék között is szerepel! A Beállítások → Harci zene gombbal beállíthatod, hogy harcban mindig ez szóljon. Ez dicsőséges!' },
     { v: 78, who: 'beastboy', text: 'Dude, végre nem ugyanaz a szám szól minden harcban! Minden harc elején másik TT2-s harci zene indul, és egymás után sosem ugyanaz. A Beállítások → Harci zene gombbal átkapcsolhatod egyetlen számra, vagy a saját zenédre.' },
     { v: 77, who: 'cyborg', text: 'BOOYAH! A Beállításokban a „Harci zene” gombbal kiválaszthatsz egy zenét a telefonodról, és minden harcban az szól. Bármikor visszaállíthatod az eredetire.' },
     { v: 76, who: 'robin', text: 'Új szabály: a ritkaság is számít! Gyakori > Legendás > Epikus > Ritka > Gyakori. Aki erős a másik ritkasága ellen, +15%-ot sebez, fordítva −10%-ot. Egy gyakori figura is megleckéztethet egy legendást!' },
