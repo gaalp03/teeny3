@@ -1,0 +1,90 @@
+<!-- Az alkalmazás ikonja (1024×1024 vászon). Megnyitás böngészőben egy kiszolgálón át, majd a vászon mentése; assets/icons/icon-512.png és icon-192.png ebből készül. -->
+<!doctype html><meta charset="utf-8">
+<style>
+@font-face{font-family:'TT3 Display';src:url('../assets/fonts/TT3Display.woff2') format('woff2');}
+html,body{margin:0;background:transparent}
+canvas{display:block}
+</style>
+<canvas id="c" width="1024" height="1024"></canvas>
+<script>
+const c=document.getElementById('c'),g=c.getContext('2d');
+const S=1024;
+function rr(x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
+function star(cx,cy,R,r,n,rot){g.beginPath();for(let i=0;i<n*2;i++){const a=rot+i*Math.PI/n,rad=i%2?r:R;g.lineTo(cx+Math.cos(a)*rad,cy+Math.sin(a)*rad);}g.closePath();}
+const INK='#170c3a';
+(async()=>{
+try { await document.fonts.load('200px "TT3 Display"'); } catch (e) { console.log(e); }
+// háttér: lila égbolt, alul forró narancs-rózsaszín derengés
+let bg=g.createLinearGradient(0,0,0,S);
+bg.addColorStop(0,'#1c0c52');bg.addColorStop(0.45,'#5a1a8f');bg.addColorStop(0.78,'#e0457b');bg.addColorStop(1,'#ff9a3c');
+g.fillStyle=bg;g.fillRect(0,0,S,S);
+// napsugarak a torony mögül
+g.save();g.translate(512,600);
+for(let i=0;i<20;i++){const a0=i*Math.PI/10,a1=a0+Math.PI/20;g.beginPath();g.moveTo(0,0);g.arc(0,0,1100,a0,a1);g.closePath();g.fillStyle='rgba(255,230,160,0.13)';g.fill();}
+g.restore();
+let glow=g.createRadialGradient(512,600,20,512,600,520);glow.addColorStop(0,'rgba(255,240,170,0.55)');glow.addColorStop(1,'rgba(255,240,170,0)');
+g.fillStyle=glow;g.fillRect(0,0,S,S);
+// csillagok
+g.fillStyle='rgba(255,255,255,0.8)';
+[[120,130,5],[260,70,4],[840,110,5],[930,300,4],[90,360,4],[430,60,3],[700,70,3]].forEach(([x,y,r])=>{g.beginPath();g.arc(x,y,r,0,7);g.fill();});
+// város a háttérben (két réteg)
+function city(y0,col,seed,winCol,h0,h1){
+  g.fillStyle=col;let x=-20;let s=seed;
+  const rnd=()=>{s=(s*9301+49297)%233280;return s/233280;};
+  while(x<S+20){const w=70+rnd()*70,h=h0+rnd()*(h1-h0);g.fillRect(x,y0-h,w,h+400);
+    if(winCol){g.fillStyle=winCol;for(let yy=y0-h+18;yy<y0-6;yy+=30)for(let xx=x+12;xx<x+w-14;xx+=24)if(rnd()>0.45)g.fillRect(xx,yy,10,14);g.fillStyle=col;}
+    x+=w+4+rnd()*8;}
+}
+city(790,'#3a1370',7,'rgba(255,214,102,0.55)',70,210);
+city(850,'#1f0a45',3,'rgba(255,214,102,0.9)',60,150);
+// talapzat (gyűjtői figura talpa)
+function ellipse(cx,cy,rx,ry,fill,stroke,lw){g.beginPath();g.ellipse(cx,cy,rx,ry,0,0,7);if(fill){g.fillStyle=fill;g.fill();}if(stroke){g.lineWidth=lw;g.strokeStyle=stroke;g.stroke();}}
+ellipse(512,872,330,86,'rgba(0,0,0,0.35)');
+ellipse(512,850,320,88,'#3a4a6a',INK,14);
+ellipse(512,826,320,88,'#8aa0c8',INK,14);
+let top=g.createLinearGradient(0,760,0,900);top.addColorStop(0,'#5fd0ff');top.addColorStop(1,'#2b6fe0');
+ellipse(512,820,250,62,top,INK,12);
+ellipse(512,820,250,62,null,'rgba(255,255,255,0.8)',6);
+// torony: vastag T alak, fehér-kék, sötét kontúrral
+function towerPath(){
+  g.beginPath();
+  // fej (T teteje)
+  g.moveTo(240,262);g.lineTo(784,262);g.lineTo(784,372);g.lineTo(612,372);
+  // szár
+  g.lineTo(630,800);g.lineTo(394,800);g.lineTo(412,372);g.lineTo(240,372);g.closePath();
+}
+g.save();
+g.shadowColor='rgba(0,0,0,0.4)';g.shadowBlur=30;g.shadowOffsetY=18;
+towerPath();g.fillStyle=INK;g.lineWidth=46;g.strokeStyle=INK;g.lineJoin='round';g.stroke();g.fill();
+g.restore();
+let tw=g.createLinearGradient(240,0,784,0);tw.addColorStop(0,'#bfe8ff');tw.addColorStop(0.5,'#ffffff');tw.addColorStop(1,'#8cc4f2');
+towerPath();g.fillStyle=tw;g.fill();
+g.save();towerPath();g.clip();
+// árnyék a jobb oldalon és a szár alján
+let sh=g.createLinearGradient(560,0,830,0);sh.addColorStop(0,'rgba(60,90,170,0)');sh.addColorStop(1,'rgba(60,90,170,0.35)');g.fillStyle=sh;g.fillRect(0,0,S,S);
+let shb=g.createLinearGradient(0,560,0,810);shb.addColorStop(0,'rgba(60,90,170,0)');shb.addColorStop(1,'rgba(60,90,170,0.4)');g.fillStyle=shb;g.fillRect(0,0,S,S);
+// ablaksor a fejen
+for(let i=0;i<5;i++){const x=270+i*96;g.fillStyle='#ffd23f';rr(x,290,56,50,12);g.fill();g.lineWidth=7;g.strokeStyle=INK;g.stroke();g.fillStyle='rgba(255,255,255,0.7)';g.fillRect(x+8,298,14,10);}
+// ablakok a száron
+[[470,430],[470,520],[470,610],[470,700]].forEach(([x,y],i)=>{g.fillStyle=i%2?'#ff5aa5':'#ffd23f';rr(x,y,84,56,14);g.fill();g.lineWidth=7;g.strokeStyle=INK;g.stroke();});
+// fénylő csík bal oldalon
+g.fillStyle='rgba(255,255,255,0.65)';g.fillRect(252,276,20,84);g.fillRect(420,386,14,400);
+g.restore();
+// kontúr még egyszer a tetején
+towerPath();g.lineWidth=16;g.strokeStyle=INK;g.lineJoin='round';g.stroke();
+// antenna
+g.lineWidth=14;g.strokeStyle=INK;g.beginPath();g.moveTo(512,262);g.lineTo(512,196);g.stroke();
+g.fillStyle='#ff3b5c';g.beginPath();g.arc(512,182,26,0,7);g.fill();g.lineWidth=12;g.stroke();
+g.fillStyle='rgba(255,255,255,0.85)';g.beginPath();g.arc(504,174,8,0,7);g.fill();
+// robbanáscsillag a "3"-mal
+g.save();g.translate(812,500);g.rotate(-0.18);
+star(0,0,178,120,11,0);g.fillStyle=INK;g.lineWidth=40;g.strokeStyle=INK;g.lineJoin='round';g.stroke();g.fill();
+star(0,0,178,120,11,0);let sg=g.createRadialGradient(0,-20,10,0,0,200);sg.addColorStop(0,'#fff6a8');sg.addColorStop(1,'#ffb81c');g.fillStyle=sg;g.fill();
+g.font='bold 228px "TT3 Display"';g.textAlign='center';g.textBaseline='middle';
+g.lineWidth=34;g.lineJoin='round';g.strokeStyle=INK;g.strokeText('3',0,14);
+g.fillStyle='#ff4f81';g.fillText('3',0,14);
+g.lineWidth=0;
+g.restore();
+document.title='done';
+})();
+</script>
