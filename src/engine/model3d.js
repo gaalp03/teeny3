@@ -142,8 +142,8 @@
     for (const [id, base, map] of list) M.lazy[id] = { base, map };
     const queue = list.map((e) => e[0]);
     const step = () => {
-      const t0 = performance.now();
-      while (queue.length && performance.now() - t0 < 12) makeLazy(queue.shift());
+      const t0 = Date.now();
+      while (queue.length && Date.now() - t0 < 12) makeLazy(queue.shift());
       if (queue.length) setTimeout(step, 30);
       else {
         // a kiinduló képek már nem kellenek: a memória (és a GPU-textúra másolatok) felszabadulnak
