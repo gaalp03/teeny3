@@ -77,8 +77,8 @@
       const s = TT.save;
       // a Csatakupolából nyitva a következő ellenfél típusaihoz is igazít (támadó előny / védekező hátrány)
       const foe = (this.p.foe || []).filter((id) => TT.FIG[id]);
-      const avg = (fn) => foe.reduce((a, fid) => a + fn(TT.FIG[fid].type), 0) / foe.length;
-      const vsFoe = (id) => (foe.length ? avg((ft) => TT.typeMult(TT.FIG[id].type, ft)) / avg((ft) => TT.typeMult(ft, TT.FIG[id].type)) : 1);
+      const avg = (fn) => foe.reduce((a, fid) => a + fn(TT.FIG[fid]), 0) / foe.length;
+      const vsFoe = (id) => (foe.length ? avg((ff) => TT.matchMult(TT.FIG[id], ff)) / avg((ff) => TT.matchMult(ff, TT.FIG[id])) : 1);
       const score = (id) => TT.power(TT.FIG[id], s.owned[id].lvl) * (1 + TT.starsOf(id) * TT.STAR_BONUS) * vsFoe(id);
       const top = Object.keys(s.owned).filter((id) => TT.FIG[id]).sort((a, b) => score(b) - score(a)).slice(0, 8);
       if (top.length < 3) return null;
@@ -517,7 +517,10 @@
       D.typeIcon(ctx, f.type, tx + 12, y + 84, 11);
       D.text(ctx, TT.TYPES[f.type].name + ' · ' + (TT.TEAM_NAMES[f.team] || ''), tx + 30, y + 85, { size: 14, color: '#e8e2ff', lw: 3, maxWidth: w - 200 });
       const beats = TT.TYPES[f.type].beats;
-      D.text(ctx, 'Erős: ' + TT.TYPES[beats].name + ' ellen', tx, y + 106, { size: 13, color: TT.TYPES[beats].color, lw: 3 });
+      const rb = TT.RARITY[R.beats];
+      const head = 'Erős: ' + TT.TYPES[beats].name + ' és ';
+      D.text(ctx, head, tx, y + 106, { size: 13, color: TT.TYPES[beats].color, lw: 3 });
+      D.text(ctx, rb.name + ' ellen', tx + D.measure(ctx, head, 13), y + 106, { size: 13, color: rb.color, lw: 3 });
       if (!own) {
         const lines = D.wrap(ctx, 'Még nincs meg ez a figura. Hol szerezhető: ' + TT.figSource(id), w - 30, 15);
         lines.forEach((l, i) => D.text(ctx, l, x + 16, y + 216 + i * 20, { size: 15, color: '#c8b8f0', stroke: false }));

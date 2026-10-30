@@ -220,6 +220,7 @@
     starfire: () => TT.save.flags.tutorial ? [
       { who: 'starfire', text: 'Robin! Tudtad, hogy a figurák TÍPUSAI számítanak? Erő legyőzi a Techet, a Tech a Misztikust, a Misztikus a Gyorsaságot, a Gyorsaság az Erőt!' },
       { who: 'starfire', text: 'Ha erős típussal támadsz, 30%-kal nagyobbat ütsz — gyenge ellen pedig kisebbet. Ez dicsőséges!' },
+      { who: 'starfire', text: 'És a ritkaság is számít: Gyakori > Legendás > Epikus > Ritka > Gyakori. Ez +15% sebzés! Még a kis figurák is legyőzhetik a nagyokat!' },
     ] : [{ who: 'starfire', text: 'Cyborg vár rád az edzésre! Utána mehetsz a Csatakupolába, az nagyon dicsőséges!' }],
     beastboy: () => [
       { who: 'beastboy', text: 'Dude! A Játékboltban dobozokat lehet venni, bennük véletlenszerű figurákkal!' },

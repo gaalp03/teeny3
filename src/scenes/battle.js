@@ -192,13 +192,14 @@
       const atkMul = (att.status.atkUp ? 1.3 : 1) * (att.status.weak ? 0.72 : 1);
       const defMul = (def.status.defUp ? 0.65 : 1) * (def.status.mark ? 1.25 : 1);
       const typeM = TT.typeMult(att.fig.type, def.fig.type);
+      const rarM = TT.rarityMult(att.fig.rarity, def.fig.rarity);
       // szerencse: kitérés
       if (def.passive === 'lucky' && !def.blocking && Math.random() < 0.1) {
         this.emit('dodge', { att, def, move, a, hitIdx });
         return;
       }
       let crit = Math.random() < (move.crit || (att.fig.type === 'speed' ? 0.1 : 0.06)) + (att.passive === 'crit' ? 0.12 : 0);
-      let dmg = per * 1.35 * att.st.lf * Math.pow(att.st.atk / def.st.def, 0.6) * typeM * atkMul * defMul * U.rand(0.92, 1.08);
+      let dmg = per * 1.35 * att.st.lf * Math.pow(att.st.atk / def.st.def, 0.6) * typeM * rarM * atkMul * defMul * U.rand(0.92, 1.08);
       if (crit) dmg *= 1.5;
       if (att.passive === 'berserk' && att.hp < att.maxHp * 0.35) dmg *= 1.3;
       if (def.passive === 'armor') dmg *= 0.88;
@@ -240,7 +241,7 @@
       def.superM = Math.min(100, def.superM + (dmg / def.maxHp) * 45);
       def.hurtT = perfect ? 0 : 0.28;
       def.flashT = perfect ? 0 : 0.12;
-      this.emit('hit', { att, def, dmg, dealt, perfect, blocked, broke, crit, typeM, move, a, hitIdx, last: hitIdx === a.hits.length - 1 });
+      this.emit('hit', { att, def, dmg, dealt, perfect, blocked, broke, crit, typeM, rarM, move, a, hitIdx, last: hitIdx === a.hits.length - 1 });
       if (hitIdx === 0 && def.alive) {
         for (const e of move.eff) {
           if (e.self) continue;
@@ -652,7 +653,7 @@
           break;
         }
         case 'hit': {
-          const { def, dmg, perfect, blocked, broke, crit, typeM, move, a, att } = d;
+          const { def, dmg, perfect, blocked, broke, crit, typeM, rarM, move, a, att } = d;
           const hx = def.x, hy = def.y - 70;
           if (!blocked && !perfect && def.alive) TT.audio.voice(def.id, 'hurt', 0.35);
           if (perfect) {
@@ -681,6 +682,7 @@
             if (crit) TT.fx.text(hx, hy - 80, 'KRITIKUS!', { color: '#ffd23f', tsize: 20, vy: -80 });
             if (typeM > 1 && d.hitIdx === 0) TT.fx.text(hx, hy - 105, 'Hatásos!', { color: '#ff8c42', tsize: 18, vy: -60 });
             if (typeM < 1 && d.hitIdx === 0) TT.fx.text(hx, hy - 105, 'Nem túl hatásos…', { color: '#b8c2cc', tsize: 16, vy: -60 });
+            if (rarM > 1 && d.hitIdx === 0) TT.fx.text(hx, hy - (typeM !== 1 ? 128 : 105), 'Ritkaság-előny!', { color: TT.RARITY[att.fig.rarity].color, tsize: 15, vy: -60 });
             this.impact(hx, hy, move, big);
             TT.shake(big ? 9 : 4, big ? 0.3 : 0.15);
             // az eltalált figura hátracsúszik a talapzaton; kritikusnál és a szuper utolsó ütésénél egy pillanatra megáll az idő
@@ -1024,10 +1026,10 @@
       D.text(ctx, `Szint ${f.lvl}` + (f.stars ? `  ·  ${f.stars}★` : ''), tx + 8 + TT.RARITY[fig.rarity].stars * 16 + 8, y + 45, { size: 15, color: '#ffd23f', lw: 3 });
       D.typeIcon(ctx, fig.type, tx + 10, y + 72, 11);
       const weakTo = Object.keys(TT.TYPES).find((k) => TT.TYPES[k].beats === fig.type);
-      D.text(ctx, `${T.name}  ·  Erős: ${TT.TYPES[T.beats].name} ellen  ·  Gyenge: ${TT.TYPES[weakTo].name} ellen`, tx + 28, y + 73, { size: 14, color: '#e8e2ff', lw: 3, maxWidth: w - 220 });
-      const m = TT.typeMult(fig.type, opp.fig.type);
-      const vs = m > 1 ? `+${Math.round((m - 1) * 100)}% sebzés` : m < 1 ? `−${Math.round((1 - m) * 100)}% sebzés` : 'normál sebzés';
-      D.text(ctx, `${opp.fig.short} ellen: ${vs}`, tx, y + 98, { size: 15, color: m > 1 ? '#7bff6b' : m < 1 ? '#ff8a80' : '#c8b8f0', lw: 3 });
+      D.text(ctx, `${T.name}  ·  Erős: ${TT.TYPES[T.beats].name} és ${TT.RARITY[TT.RARITY[fig.rarity].beats].name} ellen  ·  Gyenge: ${TT.TYPES[weakTo].name} ellen`, tx + 28, y + 73, { size: 14, color: '#e8e2ff', lw: 3, maxWidth: w - 220 });
+      const m = TT.matchMult(fig, opp.fig);
+      const vs = m > 1.001 ? `+${Math.round((m - 1) * 100)}% sebzés` : m < 0.999 ? `−${Math.round((1 - m) * 100)}% sebzés` : 'normál sebzés';
+      D.text(ctx, `${opp.fig.short} ellen: ${vs}`, tx, y + 98, { size: 15, color: m > 1.001 ? '#7bff6b' : m < 0.999 ? '#ff8a80' : '#c8b8f0', lw: 3 });
       D.text(ctx, `HP ${Math.ceil(f.hp)}/${f.maxHp}   Támadás ${Math.round(f.st.atk)}   Védekezés ${Math.round(f.st.def)}`, tx, y + 122, { size: 14, color: '#ffffff', lw: 3 });
       const P = TT.PASSIVES[f.passive];
       if (P) {
@@ -2007,7 +2009,7 @@
           // típus-előny a mostani ellenféllel szemben: zöld fel-nyíl, ha erős ellene, piros le-nyíl, ha gyenge
           const foe = this.c.act(1 - s);
           if (s === 0 && bf.alive && foe && foe.alive) {
-            const up = TT.typeMult(bf.fig.type, foe.fig.type) > 1, down = TT.typeMult(foe.fig.type, bf.fig.type) > 1;
+            const up = TT.matchMult(bf.fig, foe.fig) > 1.001, down = TT.matchMult(foe.fig, bf.fig) > 1.001;
             if (up || down) {
               const ax = bx + 36, ay = by + 34;
               ctx.save();

@@ -27,12 +27,21 @@
     return 1;
   };
 
+  // Ritkasági kör: Gyakori > Legendás > Epikus > Ritka > Gyakori (a kicsik is be tudnak húzni a nagyoknak)
   TT.RARITY = {
-    common: { name: 'Gyakori', color: '#c3ccd6', stars: 1, mult: 1.0, dupeXp: 90, ring: '#8d99a6', order: 0 },
-    rare: { name: 'Ritka', color: '#3fa7ff', stars: 2, mult: 1.06, dupeXp: 180, ring: '#2f7fd1', order: 1 },
-    epic: { name: 'Epikus', color: '#c06bff', stars: 3, mult: 1.12, dupeXp: 360, ring: '#8e3fd6', order: 2 },
-    legendary: { name: 'Legendás', color: '#ffc93c', stars: 4, mult: 1.18, dupeXp: 720, ring: '#e09b00', order: 3 },
+    common: { name: 'Gyakori', color: '#c3ccd6', stars: 1, mult: 1.0, dupeXp: 90, ring: '#8d99a6', order: 0, beats: 'legendary' },
+    rare: { name: 'Ritka', color: '#3fa7ff', stars: 2, mult: 1.06, dupeXp: 180, ring: '#2f7fd1', order: 1, beats: 'common' },
+    epic: { name: 'Epikus', color: '#c06bff', stars: 3, mult: 1.12, dupeXp: 360, ring: '#8e3fd6', order: 2, beats: 'rare' },
+    legendary: { name: 'Legendás', color: '#ffc93c', stars: 4, mult: 1.18, dupeXp: 720, ring: '#e09b00', order: 3, beats: 'epic' },
   };
+  TT.rarityMult = function (atk, def) {
+    if (!atk || !def || !TT.RARITY[atk] || !TT.RARITY[def]) return 1;
+    if (TT.RARITY[atk].beats === def) return 1.15;
+    if (TT.RARITY[def].beats === atk) return 0.9;
+    return 1;
+  };
+  // típus és ritkaság együtt (a harc sebzése és a tippek ezt használják)
+  TT.matchMult = (a, b) => TT.typeMult(a.type, b.type) * TT.rarityMult(a.rarity, b.rarity);
 
   TT.STATUS = {
     burn: { name: 'Égés', color: '#ff6b35', good: false, desc: 'Másodpercenként sebez.' },

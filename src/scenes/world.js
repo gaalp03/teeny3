@@ -1769,6 +1769,7 @@
         { label: 'Napszak: ' + (st.dayNight === 'day' ? 'mindig nappal' : 'valós idő'), value: 'daynight' },
         { label: 'Időjárás: ' + (st.weather === 'off' ? 'mindig derült' : 'változó (eső, vihar)'), value: 'weather' },
         ...(has3d ? [{ label: '3D figurák: ' + (st.fig3d === false ? 'Ki (képek)' : 'Be'), value: 'fig3d' }] : []),
+        { label: 'Harci zene: ' + (TT.custom.userMusic.battle ? 'saját' : 'eredeti'), value: 'battlemusic' },
         { label: 'Takarékos mód (gyenge gépre): ' + (st.lite ? 'Be' : 'Ki'), value: 'lite' },
         { label: 'Teljes képernyő', value: 'fs' },
         { label: 'Mentés exportálása', value: 'export' },
@@ -1796,6 +1797,29 @@
           if (!document.fullscreenElement) document.documentElement.requestFullscreen();
           else document.exitFullscreen();
         } catch (e) { /* nem támogatott */ }
+      }
+      if (v === 'battlemusic') {
+        const C = TT.custom;
+        if (C.userMusic.battle) {
+          TT.ui.choose({
+            title: 'Harci zene',
+            text: 'Most ez szól harcban: ' + C.userMusicName.battle,
+            options: [
+              { label: 'Másik zene választása', value: 'pick' },
+              { label: 'Vissza az eredetire', value: 'off' },
+              { label: 'Mégse', value: null, color: '#6c5ce7' },
+            ],
+          }, (w) => {
+            if (w === 'pick') C.pickMusic('battle', (ok, name) => ok && TT.ui.toast('Harci zene: ' + name + ' (a következő harctól)'));
+            if (w === 'off') C.removeMusic('battle').then(() => TT.ui.toast('Újra az eredeti harci zene szól.'));
+            TT.openSettings();
+          });
+          return;
+        }
+        // ha a fájlválasztót bezárják, nem jön visszajelzés: a beállítások addig is nyitva maradnak
+        C.pickMusic('battle', (ok, name) => ok && TT.ui.toast('Harci zene: ' + name + ' (a következő harctól)'));
+        TT.openSettings();
+        return;
       }
       if (v === 'export') {
         const code = TT.store.exportString();

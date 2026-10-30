@@ -4,7 +4,7 @@
 //  1) assets/custom/manifest.json (a tools/extract_apk.py készíti a saját APK-dból)
 //  2) játékon belüli import (Gyűjtemény → figura → "Saját kép"), IndexedDB-ben tárolva
 (function (TT) {
-  const C = { figures: {}, bg: {}, music: {}, sfx: {}, moves: {}, voice: {}, ready: false, count: 0 };
+  const C = { figures: {}, bg: {}, music: {}, sfx: {}, moves: {}, voice: {}, userMusic: {}, userMusicName: {}, ready: false, count: 0 };
   const DB_NAME = 'tt3-custom';
   const STORE = 'tex';
 
@@ -89,6 +89,14 @@
           const key = String(cur.key);
           const blob = cur.value;
           const url = URL.createObjectURL(blob);
+          if (key.startsWith('music:')) {
+            // a telefonról választott saját zene (pl. harci zene)
+            const id = key.slice(6);
+            C.userMusic[id] = url;
+            C.userMusicName[id] = blob.name || 'saját zene';
+            cur.continue();
+            return;
+          }
           jobs.push(loadImage(url).then((img) => {
             if (!img) return;
             const [kind, id] = key.split(':');
@@ -137,6 +145,39 @@
       if (done) done(true);
     };
     inp.click();
+  };
+
+  // Saját zene a telefonról (pl. id = 'battle': minden harcban ez szól). Csak ezen az eszközön tárolódik.
+  C.pickMusic = function (id, done) {
+    const inp = document.createElement('input');
+    inp.type = 'file';
+    inp.accept = 'audio/*,.mp3,.m4a,.ogg,.wav,.aac,.flac';
+    inp.onchange = async () => {
+      const file = inp.files && inp.files[0];
+      if (!file) return;
+      C.userMusic[id] = URL.createObjectURL(file);
+      C.userMusicName[id] = file.name;
+      const db = await openDb();
+      if (db) {
+        try {
+          const tx = db.transaction(STORE, 'readwrite');
+          tx.objectStore(STORE).put(file, 'music:' + id);
+        } catch (e) { /* csak erre a munkamenetre marad meg */ }
+      }
+      if (done) done(true, file.name);
+    };
+    inp.click();
+  };
+
+  C.removeMusic = async function (id) {
+    delete C.userMusic[id];
+    delete C.userMusicName[id];
+    const db = await openDb();
+    if (!db) return;
+    try {
+      const tx = db.transaction(STORE, 'readwrite');
+      tx.objectStore(STORE).delete('music:' + id);
+    } catch (e) { /* nem baj */ }
   };
 
   C.remove = async function (kind, id) {

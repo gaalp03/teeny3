@@ -475,6 +475,9 @@
   // Saját zenék (assets/custom/music, a saját APK-ból): ha van, az szól a szintetizált dal helyett
   const buffers = {};
   function sampledUrl(name) {
+    // a játékos saját harci zenéje (Beállítások) minden harcban, a főellenségeknél is
+    const own = TT.custom && TT.custom.userMusic && TT.custom.userMusic.battle;
+    if (own && (name === 'battle' || A.isBossTune(name))) return own;
     const m = TT.custom && TT.custom.music;
     return m && m[name];
   }

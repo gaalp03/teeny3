@@ -9,7 +9,7 @@ Gyűjts Teeny figurákat, harcolj 3v3 csapatcsatákban a Csatakupolában, és á
 ## Mi van benne
 
 - **132 gyűjthető figura** (Titánok, változatok, a Retró és a Radikális sorozat, különleges TT2-változatok (pl. Nightwing), DC vendégek (Superman, Wonder Woman, Joker…), DC gonoszok (Lex Luthor, Darkseid, Rébusz…), DC hősök (Flash, Aquaman, Shazam…), Liga-Titánok (Wonder Raven, Bat Robin…), DC különcök (Macskanő, Grodd, Bizarro…), a Liga újoncai (Zöld Lámpások, Booster Gold…), vicces változatok (Fürdő-Batman, Mikulás…), Titán-barátok (Red Arrow, Lady Legasus…), TT2 ritkaságok (Clark Kent, Mr. Chibi…), Multiverzum (Bwana Beast, Jinx, Silkie), Titánok Kelet, H.I.V.E., gonoszok, Gonosz Testvériség, az új
-  Menta-banda, valamint Mad Mod, Killer Moth és Larry), mind kódból rajzolva, 4 ritkasággal és 4 típussal (Erő › Tech › Misztikus › Gyorsaság › Erő)
+  Menta-banda, valamint Mad Mod, Killer Moth és Larry), mind kódból rajzolva, 4 ritkasággal (Gyakori › Legendás › Epikus › Ritka › Gyakori, +15%) és 4 típussal (Erő › Tech › Misztikus › Gyorsaság › Erő, +30%)
 - **Csillagszint** a dupla figurákból, **csapatbónusz** azonos csapatú figurákkal, **barátság-kombók**
   (pl. Robin + Starfire szuper támadásnál a társ is beugrik), **passzív képességek**
 - **Valós idejű harcrendszer**: töltődő támadások, blokk és *tökéletes blokk* (a zöld körnél),
