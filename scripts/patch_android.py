@@ -33,6 +33,28 @@ for d in os.listdir(res):
             shutil.copyfile(icon, target)
 print('Android projekt: ikon lecserélve')
 
+# Aláírás: mindig a repóban lévő kulccsal (android-signing/debug.keystore). Enélkül a Gradle minden gépen
+# új, véletlen kulcsot generál, és a telefon nem engedi az új verziót a régire telepíteni (elveszne a mentés).
+keystore = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'android-signing', 'debug.keystore'))
+gradle = os.path.join(root, '..', '..', 'build.gradle')
+s = open(gradle, encoding='utf-8').read()
+if 'android-signing' not in s:
+    block = (
+        "\n    signingConfigs {\n"
+        "        debug {\n"
+        f"            storeFile file('{keystore}')\n"
+        "            storePassword 'android'\n"
+        "            keyAlias 'androiddebugkey'\n"
+        "            keyPassword 'android'\n"
+        "        }\n"
+        "    }\n"
+    )
+    s = re.sub(r'^android \{\n', lambda m: m.group(0) + block, s, count=1, flags=re.M)
+    if 'android-signing' not in s:
+        raise SystemExit('Android projekt: az aláírás beállítása nem sikerült (nincs „android {” blokk)')
+    open(gradle, 'w', encoding='utf-8').write(s)
+print('Android projekt: aláírás a saját kulccsal')
+
 # Verziószám a CI futás sorszámából, hogy az új APK frissítésként települjön (a mentés megmarad)
 code = os.environ.get('APP_VERSION_CODE')
 if code:

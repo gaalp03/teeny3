@@ -136,6 +136,11 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon --stacktrace
           cp app/build/outputs/apk/debug/app-debug.apk ../TeenyTitans3.apk
+          # az APK-nak mindig ugyanazzal a kulccsal kell aláírva lennie, különben nem települ a régire (elveszne a mentés)
+          WANT=$(keytool -list -v -keystore ../android-signing/debug.keystore -storepass android | grep -m1 'SHA256:' | awk '{print $2}')
+          GOT=$("$ANDROID_HOME"/build-tools/$(ls "$ANDROID_HOME"/build-tools | sort -V | tail -1)/apksigner verify --print-certs ../TeenyTitans3.apk | grep -m1 'SHA-256' | awk '{print $NF}' | tr 'a-f' 'A-F')
+          echo "kulcs: $WANT"; echo "APK:   $GOT"
+          [ "$(echo "$WANT" | tr -d ':')" = "$GOT" ] || { echo "Az APK nem a saját kulccsal van aláírva!"; exit 1; }
 
       - name: APK feltöltése (artifact)
         uses: actions/upload-artifact@v4

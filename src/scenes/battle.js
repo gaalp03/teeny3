@@ -1466,13 +1466,21 @@
       // a padon ülők nyugodt, álló pózban várnak (csak a rajz ring finoman): a ritkán frissülő kis kép
       // így nem lépked, és a harcoló figurák gyorsabban frissülhetnek
       if (!active && f.alive && pose === 'idle') anim3d = { name: 'idle', t: 0.4 + f.idx * 0.37 };
+      // talapzat helyett csak egy puha árnyék a talpuk alatt (a földön marad, ha a figura felugrik)
+      ctx.save();
+      ctx.globalAlpha *= 0.28 * (1 - U.clamp((f.y - y) / 160, 0, 0.6));
+      ctx.beginPath();
+      ctx.ellipse(x, f.y + 3, 30 * f.s, 8 * f.s, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#000';
+      ctx.fill();
+      ctx.restore();
       TT.art.drawFigure(ctx, f.fig, x, y, f.s, {
         facing, pose, lean, anim3d, flash: f.flashT > 0 ? 1 : 0, t: TT.time + f.idx,
-        pedestal: true, paint: f.side === 0 ? TT.paintOf(f.id) : null, live3d: !active && f.alive && pose !== 'idle',
+        pedestal: false, paint: f.side === 0 ? TT.paintOf(f.id) : null, live3d: !active && f.alive && pose !== 'idle',
       });
       ctx.restore();
       if (pose === 'ko' && active && f.koT < 1.2) {
-        // a figura lebukik a talapzatról — csillagok
+        // a figura kiesik — csillagok
         for (let i = 0; i < 3; i++) {
           const ang = TT.time * 4 + i * 2.1;
           D.star(ctx, x + Math.cos(ang) * 30, y - 40 + Math.sin(ang) * 8, 6, 2.5, 5);
