@@ -51,7 +51,8 @@
     if (models.length && TT.model3d) {
       Promise.all(models.map(([id, path]) => TT.model3d.load(id, 'assets/custom/' + path))).then(() => {
         // TT2-ben nem létező változatok: az alapfigura modellje átszínezve (src/data/skins3d.js)
-        for (const [id, sk] of Object.entries(TT.SKINS3D || {})) TT.model3d.derive(id, sk.base, sk.map);
+        const skins = Object.entries(TT.SKINS3D || {}).filter(([, sk]) => TT.model3d.models[sk.base]);
+        TT.model3d.deriveLater(skins.map(([id, sk]) => [id, sk.base, sk.map]), () => TT.art && TT.art.clearCache());
         if (TT.art) TT.art.clearCache();
       });
     }

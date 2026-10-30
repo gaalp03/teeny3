@@ -397,12 +397,30 @@ def render_shop_models(env, save, only=None, save_model=None):
                             data['rig']['abilities'] = keep
                             data['rig']['clips'] = {k: v for k, v in data['rig']['clips'].items() if k not in drop}
                         textures.update(rig_tex)
-                    save_model(name, json.dumps(data, separators=(',', ':')), textures)
+                    model_json, textures = dedupe_textures(json.dumps(data, separators=(',', ':')), textures)
+                    save_model(name, model_json, textures)
             except Exception as e:
                 print(f'  ! 3D háló kimentése nem sikerült ({name}): {e}')
         n += 1
     _fallback_tex = None
     return n
+
+
+def dedupe_textures(model_json, textures):
+    """A háló és a rig gyakran ugyanazt a textúrát külön fájlként hozza: az azonos tartalmúakból egy marad,
+    a modell JSON-ja arra hivatkozik (kevesebb letöltés, és a telefon memóriájában sem kétszer áll)."""
+    import hashlib
+    seen = {}
+    out = {}
+    for fn, im in textures.items():
+        rgba = im.convert('RGBA')
+        key = hashlib.md5(rgba.tobytes()).hexdigest() + str(rgba.size)
+        if key in seen:
+            model_json = model_json.replace(f'"{fn}"', f'"{seen[key]}"')
+        else:
+            seen[key] = fn
+            out[fn] = im
+    return model_json, out
 
 
 def _export_self_rig(rigs, name, tr):

@@ -129,10 +129,36 @@
     const base = M.models[baseId];
     if (M.models[id] || !base || !base.src) return false;
     const imgs = {};
-    for (const [n, img] of Object.entries(base.src)) imgs[n] = img && recolor(img, map || []);
-    M.models[id] = { data: base.data, imgs, src: imgs, gpu: null, width: base.width };
+    const same = new Map(); // azonos tartalmú textúrák (pl. a háló és a rig ugyanazt használja) csak egyszer
+    for (const [n, img] of Object.entries(base.src)) imgs[n] = img && recolor(img, map || [], same);
+    M.models[id] = { data: base.data, imgs, gpu: null, width: base.width };
     return true;
   };
+
+  // Az átszínezés a háttérben, kis szeletekben fut (telefonon egy-egy modell tíz-ötven ms), hogy ne akassza meg az indítást.
+  // Ha a játék közben szükség van egy még le nem gyártott változatra, M.has() azonnal elkészíti.
+  M.lazy = {};
+  M.deriveLater = function (list, done) {
+    for (const [id, base, map] of list) M.lazy[id] = { base, map };
+    const queue = list.map((e) => e[0]);
+    const step = () => {
+      const t0 = performance.now();
+      while (queue.length && performance.now() - t0 < 12) makeLazy(queue.shift());
+      if (queue.length) setTimeout(step, 30);
+      else {
+        // a kiinduló képek már nem kellenek: a memória (és a GPU-textúra másolatok) felszabadulnak
+        for (const m of Object.values(M.models)) m.src = null;
+        if (done) done();
+      }
+    };
+    setTimeout(step, 50);
+  };
+  function makeLazy(id) {
+    const z = M.lazy[id];
+    if (!z) return;
+    delete M.lazy[id];
+    M.derive(id, z.base, z.map);
+  }
 
   function rgbOf(hex) {
     const n = parseInt(hex.slice(1), 16);
@@ -156,7 +182,7 @@
     return [(r + m) * 255, (g + m) * 255, (b + m) * 255];
   }
 
-  function recolor(img, map) {
+  function recolor(img, map, same) {
     const c = document.createElement('canvas');
     c.width = img.width;
     c.height = img.height;
@@ -164,20 +190,35 @@
     g.drawImage(img, 0, 0);
     if (!map.length) return c;
     const id = g.getImageData(0, 0, c.width, c.height);
-    const px = id.data;
+    const px = new Uint32Array(id.data.buffer); // 0xAABBGGRR (little endian)
+    // azonos tartalmú kép? akkor az előző eredményt használjuk
+    let h = 2166136261;
+    for (let i = 0; i < px.length; i++) h = Math.imul(h ^ px[i], 16777619);
+    const sig = c.width + 'x' + c.height + ':' + (h >>> 0);
+    if (same && same.has(sig)) return same.get(sig);
     const exact = [], hues = [];
     for (const r of map) {
       if (Array.isArray(r)) exact.push({ f: rgbOf(r[0]), t: rgbOf(r[1]), tol: r[2] || 40 });
       else hues.push({ a: r.hue[0], b: r.hue[1], minS: r.minS != null ? r.minS : 0.18, t: hsv(...rgbOf(r.to)) });
     }
     const memo = new Map();
-    for (let i = 0; i < px.length; i += 4) {
-      if (!px[i + 3]) continue;
-      const key = (px[i] << 16) | (px[i + 1] << 8) | px[i + 2];
-      let out = memo.get(key);
+    let lastIn = -1, lastOut = 0;
+    for (let i = 0; i < px.length; i++) {
+      const w = px[i];
+      if (w === lastIn) {
+        px[i] = lastOut; // egymás melletti azonos színű képpontok (a textúrák nagy része egyszínű folt)
+        continue;
+      }
+      const a = w >>> 24;
+      lastIn = w;
+      if (!a) {
+        lastOut = w;
+        continue;
+      }
+      let out = memo.get(w);
       if (out === undefined) {
         out = null;
-        const r = px[i], gg = px[i + 1], b = px[i + 2];
+        const r = w & 255, gg = (w >> 8) & 255, b = (w >> 16) & 255;
         let best = null, bd = 1e9;
         for (const e of exact) {
           const d = Math.hypot(r - e.f[0], gg - e.f[1], b - e.f[2]);
@@ -186,32 +227,38 @@
             best = e;
           }
         }
+        let rgb = null;
         if (best) {
           // a színfolt árnyalatai (élsimítás, átmenet) megmaradnak: az eltolás ugyanannyi
-          out = [best.t[0] + r - best.f[0], best.t[1] + gg - best.f[1], best.t[2] + b - best.f[2]];
+          rgb = [best.t[0] + r - best.f[0], best.t[1] + gg - best.f[1], best.t[2] + b - best.f[2]];
         } else {
-          const [h, sat, v] = hsv(r, gg, b);
+          const [hh, sat, v] = hsv(r, gg, b);
           for (const e of hues) {
-            const inside = e.a <= e.b ? h >= e.a && h <= e.b : h >= e.a || h <= e.b;
+            const inside = e.a <= e.b ? hh >= e.a && hh <= e.b : hh >= e.a || hh <= e.b;
             if (inside && sat >= e.minS) {
-              out = fromHsv(e.t[0], e.t[1], Math.min(1, v * e.t[2]));
+              rgb = fromHsv(e.t[0], e.t[1], Math.min(1, v * e.t[2]));
               break;
             }
           }
         }
-        memo.set(key, out);
+        if (rgb) {
+          const cl = (x) => (x < 0 ? 0 : x > 255 ? 255 : Math.round(x));
+          out = ((a << 24) | (cl(rgb[2]) << 16) | (cl(rgb[1]) << 8) | cl(rgb[0])) >>> 0;
+        }
+        memo.set(w, out);
       }
-      if (out) {
-        px[i] = out[0];
-        px[i + 1] = out[1];
-        px[i + 2] = out[2];
-      }
+      lastOut = out === null ? w : out;
+      px[i] = lastOut;
     }
     g.putImageData(id, 0, 0);
+    if (same) same.set(sig, c);
     return c;
   }
 
-  M.has = (id) => !!(M.models[id] && M.ok !== false && init());
+  M.has = (id) => {
+    if (M.lazy[id]) makeLazy(id);
+    return !!(M.models[id] && M.ok !== false && init());
+  };
 
   function upload(model) {
     const gl = M.gl;
@@ -278,7 +325,7 @@
       model.mats = {};
       model.rigKey = null;
     }
-    model.imgs = null; // a képek már a GPU-n vannak (az eredetiket a src őrzi az átszínezett változatokhoz)
+    model.imgs = null; // a képek már a GPU-n vannak (az eredetiket a src őrzi, amíg az átszínezett változatok el nem készülnek)
   }
 
   // félpontos (16 bites) lebegőpontos számok visszaalakítása
