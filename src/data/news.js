@@ -1,9 +1,8 @@
 'use strict';
-// Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
-// v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
+// Frissítések listája: NEM mondják el a karakterek; a „Frissítések” gombbal (főmenü, városi Menü) olvasható,
+// az új bejegyzéseket ÚJ jelzés mutatja. v: melyik verzióban jelent meg.
 (function (TT) {
   TT.NEWS_VERSION = 83;
-  const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
     { v: 83, who: 'raven', text: 'A Torony szigetén, a keleti parton megnyílt egy portál a Tükörvilágba. Ott másképp harcolsz: a felbukkanó jelekre kell koppintanod, pont amikor a kör rájuk ér. Három tükörkép vár, egyre gyorsabban. Nagyon nehéz. Aki végigviszi, megkapja a Tükör Raven figurát.' },
     { v: 82, who: 'cyborg', text: 'BOOYAH! 77 figura kapott FELTÖLTŐS támadást: 3 másodpercig tölt, de nagyon nagyot üt. Vigyázz, töltés közben nem tudsz blokkolni! Harcban felül látod, ki kit kontráz, és ha rákoppintasz, megnyílik a teljes ábra.' },
@@ -99,14 +98,72 @@
   ];
 
   // a még nem hallott újdonságok, vagy ha nincs ilyen, az összes
+  // görgethető lista, karakterek és hang nélkül
   TT.showNews = function (cb) {
+    const U = TT.U, D = TT.D;
     const seen = TT.settings.newsSeen || 0;
-    const fresh = TT.NEWS.filter((n) => n.v > seen);
     TT.settings.newsSeen = TT.NEWS_VERSION;
     TT.store.writeSettings();
-    TT.ui.say([INTRO].concat(fresh.length ? fresh : TT.NEWS), cb);
+    const list = TT.NEWS.slice().sort((a, b) => b.v - a.v);
+    const X = 90, W = TT.W - 180, Y0 = 92;
+    let rows = null, total = 0, scroll = 0, drag = null;
+    const layout = (ctx) => {
+      rows = list.map((n) => {
+        const lines = D.wrap(ctx, n.text, W - 100, 16);
+        return { n, lines, h: 26 + lines.length * 21 };
+      });
+      total = rows.reduce((a, r) => a + r.h + 10, 0);
+    };
+    TT.audio.sfx('select');
+    TT.ui.push({
+      update() {
+        const I = TT.input;
+        const max = Math.max(0, total - (TT.H - Y0 - 24));
+        if (I.hit('back') || I.hit('ok') || I.tapIn(TT.W - 74, 18, 56, 56)) {
+          TT.audio.sfx('back');
+          this.close();
+          if (cb) cb();
+          return;
+        }
+        if (I.wheel) scroll += I.wheel * 0.6;
+        if (I.act('down')) scroll += 9;
+        if (I.act('up')) scroll -= 9;
+        for (const t of I.taps) drag = { id: t.id, y: t.y, s: scroll };
+        if (drag) {
+          const pp = I.pointers.get(drag.id);
+          if (!pp) drag = null;
+          else scroll = drag.s - (pp.y - drag.y);
+        }
+        scroll = U.clamp(scroll, 0, max);
+      },
+      draw(ctx) {
+        if (!rows) layout(ctx);
+        ctx.save();
+        ctx.fillStyle = 'rgba(13,8,32,0.95)';
+        ctx.fillRect(0, 0, TT.W, TT.H);
+        D.text(ctx, 'Frissítések', X, 46, { size: 32, color: '#ffd23f' });
+        D.button(ctx, TT.W - 74, 18, 56, 56, '×', { color: '#e84545', size: 30 });
+        ctx.beginPath();
+        ctx.rect(0, Y0 - 6, TT.W, TT.H - Y0 + 6);
+        ctx.clip();
+        let y = Y0 - scroll;
+        for (const r of rows) {
+          if (y + r.h > Y0 - 10 && y < TT.H) {
+            const isNew = r.n.v > seen;
+            D.panel(ctx, X, y, W, r.h, { fill: isNew ? '#3a2a7a' : '#2b1e5c', r: 12, lw: 2.5, stroke: isNew ? '#ffd23f' : '#120a2c', shadow: false });
+            if (isNew) {
+              D.panel(ctx, X + W - 56, y + 6, 46, 20, { fill: '#e84545', r: 8, lw: 2, shadow: false });
+              D.text(ctx, 'ÚJ', X + W - 33, y + 16, { size: 13, align: 'center' });
+            }
+            r.lines.forEach((l, i) => D.text(ctx, l, X + 18, y + 20 + i * 21, { size: 16, color: isNew ? '#ffffff' : '#d8d0f0', lw: 3 }));
+          }
+          y += r.h + 10;
+        }
+        ctx.restore();
+      },
+    });
   };
 
-  // régebbi mentéssel érkezőknek egyszer, a városba lépéskor
-  TT.newsPending = () => !!(TT.save && TT.save.flags.tutorial) && (TT.settings.newsSeen || 0) < TT.NEWS_VERSION;
+  // van-e még el nem olvasott frissítés (a gombokon ÚJ jelzés)
+  TT.newsPending = () => (TT.settings.newsSeen || 0) < TT.NEWS_VERSION;
 })(window.TT);

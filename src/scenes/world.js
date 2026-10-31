@@ -151,7 +151,6 @@
         }
       }
       if (p.event) this.runEvent(p.event);
-      else if (TT.newsPending()) setTimeout(() => TT.scene === this && TT.newsPending() && TT.showNews(), 1200);
       TT.dailyReward();
       TT.checkAch();
     },
@@ -1003,6 +1002,7 @@
           { label: 'Mentés', value: 'save' },
           { label: 'Beállítások', value: 'settings' },
           { label: 'Súgó', value: 'help' },
+          { label: TT.newsPending() ? 'Frissítések (ÚJ!)' : 'Frissítések', value: 'news', color: TT.newsPending() ? '#ff4fa3' : undefined },
           { label: 'Főmenü', value: 'title', color: '#6c5ce7' },
         ],
       }, (v) => {
@@ -1015,6 +1015,7 @@
           TT.ui.toast('Játék elmentve!');
         } else if (v === 'settings') TT.openSettings();
         else if (v === 'help') TT.ui.say(HELP);
+        else if (v === 'news') TT.showNews();
         else if (v === 'ach') TT.openAchievements();
         else if (v === 'quests') TT.openQuests();
         else if (v === 'profile') TT.openProfile();

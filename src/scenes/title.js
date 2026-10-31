@@ -26,7 +26,7 @@
       y += 64;
       items.push({ id: 'set', x: bx, y, w: 145, h: 46, label: 'Beállítások', size: 17, color: '#6c5ce7', onClick: () => TT.openSettings() });
       items.push({ id: 'imp', x: bx + 155, y, w: 145, h: 46, label: 'Mentés betöltése', size: 15, color: '#6c5ce7', onClick: () => this.importSave() });
-      items.push({ id: 'news', x: TT.W - 176, y: 16, w: 160, h: 44, label: 'Újdonságok', size: 17, color: '#ff4fa3', onClick: () => TT.showNews() });
+      items.push({ id: 'news', x: TT.W - 206, y: 16, w: 190, h: 44, label: TT.newsPending() ? 'Frissítések (ÚJ!)' : 'Frissítések', size: 16, color: '#ff4fa3', glow: TT.newsPending(), onClick: () => TT.showNews(() => this.build()) });
       this.menu.set(items);
     },
 
