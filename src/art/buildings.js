@@ -420,6 +420,37 @@
   // ---------- Díszítő tárgyak (élőben rajzolva) ----------
   B.drawProp = function (ctx, p, x, y, t) {
     switch (p.kind) {
+      case 'portal': {
+        // Tükörvilág-portál: lebegő, örvénylő ovális tükör
+        const cx = x + 16, cy = y - 22 + Math.sin(t * 2) * 3;
+        ctx.save();
+        const glow = ctx.createRadialGradient(cx, cy, 4, cx, cy, 60);
+        glow.addColorStop(0, 'rgba(160,120,255,0.55)');
+        glow.addColorStop(1, 'rgba(160,120,255,0)');
+        ctx.fillStyle = glow;
+        ctx.fillRect(cx - 60, cy - 60, 120, 120);
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, 22, 34, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#2a1460';
+        ctx.fill();
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = '#c8d0da';
+        ctx.stroke();
+        ctx.clip();
+        for (let i = 0; i < 4; i++) {
+          ctx.beginPath();
+          ctx.ellipse(cx, cy, 18 - i * 4, 30 - i * 6, t * (1.5 + i * 0.6), 0.4, Math.PI * 1.6);
+          ctx.lineWidth = 3;
+          ctx.strokeStyle = ['#8e5cff', '#3fd8ff', '#ff4fa3', '#ffffff'][i];
+          ctx.stroke();
+        }
+        ctx.restore();
+        ctx.beginPath();
+        ctx.ellipse(cx, y + 14, 18, 5, 0, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0,0,0,0.25)';
+        ctx.fill();
+        break;
+      }
       case 'fountain': {
         ctx.save();
         ctx.beginPath();

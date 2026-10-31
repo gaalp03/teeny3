@@ -321,6 +321,13 @@
       hair: 'flat', hairColor: '#1d1d2b', eyes: 'glow', eyeColor: '#ff2a2a', mouth: 'smirk', gear: ['collar'],
     }, { team: 'hive', short: 'B. Blood', bio: 'A H.I.V.E. Akadémia igazgatója. Mindenkit irányítani akar.' });
 
+  F('raven_mirror', 'Tükör Raven', 'mystic', 'legendary', [115, 16, 11, 13],
+    ['azarath', 'dark_shield', 'metrion'], 'demon_rage',
+    {
+      skin: '#e8ecf4', top: '#4a5a70', bottom: '#4a5a70', boots: '#4a5a70', gloves: '#e8ecf4', belt: '#9fe7ff',
+      cloak: '#c8d0da', hood: true, hair: 'bob', hairColor: '#5b6a80', eyes: 'glow', eyeColor: '#9fe7ff', mouth: 'flat', gear: ['gem'], shine: true,
+    }, { team: 'titans', short: 'T. Raven', noBox: true, passive: 'lucky', bio: 'A Tükörvilágból lépett ki. Ugyanaz, csak fordítva. Csak az kapja meg, aki legyőzi Trigon tükörképét.' });
+
   F('blood_headmaster', 'Blood igazgató', 'mystic', 'legendary', [130, 16, 13, 11],
     ['blood_bolt', 'mind_control', 'chant'], 'hive_judgement',
     {

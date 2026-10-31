@@ -224,6 +224,7 @@
     if (TT.WORLD && TT.WORLD.hidden.some((h) => h.fig === id)) return 'Elrejtve valahol a városban. Keresd a csillogó helyeket!';
     if (id === 'silkie_gold') return 'Silkie hálája, ha megtalálod az összes elveszett játékát a városban.';
     if (id === 'trigon') return 'A Végtelen Aréna 10. győzelméért a Csatakupolában.';
+    if (id === 'raven_mirror') return 'A Tükörvilág első teljesítéséért (portál a Titánok Tornya szigetén, Trigon legyőzése után).';
     if (id === 'blood_headmaster') return 'A H.I.V.E. Akadémia vizsgájának első teljesítéséért (Brother Blood legyőzése után nyílik az Akadémia).';
     if (f && !f.noBox) {
       const boxes = TT.BOXES.filter((b) => b.odds[f.rarity]).map((b) => b.name);

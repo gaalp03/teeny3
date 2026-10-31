@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 82;
+  TT.NEWS_VERSION = 83;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 83, who: 'raven', text: 'A Torony szigetén, a keleti parton megnyílt egy portál a Tükörvilágba. Ott másképp harcolsz: a felbukkanó jelekre kell koppintanod, pont amikor a kör rájuk ér. Három tükörkép vár, egyre gyorsabban. Nagyon nehéz. Aki végigviszi, megkapja a Tükör Raven figurát.' },
     { v: 82, who: 'cyborg', text: 'BOOYAH! 77 figura kapott FELTÖLTŐS támadást: 3 másodpercig tölt, de nagyon nagyot üt. Vigyázz, töltés közben nem tudsz blokkolni! Harcban felül látod, ki kit kontráz, és ha rákoppintasz, megnyílik a teljes ábra.' },
     { v: 81, who: 'bloodbrother', text: 'Kinyitottam az Akadémiámat… azoknak, akik legyőztek. Gyere be: a H.I.V.E. Vizsga 5 órája egyre nehezebb, és aki kitűnőre vizsgázik, megkapja a legendás Blood igazgató figurát. A Büntetőteremben pedig minden nap Kyd Wykkyd vár.' },
     { v: 80, who: 'raven', text: 'A mentéskód betöltése és exportálása új ablakot kapott: a gombok mindig látszanak, a hosszú kód pedig egy görgethető dobozban van. Beillesztés gombbal és fájlból is betölthető.' },

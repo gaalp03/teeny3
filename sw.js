@@ -1,6 +1,6 @@
 'use strict';
 // Offline gyorsítótár: a játék internet nélkül is fut, ha egyszer betöltötted.
-const CACHE = 'tt3-7056524617';
+const CACHE = 'tt3-a56e94a1e7';
 const FILES = [
   "./",
   "index.html",
@@ -37,6 +37,7 @@ const FILES = [
   "src/scenes/dome.js",
   "src/scenes/factory.js",
   "src/scenes/memory.js",
+  "src/scenes/mirror.js",
   "src/scenes/pizzagame.js",
   "src/scenes/quiz.js",
   "src/scenes/shop.js",

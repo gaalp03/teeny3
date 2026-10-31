@@ -517,6 +517,10 @@
       // forduljon a játékos felé
       const dx = this.pl.x - n.x * TS, dy = this.pl.y - n.y * TS;
       this.npcState[n.id].face = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up';
+      if (n.talk === 'mirror') {
+        this.mirrorPortal();
+        return;
+      }
       if (n.talk) {
         const lines = TT.TALKS[n.talk]();
         if (lines) TT.ui.say(lines);
@@ -642,6 +646,21 @@
           break;
       }
       void TS;
+    },
+
+    // Tükörvilág: a portál Trigon legyőzése után nyílik
+    mirrorPortal() {
+      const s = TT.save;
+      if (!s.beaten.trigon) {
+        TT.ui.say([{ who: 'raven_rage', text: 'Ez a portál a Tükörvilágba vezet. Csak az léphet át, aki legyőzte Trigont. Te még nem vagy kész.' }]);
+        return;
+      }
+      TT.ui.say([
+        { who: 'raven_rage', text: 'A tükör túloldalán minden fordítva működik. Ott nem gombokkal harcolsz, hanem a jelekre koppintasz, pontosan időzítve.' },
+        { who: 'raven_rage', text: 'Három tükörkép vár rád, és egyre gyorsabbak. Senki nem jutott még át mindhármon.' },
+      ], () => {
+        TT.ui.confirm('Átlépsz a Tükörvilágba?', (ok) => ok && TT.go('mirror', { back: { x: 88.5, y: 10.6 } }), 'Átlépek', 'Mégse');
+      });
     },
 
     pizzaMenu() {
