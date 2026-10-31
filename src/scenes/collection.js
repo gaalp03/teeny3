@@ -160,6 +160,7 @@
           this.list = this.makeList();
         },
       });
+      items.push({ id: 'chart', x: 586, y: 10, w: 168, h: 44, size: 15, label: 'Ki kit kontráz?', color: '#ff4fa3', onClick: () => TT.ui.counterChart() });
       items.push({ id: 'best', x: 764, y: 10, w: 180, h: 44, size: 15, label: this.p.foe ? 'Legjobb ellenük' : 'Legerősebb csapat', color: '#2ecc71', onClick: () => this.autoTeam() });
       // csapat helyek
       s.team.forEach((id, i) => {
@@ -299,7 +300,7 @@
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, TT.W, TT.H);
       const s = TT.save;
-      D.text(ctx, `${Object.keys(s.owned).length}/${TT.FIG_LIST.length}`, 548, 33, { size: 20, color: '#ffd23f' });
+      D.text(ctx, `${Object.keys(s.owned).length}/${TT.FIG_LIST.length}`, 500, 33, { size: 20, color: '#ffd23f' });
       D.panel(ctx, 400 + 6, 66, 170, 40, { fill: '#2b1e5c', r: 12, lw: 2.5, shadow: false });
       D.coin(ctx, 428, 86, 12);
       D.text(ctx, U.fmt(s.coins), 448, 87, { size: 20, color: '#ffd23f' });
@@ -384,7 +385,7 @@
       v.dur = DUR[kind];
       if (kind === 'atk') {
         v.cur = v.slot;
-        const mv = TT.MOVES[f.moves[v.slot % f.moves.length]];
+        const mv = TT.figMove(f, v.slot % f.moves.length);
         v.slot = (v.slot + 1) % f.moves.length;
         if (!TT.audio.move(mv)) TT.audio.sfx('whoosh');
         TT.audio.voice(f.id, 'attack', 0.6);
@@ -448,7 +449,7 @@
       D.text(ctx, f.name, TT.W / 2, 40, { size: 34, align: 'center' });
       D.rarityStars(ctx, f.rarity, TT.W / 2, 74, 16, 'center');
       if (v.act === 'atk' || v.act === 'sup') {
-        const mv = TT.MOVES[v.act === 'sup' ? f.sup : f.moves[v.cur % f.moves.length]];
+        const mv = v.act === 'sup' ? TT.MOVES[f.sup] : TT.figMove(f, v.cur % f.moves.length);
         D.text(ctx, mv.name, TT.W / 2, 108, { size: 22, align: 'center', color: v.act === 'sup' ? '#ffd23f' : '#ffffff' });
       } else D.text(ctx, 'Húzd ujjal a forgatáshoz', TT.W / 2, 108, { size: 16, align: 'center', color: '#c8b8f0', stroke: false });
       this.vmenu.draw(ctx);
@@ -548,12 +549,12 @@
         D.text(ctx, String(v), tx + 48 + (i % 2) * 96, y + 156 + Math.floor(i / 2) * 22, { size: 14, lw: 3 });
       });
       // támadások
-      const moves = f.moves.map((m) => TT.MOVES[m]).concat([TT.MOVES[f.sup]]);
+      const moves = f.moves.map((m, i) => TT.figMove(f, i)).concat([TT.MOVES[f.sup]]);
       moves.forEach((m, i) => {
         const my = y + 234 + i * 42;
         const isSup = i === 3;
         D.panel(ctx, x + 12, my, w - 24, 38, { fill: isSup ? '#5a3a10' : '#3a2a7a', r: 10, lw: 2, shadow: false });
-        D.text(ctx, (isSup ? '★ ' : '') + m.name, x + 22, my + 13, { size: 15, color: isSup ? '#ffd23f' : '#ffffff', lw: 3, maxWidth: 200 });
+        D.text(ctx, (isSup ? '★ ' : '') + m.name, x + 22, my + 13, { size: 15, color: isSup ? '#ffd23f' : m.charged ? '#ffe066' : '#ffffff', lw: 3, maxWidth: 200 });
         if (!isSup) D.text(ctx, m.charge + ' mp', x + w - 22, my + 13, { size: 12, align: 'right', color: '#a89cd8', lw: 2.5 });
         D.text(ctx, m.desc || '', x + 22, my + 28, { size: 12, color: '#c8b8f0', lw: 2.5, maxWidth: w - 48 });
       });

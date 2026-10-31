@@ -24,7 +24,7 @@
     return {
       id, fig, lvl, st, side, idx, stars: stars || 0, passive,
       maxHp: st.hp, hp: st.hp, ghost: st.hp,
-      moves: fig.moves.map((m, i) => ({ m: TT.MOVES[m], c: Math.random() * 0.3 + (i === 0 ? 0.45 : 0.1) })),
+      moves: fig.moves.map((m, i) => ({ m: TT.figMove(fig, i), c: Math.random() * 0.3 + (i === 0 ? 0.45 : 0.1) })),
       sup: TT.MOVES[fig.sup],
       superM: passive === 'firstwind' ? 40 : 0,
       status: passive === 'shieldstart' ? { shield: { t: 60, v: Math.round(st.hp * 0.12), max: 60 } } : {},
@@ -440,7 +440,7 @@
       // blokk tervezése a bejövő támadásra
       if (oa && oa.kind !== 'self' && oa.hi < oa.hits.length) {
         if (this.plan == null || this.plan.a !== oa) {
-          const block = Math.random() < this.blockChance * (oa.isSuper ? 1.25 : 1);
+          const block = Math.random() < this.blockChance * (oa.isSuper || oa.move.charged ? 1.25 : 1);
           const perfect = Math.random() < this.perfectChance;
           const first = oa.hits[0];
           this.plan = {
@@ -854,6 +854,7 @@
         speed: { x: TT.W / 2 - 112, y: 8, w: 76, h: 40 },
         item: { x: 676, y, w: 134, h },
         auto: { x: TT.W / 2 + 36, y: 8, w: 76, h: 40 },
+        chart: { x: TT.W / 2 - 112, y: 54, w: 224, h: 30 },
       };
     },
 
@@ -866,6 +867,10 @@
       const I = TT.input;
       const c = this.c;
       const L = this.controlsLayout();
+      if (I.tapIn(L.chart.x, L.chart.y, L.chart.w, L.chart.h) && !TT.ui.overlayActive()) {
+        TT.ui.counterChart({ a: c.act(0).fig, b: c.act(1).fig });
+        return;
+      }
       if (I.hit('menu') || I.tapIn(L.pause.x, L.pause.y, L.pause.w, L.pause.h)) {
         this.pause();
         return;
@@ -1468,6 +1473,30 @@
       // a padon ülők nyugodt, álló pózban várnak (csak a rajz ring finoman): a ritkán frissülő kis kép
       // így nem lépked, és a harcoló figurák gyorsabban frissülhetnek
       if (!active && f.alive && pose === 'idle') anim3d = { name: 'idle', t: 0.4 + f.idx * 0.37 };
+      // feltöltős támadás: fény a figura körül és töltés-kör a feje fölött
+      if (a && a.move.charged && a.t < a.windup && f.alive) {
+        const k = U.clamp(a.t / a.windup, 0, 1);
+        const cy = y - 70 * f.s;
+        ctx.save();
+        const gl = ctx.createRadialGradient(x, cy, 4, x, cy, 90 * f.s);
+        gl.addColorStop(0, U.rgba(a.move.color || '#ffd23f', 0.15 + 0.35 * k + Math.sin(TT.time * 18) * 0.06));
+        gl.addColorStop(1, U.rgba(a.move.color || '#ffd23f', 0));
+        ctx.fillStyle = gl;
+        ctx.fillRect(x - 100 * f.s, cy - 100 * f.s, 200 * f.s, 200 * f.s);
+        const ry = y - 168 * f.s / 1.55 - 26;
+        ctx.beginPath();
+        ctx.arc(x, ry, 17, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(18,10,44,0.85)';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x, ry, 17, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * k);
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = k > 0.97 ? '#ffffff' : '#ffd23f';
+        ctx.stroke();
+        ctx.restore();
+        D.text(ctx, String(Math.max(1, Math.ceil(a.windup - a.t))), x, ry + 1, { size: 15, align: 'center', color: '#ffffff' });
+        if (Math.random() < 0.5) TT.fx.spawn(x + U.rand(-60, 60) * f.s, cy + U.rand(-60, 60) * f.s, { vx: 0, vy: -40, color: a.move.color || '#ffd23f', shape: 'star', size: 4, life: 0.4 });
+      }
       // talapzat helyett csak egy puha árnyék a talpuk alatt (a földön marad, ha a figura felugrik)
       ctx.save();
       ctx.globalAlpha *= 0.28 * (1 - U.clamp((f.y - y) / 160, 0, 0.6));
@@ -2066,6 +2095,17 @@
         D.button(ctx, L.speed.x, L.speed.y, L.speed.w, L.speed.h, this.speed > 1 ? '×1.6' : '×1', { color: this.speed > 1 ? '#ffb000' : '#4a3a8c', size: 17, r: 10 });
         if (!this.p.tutorial) D.button(ctx, L.auto.x, L.auto.y, L.auto.w, L.auto.h, 'AUTO', { color: this.auto ? '#2ecc71' : '#4a3a8c', size: 17, r: 10, glow: this.auto });
       }
+      // ki kit kontráz most: élő jelző a felső gombok alatt (koppintásra a teljes táblázat)
+      const me = c.act(0), foe = c.act(1);
+      if (me && foe && (this.state === 'fight' || this.state === 'count')) {
+        const m1 = TT.matchMult(me.fig, foe.fig), m2 = TT.matchMult(foe.fig, me.fig);
+        const fmt = (m) => (m > 1.001 ? '+' : m < 0.999 ? '−' : '±') + Math.round(Math.abs(m - 1) * 100) + '%';
+        const cl = L.chart;
+        D.panel(ctx, cl.x, cl.y, cl.w, cl.h, { fill: 'rgba(27,17,64,0.9)', r: 10, lw: 2.5, shadow: false });
+        D.text(ctx, 'Te ' + fmt(m1), cl.x + 12, cl.y + cl.h / 2 + 1, { size: 15, color: m1 > 1.001 ? '#7bff6b' : m1 < 0.999 ? '#ff8a80' : '#ffffff' });
+        D.text(ctx, '?', cl.x + cl.w / 2, cl.y + cl.h / 2 + 1, { size: 16, align: 'center', color: '#ffd23f' });
+        D.text(ctx, 'Ő ' + fmt(m2), cl.x + cl.w - 12, cl.y + cl.h / 2 + 1, { size: 15, align: 'right', color: m2 > 1.001 ? '#ff8a80' : m2 < 0.999 ? '#7bff6b' : '#ffffff' });
+      }
       D.panel(ctx, L.pause.x, L.pause.y, L.pause.w, L.pause.h, { fill: '#2b1e5c', r: 10, lw: 2.5 });
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(L.pause.x + 18, L.pause.y + 11, 5, 18);
@@ -2104,6 +2144,10 @@
         }
         ctx.restore();
         D.text(ctx, m.name, card.x + 10, card.y + 20, { size: 17, maxWidth: card.w - 40 });
+        if (m.charged) {
+          D.panel(ctx, card.x + card.w - 62, card.y + card.h - 24, 56, 18, { fill: '#ffd23f', r: 6, lw: 2, shadow: false });
+          D.text(ctx, 'TÖLTÉS ' + TT.CHARGE_T + 'mp', card.x + card.w - 34, card.y + card.h - 15, { size: 10, align: 'center', color: '#1d1433', stroke: false });
+        }
         const info = m.kind === 'self' ? (m.heal ? 'Gyógyít' : m.shield ? 'Pajzs' : 'Erősít') : 'Sebzés ' + m.power + (m.hits > 1 ? ' ×' + m.hits : '');
         D.text(ctx, info, card.x + 10, card.y + 44, { size: 14, color: '#ffe9a0' });
         if (m.eff.length) {

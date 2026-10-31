@@ -2,9 +2,10 @@
 // Újdonságok: frissítés után egyszer elmondják a Titánok, és a főmenüből is elérhető.
 // v: melyik verzióban jelent meg (a régebbi mentéssel érkezők csak az újakat hallják).
 (function (TT) {
-  TT.NEWS_VERSION = 81;
+  TT.NEWS_VERSION = 82;
   const INTRO = { who: 'robin', text: 'Újdonságok Jump Cityben, Titánok! Figyeljetek, mert sok minden változott!' };
   TT.NEWS = [
+    { v: 82, who: 'cyborg', text: 'BOOYAH! 77 figura kapott FELTÖLTŐS támadást: 3 másodpercig tölt, de nagyon nagyot üt. Vigyázz, töltés közben nem tudsz blokkolni! Harcban felül látod, ki kit kontráz, és ha rákoppintasz, megnyílik a teljes ábra.' },
     { v: 81, who: 'bloodbrother', text: 'Kinyitottam az Akadémiámat… azoknak, akik legyőztek. Gyere be: a H.I.V.E. Vizsga 5 órája egyre nehezebb, és aki kitűnőre vizsgázik, megkapja a legendás Blood igazgató figurát. A Büntetőteremben pedig minden nap Kyd Wykkyd vár.' },
     { v: 80, who: 'raven', text: 'A mentéskód betöltése és exportálása új ablakot kapott: a gombok mindig látszanak, a hosszú kód pedig egy görgethető dobozban van. Beillesztés gombbal és fájlból is betölthető.' },
     { v: 79, who: 'starfire', text: 'A „Night Begins To Shine” most a harci zenék között is szerepel! A Beállítások → Harci zene gombbal beállíthatod, hogy harcban mindig ez szóljon. Ez dicsőséges!' },

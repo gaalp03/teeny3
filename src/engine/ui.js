@@ -431,6 +431,101 @@
     stack.length = 0;
   };
 
+  // „Ki kit kontráz?” — a típusok és a ritkaságok erősségi köre nyilakkal.
+  // o.a / o.b: két figura (pl. a harcban álló kettő), ekkor alul a mostani párosítás is látszik.
+  ui.counterChart = function (o) {
+    o = o || {};
+    const T = TT.TYPES, R = TT.RARITY;
+    const TYPE_ORDER = ['brawn', 'tech', 'mystic', 'speed'];
+    const RAR_ORDER = ['common', 'legendary', 'epic', 'rare'];
+    const pct = (m) => (m > 1.001 ? '+' : m < 0.999 ? '−' : '±') + Math.round(Math.abs(m - 1) * 100) + '%';
+    function arrow(ctx, x0, y0, x1, y1, col, r) {
+      const a = Math.atan2(y1 - y0, x1 - x0);
+      const sx = x0 + Math.cos(a) * r, sy = y0 + Math.sin(a) * r;
+      const ex = x1 - Math.cos(a) * (r + 6), ey = y1 - Math.sin(a) * (r + 6);
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);
+      ctx.lineTo(ex, ey);
+      ctx.lineWidth = 6;
+      ctx.strokeStyle = col;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(ex + Math.cos(a) * 12, ey + Math.sin(a) * 12);
+      ctx.lineTo(ex + Math.cos(a + 2.4) * 14, ey + Math.sin(a + 2.4) * 14);
+      ctx.lineTo(ex + Math.cos(a - 2.4) * 14, ey + Math.sin(a - 2.4) * 14);
+      ctx.closePath();
+      ctx.fillStyle = col;
+      ctx.fill();
+    }
+    function cycle(ctx, cx, cy, keys, node, label, hi) {
+      const pos = keys.map((k, i) => {
+        const ang = -Math.PI * 3 / 4 + (i * Math.PI) / 2;
+        return [cx + Math.cos(ang) * 98, cy + Math.sin(ang) * 82];
+      });
+      keys.forEach((k, i) => {
+        const [x0, y0] = pos[i], [x1, y1] = pos[(i + 1) % keys.length];
+        arrow(ctx, x0, y0, x1, y1, hi && hi.from === k ? '#7bff6b' : 'rgba(255,255,255,0.75)', 34);
+        D.text(ctx, label, (x0 + x1) / 2 + (y1 - y0) * 0.12, (y0 + y1) / 2 - (x1 - x0) * 0.12, { size: 14, align: 'center', color: '#7bff6b' });
+      });
+      keys.forEach((k, i) => node(ctx, k, pos[i][0], pos[i][1], hi && (hi.a === k || hi.b === k)));
+    }
+    TT.audio.sfx('select');
+    return ui.push({
+      update() {
+        const I = TT.input;
+        if (I.hit('back') || I.hit('ok') || I.taps.length) {
+          TT.audio.sfx('back');
+          this.close();
+        }
+      },
+      draw(ctx) {
+        ctx.save();
+        ctx.fillStyle = 'rgba(13,8,32,0.94)';
+        ctx.fillRect(0, 0, TT.W, TT.H);
+        D.text(ctx, 'Ki kit kontráz?', TT.W / 2, 38, { size: 30, align: 'center', color: '#ffd23f' });
+        D.text(ctx, 'A nyíl attól indul, aki erős, és arra mutat, aki ellen erős.', TT.W / 2, 70, { size: 15, align: 'center', color: '#c8b8f0', stroke: false });
+        const A = o.a, B = o.b;
+        // típusok
+        D.text(ctx, 'Típus (+30% / −20%)', 250, 108, { size: 19, align: 'center', color: '#ffffff' });
+        cycle(ctx, 250, 268, TYPE_ORDER, (c, k, x, y, on) => {
+          c.beginPath();
+          c.arc(x, y, 34, 0, Math.PI * 2);
+          c.fillStyle = on ? T[k].color : '#2b1e5c';
+          c.fill();
+          c.lineWidth = 4;
+          c.strokeStyle = T[k].color;
+          c.stroke();
+          D.typeIcon(c, k, x, y - 6, 12);
+          D.text(c, T[k].name, x, y + 18, { size: 12, align: 'center' });
+        }, '+30%', A && B ? { a: A.type, b: B.type, from: TT.typeMult(A.type, B.type) > 1 ? A.type : TT.typeMult(B.type, A.type) > 1 ? B.type : null } : null);
+        // ritkaság
+        D.text(ctx, 'Ritkaság (+15% / −10%)', 710, 108, { size: 19, align: 'center', color: '#ffffff' });
+        cycle(ctx, 710, 268, RAR_ORDER, (c, k, x, y, on) => {
+          c.beginPath();
+          c.arc(x, y, 34, 0, Math.PI * 2);
+          c.fillStyle = on ? R[k].ring : '#2b1e5c';
+          c.fill();
+          c.lineWidth = 4;
+          c.strokeStyle = R[k].color;
+          c.stroke();
+          D.rarityStars(c, k, x, y - 8, 9, 'center');
+          D.text(c, R[k].name, x, y + 14, { size: 12, align: 'center', color: R[k].color });
+        }, '+15%', A && B ? { a: A.rarity, b: B.rarity, from: TT.rarityMult(A.rarity, B.rarity) > 1 ? A.rarity : TT.rarityMult(B.rarity, A.rarity) > 1 ? B.rarity : null } : null);
+        // a mostani párosítás
+        if (A && B) {
+          const m1 = TT.matchMult(A, B), m2 = TT.matchMult(B, A);
+          D.panel(ctx, 110, 400, 740, 74, { fill: '#2b1e5c', r: 14, lw: 3 });
+          D.text(ctx, `${A.short} → ${B.short}:  ${pct(m1)} sebzés`, 480, 424, { size: 19, align: 'center', color: m1 > 1.001 ? '#7bff6b' : m1 < 0.999 ? '#ff8a80' : '#ffffff' });
+          D.text(ctx, `${B.short} → ${A.short}:  ${pct(m2)} sebzés`, 480, 454, { size: 19, align: 'center', color: m2 > 1.001 ? '#ff8a80' : m2 < 0.999 ? '#7bff6b' : '#ffffff' });
+        } else {
+          D.text(ctx, 'A kettő összeadódik: Erő-típusú Gyakori figura egy Tech Legendás ellen +30% és +15%.', TT.W / 2, 430, { size: 15, align: 'center', color: '#e8e2ff', maxWidth: 880 });
+        }
+        D.text(ctx, 'Koppints bárhova a bezáráshoz', TT.W / 2, 510, { size: 14, align: 'center', color: '#a89cd8', stroke: false });
+        ctx.restore();
+      },
+    });
+  };
+
   // Szövegdoboz hosszú szövegekhez (pl. mentéskód): a gombok fent vannak, így a hosszú szöveg sosem takarja el őket,
   // a szöveg egy külön görgethető dobozban van. A telefon beépített bevitelablaka (prompt) ilyenkor kilóg a képernyőről.
   // o: { title, hint, text, readonly, actions: [{ label, primary, keepOpen, run(box) }], onClose }

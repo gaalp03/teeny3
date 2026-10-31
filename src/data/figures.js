@@ -946,6 +946,37 @@
     }
   }
 
+  // Feltöltős támadás: az Erő- és Tech-figuráknak, valamint a legendásoknak a legerősebb sima támadása
+  // 3 másodpercig töltődik (közben nem tudnak blokkolni), de jóval nagyobbat üt az átlagos támadásnál.
+  TT.CHARGE_T = 3;
+  const dmg = [];
+  for (const f of LIST) for (const id of f.moves) if (TT.MOVES[id].kind !== 'self' && TT.MOVES[id].power > 0) dmg.push(TT.MOVES[id].power);
+  const AVG_POWER = dmg.reduce((a, b) => a + b, 0) / Math.max(1, dmg.length);
+  const charged = {};
+  TT.hasCharge = (f) => f.type === 'brawn' || f.type === 'tech' || f.rarity === 'legendary';
+  TT.chargeSlot = function (f) {
+    if (!TT.hasCharge(f)) return -1;
+    let best = -1;
+    f.moves.forEach((id, i) => {
+      const m = TT.MOVES[id];
+      if (m.kind !== 'self' && m.power > 0 && (best < 0 || m.power > TT.MOVES[f.moves[best]].power)) best = i;
+    });
+    return best;
+  };
+  // a figura i. támadása (a feltöltős helyen a feltöltött változat)
+  TT.figMove = function (f, i) {
+    const base = TT.MOVES[f.moves[i]];
+    if (i !== TT.chargeSlot(f)) return base;
+    if (!charged[base.id]) {
+      const power = Math.round(Math.max(base.power * 1.6, AVG_POWER * 2.4));
+      charged[base.id] = Object.assign({}, base, {
+        id: base.id + '_charged', charged: true, power, windup: TT.CHARGE_T,
+        desc: `Töltés ${TT.CHARGE_T} mp, ` + String(base.desc || '').replace(/^\d+ sebzés/, power + ' sebzés'),
+      });
+    }
+    return charged[base.id];
+  };
+
   // Gyűjthető sorozatok (a teljes sorozat teljesítményt ér)
   TT.SERIES = [
     { id: 'retro', name: 'Retró sorozat', short: 'Retró', ids: ['robin_80s', 'raven_80s', 'star_80s', 'bb_80s', 'cyborg_80s'] },
