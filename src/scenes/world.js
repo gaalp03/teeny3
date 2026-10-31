@@ -1661,17 +1661,7 @@
       // érintéses vezérlők
       if (TT.input.isTouch()) {
         const a = L.a;
-        ctx.save();
-        ctx.globalAlpha = this.prompt ? 0.95 : 0.5;
-        ctx.beginPath();
-        ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
-        ctx.fillStyle = '#ff6b35';
-        ctx.fill();
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = '#1d1433';
-        ctx.stroke();
-        ctx.restore();
-        D.text(ctx, 'A', a.x, a.y + 2, { size: 36, align: 'center' });
+        D.roundButton(ctx, a.x, a.y, a.r, 'A', { color: '#ff6b35', alpha: this.prompt ? 0.95 : 0.55, size: 36 });
         if (this.joy) {
           ctx.save();
           ctx.globalAlpha = 0.35;

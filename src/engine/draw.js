@@ -249,43 +249,135 @@
   };
 
   // Gomb rajzolása (állapotokkal)
+  // Gomb TT2-s, „játékbolti” stílusban: vastag sötét körvonal, alul sötétebb perem (lenyomva besüpped),
+  // domború előlap fényes felső sávval, kijelölve végigfutó csillanással.
   D.button = function (ctx, x, y, w, h, label, o) {
     o = o || {};
-    const press = o.pressed ? 3 : 0;
-    const base = o.disabled ? '#5a5470' : o.color || '#ff6b35';
+    const INK = '#1d1433';
+    const r = o.r != null ? o.r : Math.min(14, h * 0.32);
+    const lip = Math.max(4, Math.round(Math.min(h, 80) * 0.1)); // a gomb „vastagsága”
+    const press = o.pressed ? lip - 1 : 0;
+    const base = o.disabled ? '#6a6480' : o.color || '#ff6b35';
+    const top = y + press;
     ctx.save();
+    // puha árnyék alatta
+    D.rr(ctx, x + 2, y + lip + 3, w - 4, h, r);
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.fill();
     if (o.glow) {
       ctx.shadowColor = o.glowColor || base;
       ctx.shadowBlur = 18 + Math.sin(TT.time * 6) * 6;
     }
-    D.rr(ctx, x, y + 4, w, h, o.r || 12);
-    ctx.fillStyle = U.shade(base, -0.45);
+    // perem: a gomb oldala, ettől tűnik „vastagnak”
+    D.rr(ctx, x, y + lip, w, h, r);
+    ctx.fillStyle = U.shade(base, -0.5);
     ctx.fill();
     ctx.shadowBlur = 0;
-    D.rr(ctx, x, y + press, w, h, o.r || 12);
-    const g = ctx.createLinearGradient(0, y, 0, y + h);
-    g.addColorStop(0, U.shade(base, o.focus ? 0.4 : 0.22));
-    g.addColorStop(1, U.shade(base, o.focus ? 0.05 : -0.08));
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = INK;
+    ctx.stroke();
+    // előlap
+    D.rr(ctx, x, top, w, h, r);
+    const g = ctx.createLinearGradient(0, top, 0, top + h);
+    g.addColorStop(0, U.shade(base, o.focus ? 0.42 : 0.28));
+    g.addColorStop(0.55, U.shade(base, o.focus ? 0.12 : 0.02));
+    g.addColorStop(1, U.shade(base, -0.16));
     ctx.fillStyle = g;
     ctx.fill();
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = o.focus ? '#ffffff' : '#120a2c';
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = INK;
     ctx.stroke();
-    // fényes csík
-    D.rr(ctx, x + 6, y + press + 4, w - 12, h * 0.32, Math.min(8, h * 0.16));
-    ctx.fillStyle = 'rgba(255,255,255,0.18)';
-    ctx.fill();
+    ctx.save();
+    D.rr(ctx, x, top, w, h, r);
+    ctx.clip();
+    if (!o.disabled) {
+      // fényes felső sáv
+      const hg = ctx.createLinearGradient(0, top + 3, 0, top + h * 0.5);
+      hg.addColorStop(0, 'rgba(255,255,255,0.42)');
+      hg.addColorStop(1, 'rgba(255,255,255,0.04)');
+      D.rr(ctx, x + 5, top + 4, w - 10, h * 0.44, Math.max(3, r - 4));
+      ctx.fillStyle = hg;
+      ctx.fill();
+      // végigfutó csillanás a kijelölt / ragyogó gombon
+      if (o.focus || o.glow) {
+        const k = ((TT.time * 0.55) % 1.8) - 0.4;
+        const sx = x + k * (w + 60);
+        ctx.beginPath();
+        ctx.moveTo(sx, top - 4);
+        ctx.lineTo(sx + 22, top - 4);
+        ctx.lineTo(sx - 8, top + h + 4);
+        ctx.lineTo(sx - 30, top + h + 4);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(255,255,255,0.28)';
+        ctx.fill();
+      }
+    }
+    // belső él: felül világos, alul sötét (domború hatás)
+    const eg = ctx.createLinearGradient(0, top, 0, top + h);
+    eg.addColorStop(0, 'rgba(255,255,255,0.55)');
+    eg.addColorStop(0.5, 'rgba(255,255,255,0.08)');
+    eg.addColorStop(1, 'rgba(0,0,0,0.25)');
+    D.rr(ctx, x + 3.5, top + 3.5, w - 7, h - 7, Math.max(2, r - 3));
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = eg;
+    ctx.stroke();
+    ctx.restore();
+    if (o.focus) {
+      D.rr(ctx, x - 4, top - 4, w + 8, h + 8 + lip - press, r + 4);
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(255,255,255,' + (0.7 + Math.sin(TT.time * 6) * 0.25) + ')';
+      ctx.stroke();
+    }
     ctx.restore();
     // o.sub: kisebb magyarázó sor a felirat alatt (pl. mit csinál egy kellék)
     if (label) {
-      D.text(ctx, label, x + w / 2 + (o.icon ? 10 : 0), y + (o.sub ? h * 0.34 : h / 2) + press + 1, {
-        size: o.size || Math.min(24, h * 0.45), align: 'center', color: o.disabled ? '#bbb' : o.textColor || '#fff', maxWidth: w - 12,
+      D.text(ctx, label, x + w / 2 + (o.icon ? 10 : 0), top + (o.sub ? h * 0.34 : h / 2) + 1, {
+        size: o.size || Math.min(24, h * 0.45), align: 'center', color: o.disabled ? '#c8c4d4' : o.textColor || '#fff', maxWidth: w - (w < 80 ? 6 : 14), lw: w < 80 ? 3 : 4,
       });
     }
     if (o.sub) {
-      D.text(ctx, o.sub, x + w / 2, y + h * 0.74 + press, {
+      D.text(ctx, o.sub, x + w / 2, top + h * 0.74, {
         size: 13, align: 'center', color: o.disabled ? '#aaa' : '#fff6d8', maxWidth: w - 16, lw: 3,
       });
+    }
+  };
+
+  // Kerek gomb ugyanabban a stílusban (pl. az érintéses „A” gomb)
+  D.roundButton = function (ctx, cx, cy, r, label, o) {
+    o = o || {};
+    const INK = '#1d1433';
+    const base = o.color || '#ff6b35';
+    const lip = Math.max(4, Math.round(r * 0.12));
+    const press = o.pressed ? lip - 1 : 0;
+    ctx.save();
+    if (o.alpha != null) ctx.globalAlpha *= o.alpha;
+    ctx.beginPath();
+    ctx.arc(cx, cy + lip, r, 0, Math.PI * 2);
+    ctx.fillStyle = U.shade(base, -0.5);
+    ctx.fill();
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = INK;
+    ctx.stroke();
+    const y = cy + press;
+    ctx.beginPath();
+    ctx.arc(cx, y, r, 0, Math.PI * 2);
+    const g = ctx.createLinearGradient(0, y - r, 0, y + r);
+    g.addColorStop(0, U.shade(base, 0.3));
+    g.addColorStop(0.55, base);
+    g.addColorStop(1, U.shade(base, -0.18));
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(cx, y - r * 0.42, r * 0.66, r * 0.36, 0, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.32)';
+    ctx.fill();
+    ctx.restore();
+    if (label) {
+      ctx.save();
+      if (o.alpha != null) ctx.globalAlpha *= o.alpha;
+      D.text(ctx, label, cx, y + 2, { size: o.size || r * 0.78, align: 'center', lw: 4 });
+      ctx.restore();
     }
   };
 

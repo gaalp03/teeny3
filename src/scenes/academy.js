@@ -410,7 +410,6 @@
       ctx.fillRect(0, 320, W, H - 320);
       // nagy H.I.V.E. jelvény
       this.hexLogo(ctx, W / 2, 92, 54);
-      D.text(ctx, 'H.I.V.E. AKADÉMIA', W / 2, 168, { size: 22, align: 'center', color: '#ffd23f' });
       // vizsgaterem ajtó középen, büntetőterem jobbra
       this.door(ctx, W / 2 - 46, 196, 92, 104, 'VIZSGATEREM', '#6a0f14', false);
       this.door(ctx, 790, 214, 80, 86, 'BÜNTETŐTEREM', '#2a2a3a', false);
@@ -511,17 +510,7 @@
         D.text(ctx, p.label, touch ? p.x : p.x + 12, p.y + b, { size: 16, align: 'center', color: '#1b1140', stroke: false });
       }
       if (TT.input.isTouch()) {
-        ctx.save();
-        ctx.globalAlpha = p ? 0.95 : 0.5;
-        ctx.beginPath();
-        ctx.arc(TT.W - 110, TT.H - 110, 46, 0, Math.PI * 2);
-        ctx.fillStyle = '#ff6b35';
-        ctx.fill();
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = INK;
-        ctx.stroke();
-        ctx.restore();
-        D.text(ctx, 'A', TT.W - 110, TT.H - 108, { size: 34, align: 'center' });
+        D.roundButton(ctx, TT.W - 110, TT.H - 110, 46, 'A', { color: '#ff6b35', alpha: p ? 0.95 : 0.55, size: 34 });
       }
       TT.fx.draw(ctx, 1);
     },

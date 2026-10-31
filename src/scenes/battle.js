@@ -2106,10 +2106,14 @@
         D.text(ctx, '?', cl.x + cl.w / 2, cl.y + cl.h / 2 + 1, { size: 16, align: 'center', color: '#ffd23f' });
         D.text(ctx, 'Ő ' + fmt(m2), cl.x + cl.w - 12, cl.y + cl.h / 2 + 1, { size: 15, align: 'right', color: m2 > 1.001 ? '#ff8a80' : m2 < 0.999 ? '#7bff6b' : '#ffffff' });
       }
-      D.panel(ctx, L.pause.x, L.pause.y, L.pause.w, L.pause.h, { fill: '#2b1e5c', r: 10, lw: 2.5 });
+      D.button(ctx, L.pause.x, L.pause.y, L.pause.w, L.pause.h, '', { color: '#4a3a8c', r: 10 });
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(L.pause.x + 18, L.pause.y + 11, 5, 18);
-      ctx.fillRect(L.pause.x + 29, L.pause.y + 11, 5, 18);
+      ctx.strokeStyle = '#1d1433';
+      ctx.lineWidth = 2;
+      for (const px of [L.pause.x + 17, L.pause.x + 29]) {
+        ctx.fillRect(px, L.pause.y + 11, 6, 18);
+        ctx.strokeRect(px, L.pause.y + 11, 6, 18);
+      }
 
     },
 
@@ -2125,7 +2129,7 @@
         const ready = mv.c >= 1;
         const col = TT.TYPES[f.fig.type].color;
         ctx.save();
-        D.panel(ctx, card.x, card.y, card.w, card.h, { fill: ready ? U.shade(col, -0.25) : '#2b1e5c', r: 12, lw: 3, stroke: ready && canAct ? '#ffffff' : '#120a2c' });
+        D.button(ctx, card.x, card.y, card.w, card.h, '', { color: ready ? U.shade(col, -0.2) : '#3a2c6e', r: 12, focus: ready && canAct });
         // töltés
         ctx.save();
         D.rr(ctx, card.x + 3, card.y + 3, card.w - 6, card.h - 6, 10);
@@ -2134,14 +2138,6 @@
         ctx.fillStyle = ready ? 'rgba(255,255,255,0.12)' : U.rgba(col, 0.45);
         ctx.fillRect(card.x + 3, card.y + card.h - 3 - fh, card.w - 6, fh);
         ctx.restore();
-        if (ready && canAct) {
-          ctx.globalAlpha = 0.25 + Math.sin(TT.time * 7) * 0.15;
-          D.rr(ctx, card.x, card.y, card.w, card.h, 12);
-          ctx.lineWidth = 6;
-          ctx.strokeStyle = '#ffffff';
-          ctx.stroke();
-          ctx.globalAlpha = 1;
-        }
         ctx.restore();
         D.text(ctx, m.name, card.x + 10, card.y + 20, { size: 17, maxWidth: card.w - 40 });
         if (m.charged) {

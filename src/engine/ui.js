@@ -570,7 +570,23 @@
       const b = document.createElement('button');
       b.type = 'button';
       b.textContent = label;
-      b.style.cssText = `flex:1 1 130px;min-height:48px;font:inherit;font-size:17px;color:#fff;background:${primary ? '#2ecc71' : '#6c5ce7'};border:3px solid #1d1433;border-radius:12px;padding:6px 10px;touch-action:manipulation`;
+      // ugyanaz a vastag, fényes gombstílus, mint a játékban (alsó perem, lenyomva besüpped)
+      const c = primary ? '#2ecc71' : '#6c5ce7';
+      const lip = primary ? '#13703c' : '#3a2c8a';
+      b.style.cssText = `flex:1 1 130px;min-height:48px;font:inherit;font-size:17px;color:#fff;text-shadow:0 2px 0 #1d1433,0 0 3px #1d1433;` +
+        `background:linear-gradient(180deg,rgba(255,255,255,0.45) 0%,rgba(255,255,255,0.08) 45%,rgba(0,0,0,0.12) 100%),${c};` +
+        `border:4px solid #1d1433;border-radius:14px;padding:6px 10px;margin-bottom:6px;box-shadow:0 5px 0 ${lip},0 5px 0 4px #1d1433,0 9px 10px rgba(0,0,0,0.35);` +
+        'touch-action:manipulation;transition:transform 0.05s,box-shadow 0.05s';
+      const up = () => {
+        b.style.transform = '';
+        b.style.boxShadow = `0 5px 0 ${lip},0 5px 0 4px #1d1433,0 9px 10px rgba(0,0,0,0.35)`;
+      };
+      b.addEventListener('pointerdown', () => {
+        b.style.transform = 'translateY(4px)';
+        b.style.boxShadow = `0 1px 0 ${lip},0 1px 0 4px #1d1433,0 3px 4px rgba(0,0,0,0.3)`;
+      });
+      b.addEventListener('pointerup', up);
+      b.addEventListener('pointerleave', up);
       b.addEventListener('click', fn);
       bar.appendChild(b);
     };
