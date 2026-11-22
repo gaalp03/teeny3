@@ -224,6 +224,7 @@
     if (TT.WORLD && TT.WORLD.hidden.some((h) => h.fig === id)) return 'Elrejtve valahol a városban. Keresd a csillogó helyeket!';
     if (id === 'silkie_gold') return 'Silkie hálája, ha megtalálod az összes elveszett játékát a városban.';
     if (id === 'trigon') return 'A Végtelen Aréna 10. győzelméért a Csatakupolában.';
+    if (id === 'riddle_master') return 'A Rébusz Torony első teljesítéséért (délkeleten, a H.I.V.E. fölött; a Kelet Kupa után nyílik).';
     if (id === 'raven_mirror') return 'A Tükörvilág első teljesítéséért (portál a Titánok Tornya szigetén, Trigon legyőzése után).';
     if (id === 'blood_headmaster') return 'A H.I.V.E. Akadémia vizsgájának első teljesítéséért (Brother Blood legyőzése után nyílik az Akadémia).';
     if (f && !f.noBox) {
@@ -375,6 +376,9 @@
     if (!TT.cupDone('brotherhood')) return 'Utójáték: nyerd meg a Testvériség Kupát a Csatakupolában!';
     if (!s.beaten.redx) return 'Pletykák szerint éjjelente Red X ólálkodik a kikötőben…';
     if (!s.beaten.trigon) return 'Raven nyugtalan… Trigon kapuja a Torony szigetén nyílik. Állítsd meg!';
+    if (!s.riddle || !s.riddle.clears) return 'Új hely: a Rébusz Torony délkeleten, a H.I.V.E. felett! Okos taktika kell: törd le a pajzsot a 3 kulccsal!';
+    if (!s.hive || !s.hive.clears) return 'Új hely: a H.I.V.E. Akadémia vizsgája délkeleten! Öt óra, bukás nélkül.';
+    if (!s.mirror || !s.mirror.clears) return 'Új hely: a Tükörvilág portálja a Torony szigetén, a keleti parton! Nagyon nehéz.';
     return 'Győztél! Próbáld ki a Végtelen Arénát, és gyűjtsd össze mind a ' + TT.FIG_LIST.length + ' figurát!';
   };
 
@@ -394,6 +398,9 @@
     if (!TT.cupDone('brotherhood')) return door('dome');
     if (!s.beaten.redx) return npc('redx');
     if (!s.beaten.trigon) return npc('trigon');
+    if (!s.riddle || !s.riddle.clears) return door('riddle');
+    if (!s.hive || !s.hive.clears) return door('hive');
+    if (!s.mirror || !s.mirror.clears) return { x: 88.4, y: 9.4 };
     return null;
   };
 })(window.TT);

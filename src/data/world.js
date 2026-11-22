@@ -97,6 +97,11 @@
     { id: 'vault', kind: 'vault', x: 11, y: 3, w: 9, h: 4, door: [15.5, 7.6], name: 'Mint Trezor' },
     { id: 'comics', kind: 'comics', x: 46, y: 21, w: 6, h: 4, door: [49, 25.6], name: 'Képregénybolt' },
     { id: 'factory', kind: 'factory', x: 73, y: 48, w: 7, h: 3, door: [76.5, 51.6], name: 'Menta Gyár' },
+    { id: 'riddle', kind: 'riddle', x: 87, y: 33, w: 6, h: 4, door: [90, 37.6], name: 'Rébusz Torony' },
+  ];
+  // Jelölők a térképen (nem épületek): a Tükörvilág portálja a Torony szigetén, Trigon legyőzése után
+  const LANDMARKS = [
+    { id: 'mirror', name: 'Tükörvilág', door: [88.4, 9.2], req: (s) => !!(s && s.beaten && s.beaten.trigon) },
   ];
   const HOUSES = [
     [6, 21], [13, 21], [20, 21], [60, 21], [67, 21], [74, 21],
@@ -332,7 +337,7 @@
     TS, MW, MH, T, SOLID,
     map: W.map,
     tile: W.get,
-    buildings: BUILDINGS, props: PROPS, gates: GATES, npcs: NPCS, hidden: HIDDEN, toys: TOYS, patrols: PATROLS,
+    buildings: BUILDINGS, landmarks: LANDMARKS, props: PROPS, gates: GATES, npcs: NPCS, hidden: HIDDEN, toys: TOYS, patrols: PATROLS,
     start: { x: 84.5, y: 12 },
   };
 })(window.TT);

@@ -637,6 +637,13 @@
           }
           TT.go('factory', { back });
           break;
+        case 'riddle':
+          if (!TT.cupDone('east')) {
+            TT.ui.say([{ who: 'dc_riddler', text: 'Hohó! A Rébusz Torony csak azoknak nyílik meg, akik megnyerték a Kelet Kupát. Gyere vissza, ha okosabb lettél!' }]);
+            return;
+          }
+          TT.go('riddle', { back });
+          break;
         case 'hive':
           if (s.beaten.blood) TT.go('academy', { back });
           else TT.ui.say([{ who: 'kid_hive', text: 'Csak az léphet be, aki legyőzi Brother Bloodot. Ott áll az ajtó mellett.' }]);
@@ -1698,7 +1705,7 @@
       const k = mw / (W.MW * TS);
       const placed = [];
       this.mapLabels = [];
-      for (const b of W.buildings) {
+      for (const b of W.buildings.concat(W.landmarks.filter((l) => !l.req || l.req(TT.save)))) {
         if (!b.name) continue;
         const bx = x + b.door[0] * TS * k, by = y + b.door[1] * TS * k;
         const lw = D.measure(ctx, b.name, 12) + 6;

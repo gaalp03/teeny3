@@ -355,6 +355,57 @@
       door(g, W / 2 - 18, H - 66, 36, 64, '#ffd23f');
       sign(g, W / 2 - 70, wy - 64, 140, 40, 'H.I.V.E.', '#ffd23f', '#2a2540', 24);
     },
+    riddle(g, W, H) {
+      // Rébusz Torony: sötétzöld, lépcsőzetes torony, a homlokzaton világító lila kérdőjel
+      const base = H - 2;
+      const INK2 = '#1d1433';
+      // alsó test
+      box(g, 6, H - 112, W - 12, 110, '#1f5a3a', 6);
+      // átlós kérdőjel-minta
+      g.save();
+      g.beginPath();
+      g.rect(8, H - 110, W - 16, 106);
+      g.clip();
+      g.globalAlpha = 0.16;
+      for (let j = 0; j < 4; j++) for (let i = 0; i < 6; i++) {
+        D.text(g, '?', 18 + i * 32 + (j % 2) * 16, H - 92 + j * 26, { size: 18, align: 'center', color: '#7bff9b', stroke: false });
+      }
+      g.restore();
+      g.fillStyle = 'rgba(0,0,0,0.18)';
+      g.fillRect(8, base - 20, W - 16, 18);
+      // középső torony
+      box(g, 36, H - 196, W - 72, 92, '#27704a', 6);
+      // felső korona
+      g.beginPath();
+      g.moveTo(52, H - 196);
+      g.lineTo(52, H - 226);
+      g.lineTo(76, H - 208);
+      g.lineTo(W / 2, H - 238);
+      g.lineTo(W - 76, H - 208);
+      g.lineTo(W - 52, H - 226);
+      g.lineTo(W - 52, H - 196);
+      g.closePath();
+      fs(g, '#6b3fa0', 4);
+      // nagy neon kérdőjel
+      g.save();
+      g.shadowColor = '#c08cff';
+      g.shadowBlur = 22;
+      D.text(g, '?', W / 2, H - 150, { size: 84, align: 'center', color: '#e8d4ff', strokeColor: '#6b3fa0' });
+      g.restore();
+      // ablakok
+      for (const x of [20, W - 48]) {
+        windowPane(g, x, H - 96, 28, 24, false);
+        windowPane(g, x, H - 64, 28, 24, true);
+      }
+      // felirat és ajtó
+      sign(g, W / 2 - 74, H - 118, 148, 28, 'RÉBUSZ TORONY', '#ffd23f', '#1d1433', 14);
+      door(g, W / 2 - 17, H - 66, 34, 64, '#6b3fa0');
+      D.text(g, '?', W / 2, H - 38, { size: 28, align: 'center', color: '#ffd23f', strokeColor: INK2 });
+      // csúcsfény
+      g.beginPath();
+      g.arc(W / 2, H - 244, 8, 0, Math.PI * 2);
+      fs(g, '#7bff9b', 3);
+    },
     vault(g, W, H) {
       const wy = H - 128;
       // oromzat
@@ -393,7 +444,7 @@
     },
   };
 
-  const EXTRA_TOP = { house: 66, shop: 52, comics: 36, pizza: 46, dome: 150, tower: 180, hive: 70, vault: 62, factory: 80 };
+  const EXTRA_TOP = { house: 66, shop: 52, comics: 36, pizza: 46, dome: 150, tower: 180, hive: 70, vault: 62, factory: 80, riddle: 132 };
   const EXTRA_SIDE = { tower: 50 };
 
   B.sprite = function (b) {

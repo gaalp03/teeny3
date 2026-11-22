@@ -51,6 +51,8 @@
     A('trigon', 'Démonverő', 'Győzd le Trigont a Torony szigetén.', 1500, (s) => !!s.beaten.trigon),
     A('mirrorClear', 'Tükörmester', 'Teljesítsd a Tükörvilágot (mindhárom tükörképet győzd le).', 1500, (s) => !!(s.mirror && s.mirror.clears)),
     A('mirrorCombo', 'Ritmusérzék', 'Érj el 50-es kombót a Tükörvilágban.', 500, (s) => !!(s.mirror && s.mirror.bestCombo >= 50)),
+    A('riddleClear', 'Megfejtő', 'Győzd le a Rébuszt a Rébusz Toronyban (szerezd meg mind a 3 kulcsot, törd le a pajzsot).', 1200, (s) => !!(s.riddle && s.riddle.clears)),
+    A('riddleFast', 'Villámfejtő', 'Nyerj a Rébusz Toronyban legfeljebb 9 kör alatt.', 600, (s) => !!(s.riddle && s.riddle.fast && s.riddle.fast <= 9)),
     A('hiveExam', 'Kitűnő tanuló', 'Teljesítsd a H.I.V.E. Akadémia vizsgáját.', 1000, (s) => !!(s.hive && s.hive.clears)),
     A('hiveDetention', 'Bukott diák', 'Győzd le Kyd Wykkydot a Büntetőteremben 5 különböző napon.', 600, (s) => !!(s.hive && s.hive.detentions >= 5)),
     A('redx', 'X jelöli a helyet', 'Győzd le Red X-et éjjel a kikötőben.', 1000, (s) => !!s.beaten.redx),

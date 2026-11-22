@@ -2,8 +2,9 @@
 // Frissítések listája: NEM mondják el a karakterek; a „Frissítések” gombbal (főmenü, városi Menü) olvasható,
 // az új bejegyzéseket ÚJ jelzés mutatja. v: melyik verzióban jelent meg.
 (function (TT) {
-  TT.NEWS_VERSION = 83;
+  TT.NEWS_VERSION = 84;
   TT.NEWS = [
+    { v: 84, who: 'robin', text: 'Új pálya: a Rébusz Torony! A keleti parton álló toronyban sakkszerű, körökre osztott harc vár. Lépkedsz a táblán, a Rébusz főnököt pajzs védi, amíg mind a három kulcsmezőre rá nem léptél. Közben figyeld, melyik típus és ritkaság üt jobban kit. A térképen (M) most már a Tükörvilág portálja és a Rébusz Torony is meg van jelölve.' },
     { v: 83, who: 'raven', text: 'A Torony szigetén, a keleti parton megnyílt egy portál a Tükörvilágba. Ott másképp harcolsz: a felbukkanó jelekre kell koppintanod, pont amikor a kör rájuk ér. Három tükörkép vár, egyre gyorsabban. Nagyon nehéz. Aki végigviszi, megkapja a Tükör Raven figurát.' },
     { v: 82, who: 'cyborg', text: 'BOOYAH! 77 figura kapott FELTÖLTŐS támadást: 3 másodpercig tölt, de nagyon nagyot üt. Vigyázz, töltés közben nem tudsz blokkolni! Harcban felül látod, ki kit kontráz, és ha rákoppintasz, megnyílik a teljes ábra.' },
     { v: 81, who: 'bloodbrother', text: 'Kinyitottam az Akadémiámat… azoknak, akik legyőztek. Gyere be: a H.I.V.E. Vizsga 5 órája egyre nehezebb, és aki kitűnőre vizsgázik, megkapja a legendás Blood igazgató figurát. A Büntetőteremben pedig minden nap Kyd Wykkyd vár.' },

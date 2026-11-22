@@ -608,6 +608,13 @@
       hair: 'short', hairColor: '#ff9a3c', mask: '#6b3fa0', eyes: 'lens', mouth: 'grin', chest: { sym: '?', color: '#3fa34d', ink: '#1d1d2b' }, gear: ['top_hat'], hatColor: '#3fa34d',
     }, { team: 'villain', bio: 'Mi az: kicsi, zöld és mindig nyer? …Nem, nem Beast Boy. Rébusz!' });
 
+  F('riddle_master', 'Rébusz Nagymester', 'tech', 'legendary', [112, 15, 12, 13],
+    ['question_cane', 'riddle_hack', 'lucky_guess'], 'riddle_me_this',
+    {
+      skin: SKIN, top: '#6b3fa0', sleeves: '#6b3fa0', gloves: '#ffd23f', bottom: '#4a2a7a', boots: '#2a1a3a', belt: '#ffd23f',
+      hair: 'short', hairColor: '#ffd23f', mask: '#ffd23f', eyes: 'lens', mouth: 'grin', chest: { sym: '?', color: '#ffd23f', ink: '#1d1d2b' }, gear: ['top_hat'], hatColor: '#6b3fa0', gold: true,
+    }, { team: 'villain', short: 'Nagymester', noBox: true, passive: 'lucky', bio: 'Rébusz aranyruhás nagymester-alakja. Csak az kapja meg, aki a Rébusz Toronyban legyőzi őt, a saját játékában.' });
+
   F('dc_penguin', 'Pingvin', 'tech', 'epic', [115, 13, 12, 9],
     ['umbrella_gun', 'fish_toss', 'freeze_umbrella'], 'penguin_army',
     {
